@@ -99,6 +99,7 @@
     cursor: pointer;
     box-shadow: 0 4px 0 #1c6b31;
   }
+  .card button.small { font-size: 14px; padding: 6px 16px; background: #c1121f; box-shadow: 0 3px 0 #7a0c14; margin-top: 0; }
   .card button:active { transform: translateY(2px); box-shadow: 0 2px 0 #1c6b31; }
   .hidden { display: none !important; }
   #pad {
@@ -150,6 +151,7 @@
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find sparkly <b>rings, necklaces, crowns and gems</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <button id="startBtn">Let's go! 🌸</button>
+    <br><button id="newBtn" class="hidden small">Start a new game</button>
   </div>
 </div>
 
@@ -342,6 +344,9 @@
     if (!freeSpot(x, y, 0)) continue;
     let ok = true;
     for (const t of treasures) if (Math.hypot(t.x - x, t.y - y) < 170) { ok = false; break; }
+    // never under a tree canopy or behind a bush, so every treasure stays visible
+    for (const tr of trees) if (Math.abs(tr.x - x) < tr.size * 1.1 && y > tr.y - tr.size * 2 && y < tr.y + 20) { ok = false; break; }
+    for (const b of bushes) if (Math.abs(b.x - x) < b.size * 1.4 && y > b.y - b.size * 1.6 && y < b.y + 24) { ok = false; break; }
     if (!ok) continue;
     treasures.push({
       x, y,
@@ -441,9 +446,42 @@
     document.getElementById("start").classList.add("hidden");
     showMessage("Mama: \"Let's find some treasures, my little princess!\"");
   };
+  document.getElementById("newBtn").onclick = () => {
+    clearSave();
+    location.reload();
+  };
   document.getElementById("againBtn").onclick = () => {
     document.getElementById("win").classList.add("hidden");
   };
+
+  // ---------- Save / load ----------
+  const SAVE_KEY = "princesa-park-save-v2";
+  function saveGame() {
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify({
+        t: treasures.map(t => t.collected ? 1 : 0),
+        p: pets.map(p => p.found ? 1 : 0),
+        x: Math.round(princess.x), y: Math.round(princess.y),
+      }));
+    } catch (e) { /* storage unavailable: fine */ }
+  }
+  function loadGame() {
+    try {
+      const d = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
+      if (!d || !d.t || !d.p) return false;
+      d.t.forEach((v, i) => { if (treasures[i] && v) { treasures[i].collected = true; treasures[i].pop = 1; } });
+      d.p.forEach((v, i) => { if (pets[i] && v) { pets[i].found = true; followers.push(pets[i]); } });
+      if (typeof d.x === "number" && !blocked(d.x, d.y)) {
+        princess.x = d.x; princess.y = d.y; mom.x = d.x - 50; mom.y = d.y;
+        for (const f of followers) { f.x = d.x - 70; f.y = d.y; }
+        for (const tr of trail) { tr.x = d.x; tr.y = d.y; }
+      }
+      return true;
+    } catch (e) { return false; }
+  }
+  function clearSave() {
+    try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* ignore */ }
+  }
 
   // ---------- HUD ----------
   const treasureEl = document.getElementById("treasureCount");
@@ -462,6 +500,13 @@
     petEl.textContent = `🐾 Pets: ${followers.length} / ${pets.length}`;
   }
   updateHud();
+
+  // Restore a saved walk (runs after everything it needs is defined)
+  if (loadGame()) {
+    updateHud();
+    document.getElementById("startBtn").textContent = "Continue! 🌸";
+    document.getElementById("newBtn").classList.remove("hidden");
+  }
 
   // ---------- Movement ----------
   function blocked(x, y) {
@@ -526,6 +571,7 @@
         burst(t.x, t.y - 10, ["#ffd23f", "#ffffff", t.color, "#ff6fa8"], 22);
         showMessage(TREASURE_MSGS[t.kind] || "A treasure!");
         updateHud();
+        saveGame();
         checkWin();
       }
     }
@@ -540,6 +586,7 @@
         hearts(p.x, p.y - 30);
         showMessage(`You found ${p.name}! It wants to come along! 💕`);
         updateHud();
+        saveGame();
         checkWin();
       }
     }
@@ -950,7 +997,12 @@
     ctx.fillStyle = g;
     ctx.beginPath(); ctx.arc(t.x, t.y - 12 + bob, 30, 0, Math.PI * 2); ctx.fill();
     drawTreasureShape(t, t.x, t.y - 12 + bob, 1);
-    // sparkles
+  }
+
+  // Sparkles are drawn above trees and bushes so a treasure can always be spotted
+  function drawSparkles(t) {
+    if (t.collected) return;
+    const bob = Math.sin(time * 0.06 + t.ph) * 4;
     for (let i = 0; i < 3; i++) {
       const a = time * 0.03 + t.ph + i * 2.1;
       const tw = (Math.sin(time * 0.12 + i * 2 + t.ph) + 1) / 2;
@@ -1428,14 +1480,44 @@
     }
   }
 
+  // Guide arrow at the screen edge toward the nearest treasure when only a few remain
+  function drawGuide(cam) {
+    const left = treasures.filter(t => !t.collected);
+    if (!started || left.length === 0 || left.length > 5) return;
+    let best = null, bd = Infinity;
+    for (const t of left) {
+      const d = Math.hypot(t.x - princess.x, t.y - princess.y);
+      if (d < bd) { bd = d; best = t; }
+    }
+    if (bd < 120) return;
+    const sx = princess.x - cam.x, sy = princess.y - 40 - cam.y;
+    const a = Math.atan2(best.y - princess.y, best.x - princess.x);
+    const r = 70 + Math.sin(time * 0.1) * 6;
+    const ax = sx + Math.cos(a) * r, ay = sy + Math.sin(a) * r;
+    ctx.save();
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.translate(ax, ay);
+    ctx.rotate(a);
+    ctx.fillStyle = "#ffd23f";
+    ctx.strokeStyle = "#c1121f";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(14, 0); ctx.lineTo(-8, -9); ctx.lineTo(-3, 0); ctx.lineTo(-8, 9); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.restore();
+    star(ax - Math.cos(a) * 18, ay - Math.sin(a) * 18, 4, "#ffffff");
+  }
+
   // ---------- Render ----------
   const cam = { x: 0, y: 0 };
+  let camSnap = true;
   function render() {
     // smooth camera
     const tx = Math.max(0, Math.min(WORLD_W - W, princess.x - W / 2));
     const ty = Math.max(0, Math.min(WORLD_H - H, princess.y - H / 2 - 20));
     const cx = WORLD_W < W ? (WORLD_W - W) / 2 : tx;
     const cy = WORLD_H < H ? (WORLD_H - H) / 2 : ty;
+    if (camSnap) { cam.x = cx; cam.y = cy; camSnap = false; }
     cam.x += (cx - cam.x) * 0.12;
     cam.y += (cy - cam.y) * 0.12;
 
@@ -1463,12 +1545,14 @@
     list.sort((a, b) => a.y - b.y);
     for (const it of list) it.d();
 
+    for (const t of treasures) if (onScreen(t.x, t.y, cam, 80)) drawSparkles(t);
     for (const b of butterflies) if (onScreen(b.x, b.y, cam, 20)) drawButterfly(b);
     drawHints(cam);
     drawParticles();
     ctx.restore();
 
     drawSun();
+    drawGuide(cam);
   }
 
   // ---------- Loop ----------
