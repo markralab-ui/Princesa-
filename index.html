@@ -64,6 +64,19 @@
   #card .word { font-size: 34px; font-weight: bold; color: #c1121f; line-height: 1.1; }
   #card .say { font-size: 18px; color: #2a9d48; font-weight: bold; }
   #card .en { font-size: 16px; color: #7a4a24; }
+  #voiceHelp {
+    position: fixed;
+    inset: 0;
+    background: rgba(90, 42, 12, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+  #voiceHelp .card { max-width: 480px; max-height: 90vh; overflow-y: auto; }
+  #voiceHelp .steps { text-align: left; background: #fff; border-radius: 12px; padding: 4px 12px; }
+  #voiceHelp .steps p { font-size: 14px; }
   #dict {
     position: fixed;
     inset: 0;
@@ -192,6 +205,21 @@
   <div class="word"></div>
   <div class="say"></div>
   <div class="en"></div>
+</div>
+
+<div id="voiceHelp" class="hidden">
+  <div class="card">
+    <h1>🔇 No Bulgarian voice yet</h1>
+    <p>This device has no Bulgarian voice installed, so the game stays quiet instead of mispronouncing the words. Adding one is free and takes two minutes:</p>
+    <div class="steps">
+      <p><b>iPhone / iPad:</b> Settings → Accessibility → Spoken Content → Voices → Bulgarian → download <b>Daria</b>.</p>
+      <p><b>Mac:</b> System Settings → Accessibility → <b>Read &amp; Speak</b> (or Spoken Content) → System voice → Manage Voices… → Bulgarian → <b>Daria</b>.</p>
+      <p><b>Android:</b> Settings → Text-to-speech → Google Speech Services → Install voice data → Bulgarian.</p>
+      <p><b>Windows:</b> Settings → Time &amp; Language → Language → add Bulgarian with the speech pack.</p>
+    </div>
+    <p class="note">Afterwards fully quit the browser, open it again and reload the game.</p>
+    <button id="voiceClose">Got it 🌸</button>
+  </div>
 </div>
 
 <div id="dict" class="hidden">
@@ -891,28 +919,45 @@
   function updateSoundBtn() { soundBtn.textContent = soundOn ? "🔊" : "🔇"; }
   updateSoundBtn();
   soundBtn.onclick = () => {
+    if (!voice) findVoice();
+    if (!voice) { voiceHelpEl.classList.remove("hidden"); for (const k in keys) keys[k] = false; return; }
     soundOn = !soundOn;
     updateSoundBtn();
     try { localStorage.setItem("princesa-sound", soundOn ? "on" : "off"); } catch (e) { /* ignore */ }
     if (soundOn) speak("Здравей!");
   };
-  function bgVoice() {
-    if (!window.speechSynthesis) return null;
-    return speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith("bg")) || null;
+  let voice = null, voiceHintShown = false;
+  function findVoice() {
+    if (!window.speechSynthesis) return;
+    const vs = speechSynthesis.getVoices();
+    // prefer a Bulgarian voice; never fall back to another language (it mangles the words)
+    voice = vs.find(v => v.lang && v.lang.toLowerCase().startsWith("bg")) || null;
   }
+  if (window.speechSynthesis) {
+    findVoice();
+    speechSynthesis.addEventListener("voiceschanged", findVoice);
+  }
+  const voiceHelpEl = document.getElementById("voiceHelp");
+  document.getElementById("voiceClose").onclick = () => voiceHelpEl.classList.add("hidden");
   function speak(text) {
     if (!soundOn || !window.speechSynthesis) return;
+    if (!voice) findVoice();
+    if (!voice) {
+      if (!voiceHintShown) {
+        voiceHintShown = true;
+        showMessage("🔇 No Bulgarian voice on this device — tap 🔊 to see how to add one.");
+      }
+      return;
+    }
     try {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "bg-BG";
-      const v = bgVoice();
-      if (v) u.voice = v;
+      u.voice = voice;
       u.rate = 0.85;
       speechSynthesis.cancel();
       speechSynthesis.speak(u);
     } catch (e) { /* ignore */ }
   }
-  if (window.speechSynthesis) speechSynthesis.getVoices();
 
   // ---------- Dictionary ----------
   const dictEl = document.getElementById("dict");
@@ -966,7 +1011,7 @@
   }
   document.getElementById("dictBtn").onclick = openDict;
   document.getElementById("dictClose").onclick = () => dictEl.classList.add("hidden");
-  window.addEventListener("keydown", e => { if (e.key === "Escape") dictEl.classList.add("hidden"); });
+  window.addEventListener("keydown", e => { if (e.key === "Escape") { dictEl.classList.add("hidden"); voiceHelpEl.classList.add("hidden"); } });
 
   // ---------- HUD ----------
   const treasureEl = document.getElementById("treasureCount");
