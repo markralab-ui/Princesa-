@@ -3,7 +3,7 @@ Raya's first game
 
 **Princess Raya's Park Adventure** — a cute 2D browser game for learning Bulgarian words. A little Bulgarian princess in a folk dress explores a sunny park with her mama. Every treasure she finds shows (and says) its Bulgarian name, and shy pets hiding behind bushes join her when found.
 
-- 81 words in the bank (fruit, food, jewellery, nature, toys, everyday things, plus знаме, баница and мартеница) and 12 pets, all drawn with code.
+- 238 everyday words in the bank (kitchen, bathroom, bedroom, clothes, school things, toys, food and drink, body parts, transport, around the house, nature and animals) and 12 pets, all drawn with code.
 - Each adventure has 26 treasures and 8 pets. The game remembers (in the browser) which words have been learned and picks the least-seen ones next time, so every adventure teaches new words.
 - 📖 opens a dictionary of everything learned so far; 🔊 toggles saying the words aloud (uses the device's Bulgarian voice when one is installed).
 
