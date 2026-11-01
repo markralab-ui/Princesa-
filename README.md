@@ -18,3 +18,6 @@ Raya's first game
 Every spoken word — all 568 words in the bank (including the 76 animal pets), the 12 baby pets, the 6 room names and the "Здравей!" greeting, 587 clips in all — is recorded once with Microsoft Azure's Bulgarian neural voice **Kalina** (bg-BG-KalinaNeural, 10% slower than normal) and shipped as MP3s in `audio/`. The game plays these, so it sounds the same on every device with nothing to install; it never contacts Azure. The device's own Bulgarian voice is only a fallback for any text without a clip.
 
 To re-record (e.g. after adding words): with `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION` set and the region's `*.tts.speech.microsoft.com` host allowed, ask Claude to record the new words with Kalina; each clip is named after the word's key (`apple.mp3`, `pet-bunny.mp3`, `room-kitchen.mp3`) and listed in the `CLIPS` table in `index.html`.
+
+Stress fixes: Kalina sometimes guesses the stress wrong, because Bulgarian spelling doesn't mark it. These words are re-recorded with the stress spelled out in SSML (`<phoneme alphabet="ipa" ph="...">`); keep them when re-recording:
+- панделка (`bow.mp3`): `ˈpandɛlkɐ` (ПА́НДЕЛКА)
