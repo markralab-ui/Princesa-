@@ -1443,6 +1443,31 @@
     return { x: f.x - f.w / 2 - pad, y: f.y - f.h / 2 - pad, w: f.w + pad * 2, h: f.h + pad * 2 };
   }
   let nearFixture = null; // the fixture the princess is currently touching (so one touch = one sticker)
+  // Tap or click on a glowing thing: label it if the princess is close, otherwise nudge her over
+  canvas.addEventListener("pointerdown", e => {
+    if (!started) return;
+    const wx = e.clientX + cam.x, wy = e.clientY + cam.y;
+    let hit = null, hitAt = null;
+    for (const f of scene.fixtures) {
+      if (f.labelled >= f.keys.length) continue;
+      if (f.bush) { const b = bushes.find(b => Math.hypot(b.x - wx, b.y - 20 - wy) < b.size * 1.3); if (b) { hit = f; hitAt = { x: b.x, y: b.y, sx: b.x, sy: b.y - b.size * 1.4 }; break; } continue; }
+      if (f.tree) { const t = trees.find(t => Math.abs(t.x - wx) < t.size && wy > t.y - t.size * 1.9 && wy < t.y + 10); if (t) { hit = f; hitAt = { x: t.x, y: t.y, sx: t.x, sy: t.y - t.size * 1.9 }; break; } continue; }
+      const z = fixtureZone(f);
+      if (inRect(wx, wy, z)) { hit = f; hitAt = { x: f.x, y: f.y + f.h / 2 }; break; }
+    }
+    if (!hit) return;
+    e.preventDefault();
+    const d = Math.hypot(hitAt.x - princess.x, hitAt.y - princess.y);
+    const reach = hit.bush || hit.tree ? 90 : Math.max(hit.w, hit.h) / 2 + 90;
+    if (d <= reach) {
+      if (hitAt.sx !== undefined) hit.at = { x: hitAt.sx, y: hitAt.sy };
+      labelFixture(hit);
+      nearFixture = hit;
+    } else {
+      showMessage("🚶 Ела по-близо! Walk closer to it.");
+    }
+  });
+
   function checkFixtures() {
     let touching = null;
     for (const f of scene.fixtures) {
@@ -2775,9 +2800,60 @@
         ctx.restore();
       }
     }
+    drawHalos(r.fixtures);
     // fixtures on walls, flat ones first
     for (const f of r.fixtures) if (f.wall || f.flat) drawFixture(f);
   }
+  // Which tree / bush should glow for the generic "дърво" / "храст" labels: the nearest one to the princess
+  function nearestOf(list) {
+    let best = null, bd = Infinity;
+    for (const o of list) { const d = Math.hypot(o.x - princess.x, o.y - princess.y); if (d < bd) { bd = d; best = o; } }
+    return best;
+  }
+  function haloSpot(f) {
+    if (f.bush) { const b = nearestOf(bushes); return b ? { x: b.x, y: b.y + 4, rx: b.size * 1.4, ry: b.size * 0.6 } : null; }
+    if (f.tree) { const t = nearestOf(trees); return t ? { x: t.x, y: t.y + 2, rx: t.size * 0.9, ry: t.size * 0.35 } : null; }
+    return { x: f.x, y: f.wall ? f.y + f.h / 2 + 30 : f.y + f.h / 2, rx: f.w / 2 + 26, ry: Math.max(18, f.h / 4 + 12) };
+  }
+  // A pulsing glow on the ground under everything that still needs a name sticker
+  function drawHalos(fixtures) {
+    const pulse = (Math.sin(time * 0.1) + 1) / 2;
+    for (const f of fixtures) {
+      if (f.labelled >= f.keys.length || f.silent) continue;
+      const h = haloSpot(f);
+      if (!h) continue;
+      const g = ctx.createRadialGradient(h.x, h.y, 2, h.x, h.y, h.rx);
+      g.addColorStop(0, `rgba(255, 240, 150, ${0.6 + pulse * 0.35})`);
+      g.addColorStop(0.7, `rgba(255, 220, 90, ${0.35 + pulse * 0.25})`);
+      g.addColorStop(1, "rgba(255, 220, 90, 0)");
+      ctx.save();
+      ctx.translate(h.x, h.y);
+      ctx.scale(1, h.ry / h.rx);
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(0, 0, h.rx * (1 + pulse * 0.12), 0, Math.PI * 2); ctx.fill();
+      // bright pulsing ring so it clearly says "come here"
+      ctx.strokeStyle = `rgba(255, 210, 63, ${0.55 + pulse * 0.45})`;
+      ctx.lineWidth = 4 + pulse * 3;
+      ctx.setLineDash([14, 10]); ctx.lineDashOffset = -time * 0.8;
+      ctx.beginPath(); ctx.arc(0, 0, h.rx * (1.02 + pulse * 0.1), 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
+  }
+  // Sparkles circling the glowing things (drawn on top)
+  function drawHaloSparkles(fixtures) {
+    for (const f of fixtures) {
+      if (f.labelled >= f.keys.length || f.silent) continue;
+      const h = haloSpot(f);
+      if (!h) continue;
+      const cy = f.bush || f.tree ? h.y - h.ry * 2.2 : (f.wall ? f.y : f.y - f.h / 4);
+      for (let i = 0; i < 4; i++) {
+        const a = time * 0.04 + i * Math.PI / 2 + f.x * 0.01;
+        const tw = (Math.sin(time * 0.15 + i * 1.7) + 1) / 2;
+        star(h.x + Math.cos(a) * (h.rx * 0.8), cy + Math.sin(a) * (h.ry * 1.6), 3 + tw * 4, `rgba(255,255,255,${0.5 + tw * 0.5})`);
+      }
+    }
+  }
+
   function drawFixture(f) {
     if (!f.wall && !f.flat) shadow(f.x, f.y + f.h / 2, f.w / 2, f.h / 5);
     ctx.save();
@@ -2808,6 +2884,7 @@
     if (scene !== parkScene) { renderRoom(scene); ctx.restore(); return; }
 
     drawGround(cam);
+    drawHalos(parkFixtures);
     drawPlayground();
     drawGrassPatch();
 
@@ -2832,6 +2909,7 @@
     for (const t of treasures) if (onScreen(t.x, t.y, cam, 80)) drawSparkles(t);
     for (const b of butterflies) if (onScreen(b.x, b.y, cam, 20)) drawButterfly(b);
     drawHints(cam);
+    drawHaloSparkles(parkFixtures);
     for (const f of parkFixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
     drawStickerPops(parkFixtures);
     drawParticles();
@@ -2854,12 +2932,7 @@
     for (const t of r.items) drawSparkles(t);
     for (const f of r.fixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
     drawStickerPops(r.fixtures);
-    // hint hearts on things still to label
-    for (const f of r.fixtures) {
-      if (f.labelled >= f.keys.length || f.silent) continue;
-      const tw = (Math.sin(time * 0.1 + f.x) + 1) / 2;
-      star(f.x + 10, f.y - f.h / 2 - 6 - tw * 4, 4 + tw * 3, "rgba(255,255,255," + (0.5 + tw * 0.5) + ")");
-    }
+    drawHaloSparkles(r.fixtures);
     drawParticles();
   }
 
