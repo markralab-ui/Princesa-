@@ -252,7 +252,7 @@
 <div id="start">
   <div class="card">
     <h1>Princess Raya's Park Adventure 2</h1>
-    <p class="note build">build 40</p>
+    <p class="note build">build 41</p>
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find the sparkly <b>treasures</b> to learn their <b>Bulgarian names</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <p class="note" id="startNote"></p>
@@ -2182,7 +2182,7 @@
     circle(fountain.x, fountain.y + 10, fountain.r + 70, C.pathEdge);
     circle(fountain.x, fountain.y + 10, fountain.r + 62, C.path);
     // the labelled spot on the path: a brighter patch that pulses until named
-    { const pf = parkFixture("path"); if (pf && pf.labelled < pf.keys.length) { const k = (Math.sin(time * 0.12) + 1) / 2; ellipse(pf.x, pf.y, 44 + k * 10, 26 + k * 6, `rgba(255,255,255,${0.35 + k * 0.35})`); for (let i = 0; i < 6; i++) { const a = i * 1.05 + time * 0.02; circle(pf.x + Math.cos(a) * 30, pf.y + Math.sin(a) * 18, 3, "#fff3c4"); } } }
+    { const pf = parkFixture("path"); if (pf && !pf.sleep && pf.labelled < pf.keys.length) { const k = (Math.sin(time * 0.12) + 1) / 2; ellipse(pf.x, pf.y, 44 + k * 10, 26 + k * 6, `rgba(255,255,255,${0.35 + k * 0.35})`); for (let i = 0; i < 6; i++) { const a = i * 1.05 + time * 0.02; circle(pf.x + Math.cos(a) * 30, pf.y + Math.sin(a) * 18, 3, "#fff3c4"); } } }
     // pebbles on path
     ctx.fillStyle = "#e6c98c";
     for (let i = 0; i < 40; i++) {
@@ -3159,7 +3159,7 @@
       circle(PLOT.x + PLOT.w / 2 - 30, PLOT.y + PLOT.h - 36, 5, "#9c6b3d"); circle(PLOT.x + PLOT.w / 2 + 30, PLOT.y + PLOT.h - 36, 5, "#9c6b3d");
     });
     // the alley: a brighter patch on the diagonal path
-    { const pf = parkFixture("alley"); if (pf && pf.labelled < pf.keys.length) { const k = (Math.sin(time * 0.12) + 1) / 2; ellipse(pf.x, pf.y, 44 + k * 10, 26 + k * 6, `rgba(255,255,255,${0.35 + k * 0.35})`); } }
+    { const pf = parkFixture("alley"); if (pf && !pf.sleep && pf.labelled < pf.keys.length) { const k = (Math.sin(time * 0.12) + 1) / 2; ellipse(pf.x, pf.y, 44 + k * 10, 26 + k * 6, `rgba(255,255,255,${0.35 + k * 0.35})`); } }
   }
   function drawGrassPatchBody() {
     const gx = 1420, gy = 1040;
