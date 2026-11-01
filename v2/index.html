@@ -324,22 +324,25 @@
 
   // The cottage (bottom right) and the playground (top left): reserved so no trees grow there
   const house = { x: 1930, y: 1330 }; // door position (front, bottom centre)
-  const houseBody = { x: house.x - 130, y: house.y - 150, w: 260, h: 150 };
+  const houseBody = { x: house.x - 180, y: house.y - 210, w: 360, h: 210 };
+  const FENCE_L = house.x - 320, FENCE_R = house.x + 320, GATE_L = house.x - 55, GATE_R = house.x + 35; // front fence
+  const GARDEN = { x: house.x - 300, y: house.y + 8, w: 90, h: 56 };
+  const MAILBOX = { x: house.x + 255, y: house.y + 30 };
   const playground = { x: 420, y: 420 };
   const reserved = [
-    { x: houseBody.x - 120, y: houseBody.y - 140, w: houseBody.w + 240, h: houseBody.h + 300 },
-    { x: playground.x - 260, y: playground.y - 160, w: 520, h: 330 },
+    { x: FENCE_L - 60, y: houseBody.y - 190, w: FENCE_R - FENCE_L + 120, h: houseBody.h + 190 + 150 },
+    { x: playground.x - 300, y: playground.y - 170, w: 620, h: 360 },
   ];
   function inRect(x, y, r, pad = 0) { return x > r.x - pad && x < r.x + r.w + pad && y > r.y - pad && y < r.y + r.h + pad; }
   // solid parts of the park structures
   rectObstacles.push(houseBody);
-  rectObstacles.push({ x: house.x - 220, y: house.y + 52, w: 170, h: 30 }); // fence left of the gate
-  rectObstacles.push({ x: house.x + 30, y: house.y + 52, w: 190, h: 30 });  // fence right of the gate
-  rectObstacles.push({ x: houseBody.x - 80, y: house.y + 10, w: 70, h: 50 });           // flower bed (garden)
-  rectObstacles.push({ x: playground.x - 200, y: playground.y - 40, w: 60, h: 30 });     // swing frame
-  rectObstacles.push({ x: playground.x - 40, y: playground.y - 60, w: 90, h: 40 });      // slide
-  rectObstacles.push({ x: playground.x + 100, y: playground.y - 20, w: 110, h: 70 });    // sandbox
-  rectObstacles.push({ x: playground.x - 60, y: playground.y + 80, w: 90, h: 50 });      // merry-go-round
+  rectObstacles.push({ x: FENCE_L, y: house.y + 52, w: GATE_L - FENCE_L, h: 30 }); // fence left of the gate
+  rectObstacles.push({ x: GATE_R, y: house.y + 52, w: FENCE_R - GATE_R, h: 30 });  // fence right of the gate
+  rectObstacles.push(GARDEN);                                                       // flower bed (garden)
+  rectObstacles.push({ x: playground.x - 260, y: playground.y - 40, w: 60, h: 30 });     // swing frame
+  rectObstacles.push({ x: playground.x - 60, y: playground.y - 60, w: 90, h: 40 });      // slide
+  rectObstacles.push({ x: playground.x + 150, y: playground.y - 20, w: 110, h: 70 });    // sandbox
+  rectObstacles.push({ x: playground.x - 80, y: playground.y + 110, w: 90, h: 50 });     // merry-go-round
 
   function inPond(x, y, pad = 0) {
     const dx = (x - pond.x) / (pond.rx + pad);
@@ -889,70 +892,70 @@
   // x, y = centre; w, h = solid footprint; sc = drawing scale; keys = words labelled in turn; flat = can be walked over
   const ROOM_FIXTURES = {
     kitchen: [
-      { keys: ["fridge"], x: 110, y: 185, w: 80, h: 70, sc: 3.4 },
-      { keys: ["stove"], x: 250, y: 190, w: 90, h: 60, sc: 3.4 },
-      { keys: ["oven"], x: 380, y: 185, w: 80, h: 70, sc: 3.2 },
-      { keys: ["sink"], x: 520, y: 190, w: 90, h: 50, sc: 3.4 },
-      { keys: ["cupboard"], x: 660, y: 185, w: 80, h: 70, sc: 3.2 },
-      { keys: ["table"], x: 500, y: 420, w: 100, h: 50, sc: 3.6 },
-      { keys: ["chair"], x: 395, y: 420, w: 50, h: 60, sc: 3.2 },
-      { keys: ["chair"], x: 605, y: 420, w: 50, h: 60, sc: 3.2, mirror: true, silent: true },
-      { keys: ["trashbin"], x: 900, y: 560, w: 50, h: 60, sc: 2.8 },
+      { keys: ["fridge"], x: 110, y: 235, w: 80, h: 70, sc: 3.4 },
+      { keys: ["stove"], x: 250, y: 240, w: 90, h: 60, sc: 3.4 },
+      { keys: ["oven"], x: 380, y: 235, w: 80, h: 70, sc: 3.2 },
+      { keys: ["sink"], x: 520, y: 240, w: 90, h: 50, sc: 3.4 },
+      { keys: ["cupboard"], x: 660, y: 235, w: 80, h: 70, sc: 3.2 },
+      { keys: ["table"], x: 500, y: 450, w: 100, h: 50, sc: 3.6 },
+      { keys: ["chair"], x: 395, y: 450, w: 50, h: 60, sc: 3.2 },
+      { keys: ["chair"], x: 605, y: 450, w: 50, h: 60, sc: 3.2, mirror: true, silent: true },
+      { keys: ["trashbin"], x: 900, y: 600, w: 50, h: 60, sc: 2.8 },
     ],
     bedroom: [
-      { keys: ["bed"], x: 190, y: 230, w: 120, h: 100, sc: 4 },
-      { keys: ["nightstand"], x: 320, y: 200, w: 60, h: 60, sc: 2.8 },
-      { keys: ["wardrobe"], x: 760, y: 185, w: 80, h: 80, sc: 3.4 },
-      { keys: ["lamp"], x: 900, y: 190, w: 50, h: 60, sc: 3 },
-      { keys: ["window", "curtain"], x: 500, y: 60, w: 90, h: 80, sc: 3, wall: true },
-      { keys: ["shelf"], x: 640, y: 60, w: 80, h: 70, sc: 2.8, wall: true },
-      { keys: ["rug"], x: 520, y: 430, w: 140, h: 70, sc: 4.5, flat: true },
+      { keys: ["bed"], x: 190, y: 280, w: 120, h: 100, sc: 4 },
+      { keys: ["nightstand"], x: 320, y: 250, w: 60, h: 60, sc: 2.8 },
+      { keys: ["wardrobe"], x: 760, y: 235, w: 80, h: 80, sc: 3.4 },
+      { keys: ["lamp"], x: 900, y: 240, w: 50, h: 60, sc: 3 },
+      { keys: ["window", "curtain"], x: 300, y: 108, w: 90, h: 80, sc: 3, wall: true },
+      { keys: ["shelf"], x: 760, y: 112, w: 80, h: 70, sc: 2.8, wall: true },
+      { keys: ["rug"], x: 520, y: 460, w: 140, h: 70, sc: 4.5, flat: true },
     ],
     bathroom: [
-      { keys: ["bathtub"], x: 200, y: 215, w: 120, h: 60, sc: 4 },
-      { keys: ["shower"], x: 380, y: 175, w: 60, h: 80, sc: 3.2 },
-      { keys: ["mirror"], x: 560, y: 55, w: 60, h: 80, sc: 2.8, wall: true },
-      { keys: ["washer"], x: 720, y: 190, w: 80, h: 80, sc: 3 },
-      { keys: ["toilet"], x: 900, y: 200, w: 60, h: 80, sc: 3 },
-      { keys: ["laundrybasket"], x: 880, y: 540, w: 60, h: 60, sc: 2.8 },
-      { keys: ["scale"], x: 140, y: 560, w: 70, h: 50, sc: 2.6, flat: true },
+      { keys: ["bathtub"], x: 200, y: 265, w: 120, h: 60, sc: 4 },
+      { keys: ["shower"], x: 380, y: 225, w: 60, h: 80, sc: 3.2 },
+      { keys: ["mirror"], x: 300, y: 108, w: 60, h: 80, sc: 2.8, wall: true },
+      { keys: ["washer"], x: 720, y: 240, w: 80, h: 80, sc: 3 },
+      { keys: ["toilet"], x: 900, y: 250, w: 60, h: 80, sc: 3 },
+      { keys: ["laundrybasket"], x: 880, y: 580, w: 60, h: 60, sc: 2.8 },
+      { keys: ["scale"], x: 140, y: 600, w: 70, h: 50, sc: 2.6, flat: true },
     ],
     living: [
-      { keys: ["fireplace"], x: 120, y: 185, w: 90, h: 80, sc: 3.2 },
-      { keys: ["sofa"], x: 330, y: 215, w: 130, h: 60, sc: 4.2 },
-      { keys: ["armchair"], x: 560, y: 215, w: 80, h: 70, sc: 3.4 },
-      { keys: ["bookshelf"], x: 720, y: 185, w: 80, h: 80, sc: 3.2 },
-      { keys: ["television"], x: 880, y: 190, w: 90, h: 60, sc: 3.2 },
-      { keys: ["picture"], x: 440, y: 55, w: 80, h: 60, sc: 2.8, wall: true },
-      { keys: ["coffeetable"], x: 430, y: 420, w: 90, h: 50, sc: 3.4 },
-      { keys: ["piano"], x: 860, y: 470, w: 90, h: 70, sc: 3.2 },
+      { keys: ["fireplace"], x: 120, y: 235, w: 90, h: 80, sc: 3.2 },
+      { keys: ["sofa"], x: 330, y: 265, w: 130, h: 60, sc: 4.2 },
+      { keys: ["armchair"], x: 560, y: 265, w: 80, h: 70, sc: 3.4 },
+      { keys: ["bookshelf"], x: 720, y: 235, w: 80, h: 80, sc: 3.2 },
+      { keys: ["television"], x: 880, y: 240, w: 90, h: 60, sc: 3.2 },
+      { keys: ["picture"], x: 300, y: 108, w: 80, h: 60, sc: 2.8, wall: true },
+      { keys: ["coffeetable"], x: 430, y: 450, w: 90, h: 50, sc: 3.4 },
+      { keys: ["piano"], x: 860, y: 510, w: 90, h: 70, sc: 3.2 },
     ],
     hall: [
-      { keys: ["stairs"], x: 110, y: 330, w: 90, h: 90, sc: 3.6 },
-      { keys: ["hanger"], x: 900, y: 175, w: 70, h: 50, sc: 2.6 },
-      { keys: ["doormat"], x: 500, y: 560, w: 90, h: 40, sc: 3, flat: true },
-      { keys: ["door"], x: 500, y: 640, w: 80, h: 30, sc: 3, wall: true },
+      { keys: ["stairs"], x: 110, y: 360, w: 90, h: 90, sc: 3.6 },
+      { keys: ["hanger"], x: 900, y: 225, w: 70, h: 50, sc: 2.6 },
+      { keys: ["doormat"], x: 500, y: 600, w: 90, h: 40, sc: 3, flat: true },
+      { keys: ["door"], x: 500, y: 680, w: 80, h: 30, sc: 3, wall: true },
     ],
   };
   // Park fixtures: label zones on the park's own structures (drawn by the park code, not by drawItem)
   const PARK_FIXTURES = [
-    { keys: ["house"], x: house.x, y: house.y - 75, w: 260, h: 150 },
-    { keys: ["roof"], x: house.x, y: house.y - 200, w: 300, h: 110, high: true },
-    { keys: ["chimney"], x: house.x + 73, y: house.y - 195, w: 44, h: 60, high: true },
-    { keys: ["fence"], x: house.x + 120, y: house.y + 66, w: 60, h: 30 },
-    { keys: ["garden", "flower"], x: house.x - 175, y: house.y + 35, w: 80, h: 60 },
-    { keys: ["mailbox"], x: house.x + 170, y: house.y + 40, w: 30, h: 40 },
-    { keys: ["doorbell"], x: house.x + 40, y: house.y - 10, w: 24, h: 30 },
-    { keys: ["flowerpot"], x: house.x - 45, y: house.y, w: 30, h: 30 },
+    { keys: ["house"], x: house.x, y: house.y - 105, w: 360, h: 210 },
+    { keys: ["roof"], x: house.x, y: house.y - 290, w: 420, h: 150, high: true },
+    { keys: ["chimney"], x: house.x + 110, y: house.y - 295, w: 50, h: 80, high: true },
+    { keys: ["fence"], x: house.x + 150, y: house.y + 66, w: 60, h: 30 },
+    { keys: ["garden", "flower"], x: GARDEN.x + GARDEN.w / 2, y: GARDEN.y + GARDEN.h / 2, w: GARDEN.w, h: GARDEN.h },
+    { keys: ["mailbox"], x: MAILBOX.x, y: MAILBOX.y + 15, w: 34, h: 50 },
+    { keys: ["doorbell"], x: house.x + 52, y: house.y - 20, w: 26, h: 34 },
+    { keys: ["flowerpot"], x: house.x - 70, y: house.y - 2, w: 36, h: 36 },
     { keys: ["fountain"], x: 1200, y: 820, w: 240, h: 150 },
     { keys: ["pond", "duck"], x: 520, y: 1250, w: 560, h: 320 },
     { keys: ["grass"], x: 1420, y: 1040, w: 90, h: 60 },
     { keys: ["bench"], x: 1330, y: 640, w: 70, h: 40 },
     { keys: ["path"], x: 1200, y: 600, w: 90, h: 60 },
-    { keys: ["swing"], x: playground.x - 170, y: playground.y - 40, w: 70, h: 50 },
-    { keys: ["slide"], x: playground.x + 5, y: playground.y - 40, w: 100, h: 60 },
-    { keys: ["sandbox"], x: playground.x + 155, y: playground.y + 15, w: 120, h: 80 },
-    { keys: ["carousel"], x: playground.x - 15, y: playground.y + 105, w: 100, h: 60 },
+    { keys: ["swing"], x: playground.x - 230, y: playground.y - 40, w: 70, h: 50 },
+    { keys: ["slide"], x: playground.x - 15, y: playground.y - 40, w: 100, h: 60 },
+    { keys: ["sandbox"], x: playground.x + 205, y: playground.y + 15, w: 120, h: 80 },
+    { keys: ["carousel"], x: playground.x - 35, y: playground.y + 135, w: 100, h: 60 },
     { keys: ["bush"], x: 0, y: 0, w: 0, h: 0, bush: true },
     { keys: ["tree"], x: 0, y: 0, w: 0, h: 0, tree: true },
     { keys: ["bridge"], x: 520 + 260 + 10, y: 1250, w: 60, h: 90 },
@@ -1068,7 +1071,7 @@
   });
 
   // ---------- The house: rooms, fixtures and loose objects ----------
-  const ROOM_W = 1000, ROOM_H = 660, WALL_TOP = 120;
+  const ROOM_W = 1000, ROOM_H = 700, WALL_TOP = 170;
   const ROOM_STYLE = {
     hall: { floor: "#e8c99a", floor2: "#dcb98a", wall: "#fde9c4", trim: "#c27c3e" },
     kitchen: { floor: "#f3f0e6", floor2: "#dcd8cc", wall: "#dff3f8", trim: "#4aa8dc" },
@@ -1086,7 +1089,7 @@
     const exits = [];
     if (name === "hall") {
       for (const r in HALL_DOORS) exits.push({ x: HALL_DOORS[r] - 28, y: WALL_TOP - 10, w: 56, h: 36, to: r, spawn: { x: ROOM_W / 2, y: ROOM_H - 90 } });
-      exits.push({ x: ROOM_W / 2 - 45, y: ROOM_H - 36, w: 90, h: 40, to: "park", spawn: { x: house.x, y: house.y + 40 } });
+      exits.push({ x: ROOM_W / 2 - 45, y: ROOM_H - 36, w: 90, h: 40, to: "park", spawn: { x: house.x - 10, y: house.y + 42 } });
     } else {
       exits.push({ x: ROOM_W / 2 - 45, y: ROOM_H - 36, w: 90, h: 40, to: "hall", spawn: { x: HALL_DOORS[name], y: WALL_TOP + 50 } });
     }
@@ -1114,7 +1117,7 @@
   // the park scene
   const parkScene = {
     name: "park", w: WORLD_W, h: WORLD_H, fixtures: parkFixtures, rects: rectObstacles, items: null, // items = treasures
-    exits: [{ x: house.x - 22, y: house.y - 14, w: 44, h: 26, to: "hall", spawn: { x: ROOM_W / 2, y: ROOM_H - 90 } }],
+    exits: [{ x: house.x - 30, y: house.y - 14, w: 60, h: 26, to: "hall", spawn: { x: ROOM_W / 2, y: ROOM_H - 90 } }],
   };
   let scene = parkScene;
   let exitCooldown = 0;
@@ -2619,71 +2622,71 @@
   // ---------- Park structures: the cottage and the playground ----------
   function drawHouse() {
     const b = houseBody, hx = house.x;
-    shadow(hx, b.y + b.h + 4, b.w / 2 + 10, 12);
+    shadow(hx, b.y + b.h + 4, b.w / 2 + 10, 14);
     // fence
     ctx.fillStyle = "#fff7e6";
-    for (let x = b.x - 90; x <= b.x + b.w + 90; x += 20) {
-      if (x > hx - 50 && x < hx + 30) continue; // gate opening
+    for (let x = FENCE_L; x <= FENCE_R; x += 22) {
+      if (x > GATE_L && x < GATE_R) continue; // gate opening
       ctx.fillRect(x - 3, house.y + 52, 6, 30);
       ctx.beginPath(); ctx.moveTo(x - 3, house.y + 52); ctx.lineTo(x, house.y + 46); ctx.lineTo(x + 3, house.y + 52); ctx.fill();
     }
     ctx.fillStyle = "#f1e4cc";
-    ctx.fillRect(b.x - 90, house.y + 60, hx - 50 - (b.x - 90), 4); ctx.fillRect(hx + 30, house.y + 60, b.x + b.w + 90 - (hx + 30), 4);
-    ctx.fillRect(b.x - 90, house.y + 72, hx - 50 - (b.x - 90), 4); ctx.fillRect(hx + 30, house.y + 72, b.x + b.w + 90 - (hx + 30), 4);
+    for (const yy of [house.y + 60, house.y + 72]) { ctx.fillRect(FENCE_L, yy, GATE_L - FENCE_L, 4); ctx.fillRect(GATE_R, yy, FENCE_R - GATE_R, 4); }
     const hp = pulseOf(parkFixture("house")), rp = pulseOf(parkFixture("roof")), cp = pulseOf(parkFixture("chimney"));
     // walls
     withPulse(hx, b.y + b.h, hp, () => {
       ctx.fillStyle = "#fff3e0";
       ctx.fillRect(b.x, b.y, b.w, b.h);
       ctx.fillStyle = "#f1dcb0";
-      ctx.fillRect(b.x, b.y + b.h - 10, b.w, 10);
+      ctx.fillRect(b.x, b.y + b.h - 12, b.w, 12);
     });
     // chimney (behind the roof)
-    withPulse(hx + 73, b.y - 20, cp, () => {
-      ctx.fillStyle = "#8a9099"; ctx.fillRect(hx + 60, b.y - 70, 26, 50);
-      ctx.fillStyle = "#6b7280"; ctx.fillRect(hx + 57, b.y - 74, 32, 8);
+    const cx = hx + 110;
+    withPulse(cx, b.y - 30, cp, () => {
+      ctx.fillStyle = "#8a9099"; ctx.fillRect(cx - 17, b.y - 100, 34, 70);
+      ctx.fillStyle = "#6b7280"; ctx.fillRect(cx - 21, b.y - 106, 42, 10);
     });
-    for (let i = 0; i < 3; i++) circle(hx + 73 + Math.sin(time * 0.03 + i) * 6, b.y - 90 - i * 16 - ((time * 0.3 + i * 20) % 40), 7 + i * 2, "rgba(255,255,255,0.45)");
+    for (let i = 0; i < 3; i++) circle(cx + Math.sin(time * 0.03 + i) * 7, b.y - 122 - i * 18 - ((time * 0.3 + i * 20) % 44), 8 + i * 2, "rgba(255,255,255,0.45)");
     // roof
-    withPulse(hx, b.y + 10, rp, () => {
+    withPulse(hx, b.y + 12, rp, () => {
       ctx.fillStyle = "#d62828";
-      ctx.beginPath(); ctx.moveTo(b.x - 20, b.y + 10); ctx.lineTo(hx, b.y - 110); ctx.lineTo(b.x + b.w + 20, b.y + 10); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(b.x - 26, b.y + 12); ctx.lineTo(hx, b.y - 150); ctx.lineTo(b.x + b.w + 26, b.y + 12); ctx.closePath(); ctx.fill();
       ctx.fillStyle = "#b91c1c";
-      for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(b.x - 20 + i * 28 + 10, b.y + 10); ctx.lineTo(hx, b.y - 110); ctx.lineTo(hx, b.y - 80 + i * 5); ctx.closePath(); ctx.globalAlpha = 0.1; ctx.fill(); ctx.globalAlpha = 1; }
+      for (let i = 0; i < 5; i++) { ctx.beginPath(); ctx.moveTo(b.x - 26 + i * 36 + 12, b.y + 12); ctx.lineTo(hx, b.y - 150); ctx.lineTo(hx, b.y - 110 + i * 6); ctx.closePath(); ctx.globalAlpha = 0.1; ctx.fill(); ctx.globalAlpha = 1; }
     });
-    ctx.fillStyle = "#fff3e0"; ctx.fillRect(b.x, b.y + 4, b.w, 8);
+    ctx.fillStyle = "#fff3e0"; ctx.fillRect(b.x, b.y + 4, b.w, 10);
     // windows
-    for (const wx of [hx - 80, hx + 80]) {
-      ctx.fillStyle = "#9c6b3d"; ctx.fillRect(wx - 24, b.y + 40, 48, 44);
-      ctx.fillStyle = "#bde0fe"; ctx.fillRect(wx - 20, b.y + 44, 40, 36);
-      ctx.fillStyle = "#9c6b3d"; ctx.fillRect(wx - 2, b.y + 44, 4, 36); ctx.fillRect(wx - 20, b.y + 60, 40, 3);
-      ctx.fillStyle = "#ff8fab"; ctx.fillRect(wx - 26, b.y + 84, 52, 6);
-      circle(wx - 14, b.y + 82, 4, "#ff4d6d"); circle(wx, b.y + 82, 4, "#ffd23f"); circle(wx + 14, b.y + 82, 4, "#ff4d6d");
+    for (const wx of [hx - 115, hx + 115]) {
+      ctx.fillStyle = "#9c6b3d"; ctx.fillRect(wx - 32, b.y + 55, 64, 58);
+      ctx.fillStyle = "#bde0fe"; ctx.fillRect(wx - 27, b.y + 60, 54, 48);
+      ctx.fillStyle = "#9c6b3d"; ctx.fillRect(wx - 2, b.y + 60, 4, 48); ctx.fillRect(wx - 27, b.y + 82, 54, 3);
+      ctx.fillStyle = "#ff8fab"; ctx.fillRect(wx - 35, b.y + 113, 70, 7);
+      circle(wx - 20, b.y + 110, 5, "#ff4d6d"); circle(wx, b.y + 110, 5, "#ffd23f"); circle(wx + 20, b.y + 110, 5, "#ff4d6d");
     }
     // door
-    ctx.fillStyle = "#7a4a24"; ctx.fillRect(hx - 24, b.y + b.h - 70, 48, 70);
-    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(hx - 19, b.y + b.h - 64, 38, 60);
-    ctx.fillStyle = "#7a4a24"; ctx.fillRect(hx - 15, b.y + b.h - 58, 12, 20); ctx.fillRect(hx + 3, b.y + b.h - 58, 12, 20);
-    circle(hx + 10, b.y + b.h - 30, 3, "#ffd23f");
+    ctx.fillStyle = "#7a4a24"; ctx.fillRect(hx - 32, b.y + b.h - 92, 64, 92);
+    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(hx - 26, b.y + b.h - 86, 52, 82);
+    ctx.fillStyle = "#7a4a24"; ctx.fillRect(hx - 20, b.y + b.h - 78, 16, 26); ctx.fillRect(hx + 4, b.y + b.h - 78, 16, 26);
+    circle(hx + 14, b.y + b.h - 40, 4, "#ffd23f");
     // doorbell
-    ctx.fillStyle = "#c9ced6"; ctx.fillRect(hx + 32, b.y + b.h - 56, 10, 14); circle(hx + 37, b.y + b.h - 49, 3, "#ffd23f");
+    ctx.fillStyle = "#c9ced6"; ctx.fillRect(hx + 44, b.y + b.h - 72, 14, 18); circle(hx + 51, b.y + b.h - 63, 4, "#ffd23f");
     // flower pot by the door
-    ctx.fillStyle = "#d9934f"; ctx.beginPath(); ctx.moveTo(hx - 54, b.y + b.h - 2); ctx.lineTo(hx - 36, b.y + b.h - 2); ctx.lineTo(hx - 39, b.y + b.h + 18); ctx.lineTo(hx - 51, b.y + b.h + 18); ctx.fill();
-    circle(hx - 45, b.y + b.h - 12, 8, "#3fae4a"); circle(hx - 49, b.y + b.h - 16, 4, "#ff6fa8"); circle(hx - 40, b.y + b.h - 14, 4, "#ffd23f");
+    ctx.fillStyle = "#d9934f"; ctx.beginPath(); ctx.moveTo(hx - 82, b.y + b.h - 4); ctx.lineTo(hx - 58, b.y + b.h - 4); ctx.lineTo(hx - 62, b.y + b.h + 22); ctx.lineTo(hx - 78, b.y + b.h + 22); ctx.fill();
+    circle(hx - 70, b.y + b.h - 16, 10, "#3fae4a"); circle(hx - 76, b.y + b.h - 22, 5, "#ff6fa8"); circle(hx - 63, b.y + b.h - 19, 5, "#ffd23f");
     // doormat & step
-    ctx.fillStyle = "#e8d39a"; ctx.fillRect(hx - 30, b.y + b.h, 60, 12);
+    ctx.fillStyle = "#e8d39a"; ctx.fillRect(hx - 40, b.y + b.h, 80, 14);
     // what's left to find inside the house
-    { let a = 0, t = 0; for (const rn in rooms) { const [x, y] = areaProgress(rooms[rn]); a += x; t += y; } drawBadge(hx + 34, b.y + b.h - 78, a >= t ? "✓" : String(t - a), a >= t); }
+    { let a = 0, t = 0; for (const rn in rooms) { const [x, y] = areaProgress(rooms[rn]); a += x; t += y; } drawBadge(hx + 46, b.y + b.h - 100, a >= t ? "✓" : String(t - a), a >= t); }
     // mailbox on the right of the gate
-    ctx.fillStyle = "#8a9099"; ctx.fillRect(hx + 168, house.y + 25, 4, 40);
-    ctx.fillStyle = "#3a86ff"; ctx.fillRect(hx + 156, house.y + 10, 28, 20);
-    ctx.fillStyle = "#fff"; ctx.fillRect(hx + 162, house.y + 17, 14, 6);
-    ctx.fillStyle = "#e63946"; ctx.fillRect(hx + 184, house.y + 8, 3, 10);
+    ctx.fillStyle = "#8a9099"; ctx.fillRect(MAILBOX.x - 2, MAILBOX.y + 10, 5, 46);
+    ctx.fillStyle = "#3a86ff"; ctx.fillRect(MAILBOX.x - 16, MAILBOX.y - 10, 34, 24);
+    ctx.fillStyle = "#fff"; ctx.fillRect(MAILBOX.x - 9, MAILBOX.y - 2, 18, 7);
+    ctx.fillStyle = "#e63946"; ctx.fillRect(MAILBOX.x + 18, MAILBOX.y - 13, 4, 12);
     // flower bed (garden) on the left
-    ctx.fillStyle = "#7a4a24"; ctx.fillRect(b.x - 80, house.y + 10, 70, 50);
-    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(b.x - 80, house.y + 10, 70, 4);
-    for (let i = 0; i < 8; i++) {
-      const fx = b.x - 72 + (i % 4) * 18, fy = house.y + 24 + Math.floor(i / 4) * 22;
+    ctx.fillStyle = "#7a4a24"; ctx.fillRect(GARDEN.x, GARDEN.y, GARDEN.w, GARDEN.h);
+    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(GARDEN.x, GARDEN.y, GARDEN.w, 5);
+    for (let i = 0; i < 10; i++) {
+      const fx = GARDEN.x + 12 + (i % 5) * 17, fy = GARDEN.y + 18 + Math.floor(i / 5) * 24;
       ctx.strokeStyle = "#3f9a3a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(fx, fy + 8); ctx.lineTo(fx, fy); ctx.stroke();
       circle(fx, fy - 2, 5, petalColors[(i * 3) % petalColors.length]); circle(fx, fy - 2, 2, "#ffd23f");
     }
@@ -2703,30 +2706,30 @@
     const px = playground.x, py = playground.y;
     // swing
     ctx.strokeStyle = "#9c6b3d"; ctx.lineWidth = 6; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(px - 200, py - 10); ctx.lineTo(px - 180, py - 90); ctx.lineTo(px - 160, py - 90); ctx.lineTo(px - 140, py - 10); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(px - 180, py - 90); ctx.lineTo(px - 160, py - 90); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px - 260, py - 10); ctx.lineTo(px - 240, py - 90); ctx.lineTo(px - 220, py - 90); ctx.lineTo(px - 200, py - 10); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px - 240, py - 90); ctx.lineTo(px - 220, py - 90); ctx.stroke();
     const sw = Math.sin(time * 0.04) * 8;
     ctx.strokeStyle = "#555"; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(px - 176, py - 88); ctx.lineTo(px - 176 + sw, py - 30); ctx.moveTo(px - 164, py - 88); ctx.lineTo(px - 164 + sw, py - 30); ctx.stroke();
-    ctx.fillStyle = "#e63946"; ctx.fillRect(px - 182 + sw, py - 30, 24, 6);
+    ctx.beginPath(); ctx.moveTo(px - 236, py - 88); ctx.lineTo(px - 236 + sw, py - 30); ctx.moveTo(px - 224, py - 88); ctx.lineTo(px - 224 + sw, py - 30); ctx.stroke();
+    ctx.fillStyle = "#e63946"; ctx.fillRect(px - 242 + sw, py - 30, 24, 6);
     // slide
-    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(px - 36, py - 95, 8, 75);
-    for (let i = 0; i < 5; i++) { ctx.fillStyle = "#c27c3e"; ctx.fillRect(px - 44, py - 90 + i * 14, 24, 4); }
+    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(px - 56, py - 95, 8, 75);
+    for (let i = 0; i < 5; i++) { ctx.fillStyle = "#c27c3e"; ctx.fillRect(px - 64, py - 90 + i * 14, 24, 4); }
     ctx.strokeStyle = "#ffd23f"; ctx.lineWidth = 16; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(px - 30, py - 95); ctx.lineTo(px - 10, py - 95); ctx.lineTo(px + 50, py - 20); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px - 50, py - 95); ctx.lineTo(px - 30, py - 95); ctx.lineTo(px + 30, py - 20); ctx.stroke();
     ctx.strokeStyle = "#e0b000"; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(px - 30, py - 103); ctx.lineTo(px - 10, py - 103); ctx.lineTo(px + 50, py - 28); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px - 50, py - 103); ctx.lineTo(px - 30, py - 103); ctx.lineTo(px + 30, py - 28); ctx.stroke();
     // sandbox
-    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(px + 100, py - 20, 110, 70);
-    ctx.fillStyle = "#f3dca2"; ctx.fillRect(px + 108, py - 12, 94, 54);
-    ctx.fillStyle = "#e63946"; ctx.beginPath(); ctx.moveTo(px + 130, py + 20); ctx.lineTo(px + 150, py + 20); ctx.lineTo(px + 145, py + 6); ctx.lineTo(px + 135, py + 6); ctx.fill();
-    circle(px + 175, py + 25, 7, "#3a86ff"); circle(px + 165, py, 5, "#ffd23f");
+    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(px + 150, py - 20, 110, 70);
+    ctx.fillStyle = "#f3dca2"; ctx.fillRect(px + 158, py - 12, 94, 54);
+    ctx.fillStyle = "#e63946"; ctx.beginPath(); ctx.moveTo(px + 180, py + 20); ctx.lineTo(px + 200, py + 20); ctx.lineTo(px + 195, py + 6); ctx.lineTo(px + 185, py + 6); ctx.fill();
+    circle(px + 225, py + 25, 7, "#3a86ff"); circle(px + 215, py, 5, "#ffd23f");
     // merry-go-round
-    ellipse(px - 15, py + 118, 48, 16, "#c9ced6");
-    ellipse(px - 15, py + 112, 44, 14, "#e63946");
-    ctx.fillStyle = "#8a9099"; ctx.fillRect(px - 18, py + 70, 6, 42);
-    ellipse(px - 15, py + 70, 40, 12, "#ffd23f");
-    for (let i = 0; i < 4; i++) { const a = time * 0.02 + i * Math.PI / 2; const bx = px - 15 + Math.cos(a) * 32, by = py + 90 + Math.sin(a) * 9; ctx.fillStyle = "#8a9099"; ctx.fillRect(bx - 1.5, by - 18, 3, 22); circle(bx, by - 20, 5, i % 2 ? "#3a86ff" : "#ff6fa8"); }
+    ellipse(px - 35, py + 148, 48, 16, "#c9ced6");
+    ellipse(px - 35, py + 142, 44, 14, "#e63946");
+    ctx.fillStyle = "#8a9099"; ctx.fillRect(px - 38, py + 100, 6, 42);
+    ellipse(px - 35, py + 100, 40, 12, "#ffd23f");
+    for (let i = 0; i < 4; i++) { const a = time * 0.02 + i * Math.PI / 2; const bx = px - 35 + Math.cos(a) * 32, by = py + 120 + Math.sin(a) * 9; ctx.fillStyle = "#8a9099"; ctx.fillRect(bx - 1.5, by - 18, 3, 22); circle(bx, by - 20, 5, i % 2 ? "#3a86ff" : "#ff6fa8"); }
     // little bridge at the pond's edge
     const bx = pond.x + pond.rx + 10, by = pond.y;
     ctx.strokeStyle = "#9c6b3d"; ctx.lineWidth = 8;
@@ -2801,7 +2804,7 @@
     // wall
     ctx.fillStyle = st.wall; ctx.fillRect(0, 0, r.w, WALL_TOP);
     ctx.fillStyle = "rgba(255,255,255,0.35)";
-    for (let x = 20; x < r.w; x += 60) for (let y = 15; y < WALL_TOP - 10; y += 40) circle(x + ((y / 40) % 2) * 30, y, 4, "rgba(255,255,255,0.35)");
+    for (let x = 20; x < r.w; x += 60) for (let y = 15; y < WALL_TOP - 10; y += 40) circle(x + ((y / 40) % 2) * 30, y, 3, "rgba(255,255,255,0.3)");
     ctx.fillStyle = st.trim; ctx.fillRect(0, WALL_TOP - 8, r.w, 8);
     ctx.fillStyle = "rgba(0,0,0,0.08)"; ctx.fillRect(0, WALL_TOP, r.w, 10);
     // side & bottom walls
