@@ -809,6 +809,30 @@
     doormat:    ["изтривалка", "iz-tri-VAL-ka", "doormat", d => { d.p([[-14, -4], [14, -4], [12, 8], [-12, 8]], "#c27c3e"); d.p([[-11, -2], [11, -2], [9, 6], [-9, 6]], "#d9934f"); d.l([[-8, 1], [8, 1]], "#9c6b3d", 1); d.heart(0, 2, 3, "#e63946"); }],
     mailbox:    ["пощенска кутия", "POSHT-en-ska KOO-ti-ya", "mailbox", d => { d.r(-1, 0, 2, 14, "#8a9099"); d.rr(-10, -12, 20, 13, 3, "#3a86ff"); d.r(-7, -6, 10, 4, WHT); d.r(8, -11, 2, 6, "#e63946"); d.c(9, -12, 1.5, "#e63946"); }],
     lock:       ["ключалка", "klyu-CHAL-ka", "lock", d => { d.arc(0, -5, 7, Math.PI, Math.PI * 2, "#8a9099", 3); d.rr(-10, -4, 20, 16, 3, "#ffd23f"); d.c(0, 3, 2.5, "#333"); d.r(-1, 3, 2, 5, "#333"); }],
+    // playroom
+    toybox:     ["кутия за играчки", "ku-TEE-ya za ig-RACH-ki", "toy box", d => { d.r(-13, -4, 26, 16, "#3a86ff"); d.p([[-13, -4], [13, -4], [13, -10], [-13, -10]], "#4f8fe0"); d.r(-13, -5, 26, 2, "#2a4f90"); d.c(-6, -12, 3, "#ff6fa8"); d.r(1, -14, 5, 5, "#ffd23f"); d.p([[9, -11], [12, -16], [15, -11]], "#2a9d48"); d.star(0, 3, 4, "#ffd23f", 5); }],
+    dollhouse:  ["кукленска къща", "KOOK-len-ska KASH-ta", "dollhouse", d => { d.r(-11, -2, 22, 15, "#ffd6e7"); d.p([[-14, -2], [0, -14], [14, -2]], "#ff6fa8"); d.r(-8, 2, 5, 5, "#bde0fe"); d.r(3, 2, 5, 5, "#bde0fe"); d.r(-2, 7, 4, 6, "#9b5de5"); d.c(6, -5, 1.5, "#ffd23f"); d.r(4, -11, 3, 5, "#e0245e"); }],
+    rockinghorse: ["люлеещо се конче", "lyu-LE-ye-shto se KON-che", "rocking horse", d => { d.arc(0, 2, 13, Math.PI * 0.15, Math.PI * 0.85, "#9c6b3d", 3); d.e(-1, -2, 9, 5, "#c48a5a"); d.p([[6, -4], [9, -14], [14, -11], [12, -2]], "#c48a5a"); d.l([[9, -14], [6, -7]], "#5a2e14", 2.5); d.c(11, -11, 1.1, "#222"); d.r(-6, 1, 3, 6, "#c48a5a"); d.r(4, 1, 3, 6, "#c48a5a"); d.l([[-10, -3], [-14, 2]], "#5a2e14", 2.5); d.r(-4, -8, 8, 3, "#e63946"); }],
+    chalkboard: ["черна дъска", "CHER-na DAS-ka", "chalkboard", d => { d.r(-14, -11, 28, 22, "#9c6b3d"); d.r(-12, -9, 24, 18, "#2f5d3a"); d.l([[-8, -3], [-2, -3]], WHT, 1.5); d.l([[-8, 1], [2, 1]], WHT, 1.5); d.c(6, -2, 3, "rgba(255,255,255,.8)"); d.r(-10, 7, 20, 2, "#c27c3e"); d.r(-6, 5, 4, 2, WHT); d.r(0, 5, 4, 2, "#ff6fa8"); }],
+    tent:       ["палатка", "pa-LAT-ka", "play tent", d => { d.p([[-14, 12], [0, -14], [14, 12]], "#e63946"); d.p([[-14, 12], [0, -14], [0, 12]], "#ff6b6b"); d.p([[-5, 12], [0, 0], [5, 12]], "#3b2a20"); d.l([[0, -14], [0, -18]], "#9c6b3d", 1.5); d.p([[0, -18], [5, -16], [0, -14]], "#ffd23f"); d.c(-8, 4, 1.5, WHT); d.c(8, 4, 1.5, WHT); }],
+    beanbag:    ["пуф", "POOF", "beanbag", d => { d.e(0, 5, 13, 8, "#9b5de5"); d.e(0, 0, 11, 8, "#c77dff"); d.e(-1, -4, 7, 4, "#d9a7ff"); d.l([[-6, 2], [6, 2]], "#7b3fd5", 1); }],
+    top:        ["пумпал", "POOM-pal", "spinning top", d => { d.r(-1, -14, 2, 6, "#9c6b3d"); d.e(0, -5, 10, 4, "#e63946"); d.p([[-10, -5], [10, -5], [0, 12]], "#ff9f1c"); d.p([[-7, -1], [7, -1], [0, 12]], "#ffd23f"); d.l([[-10, -5], [10, -5]], "#c1121f", 1); }],
+    toycar:     ["количка", "ko-LICH-ka", "toy car", d => { d.p([[-12, 5], [-12, -1], [-7, -1], [-3, -8], [5, -8], [9, -1], [12, -1], [12, 5]], "#ffd23f"); d.p([[-6, -1], [-2, -6], [4, -6], [7, -1]], "#bde0fe"); d.c(-6, 6, 4, "#333"); d.c(6, 6, 4, "#333"); d.c(-6, 6, 1.8, "#e63946"); d.c(6, 6, 1.8, "#e63946"); }],
+    robot:      ["робот", "RO-bot", "robot", d => { d.r(-7, -14, 14, 10, "#8a9099"); d.r(-9, -3, 18, 12, "#c9ced6"); d.r(-5, -11, 3, 3, "#7bdff2"); d.r(2, -11, 3, 3, "#7bdff2"); d.r(-3, -6, 6, 1.5, "#333"); d.l([[0, -14], [0, -17]], "#8a9099", 1.5); d.c(0, -18, 1.5, "#e63946"); d.r(-13, -2, 4, 8, "#8a9099"); d.r(9, -2, 4, 8, "#8a9099"); d.r(-7, 9, 5, 5, "#8a9099"); d.r(2, 9, 5, 5, "#8a9099"); d.c(-3, 2, 1.5, "#ffd23f"); d.c(3, 2, 1.5, "#2a9d48"); }],
+    dinosaur:   ["динозавър", "di-no-ZA-var", "dinosaur", d => { const c = "#5ec46a"; d.e(-2, 2, 11, 7, c); d.p([[6, -2], [8, -13], [15, -11], [13, 0]], c); d.c(11, -12, 1.1, "#222"); d.l([[-12, 1], [-19, -4]], c, 4); d.r(-7, 7, 3, 6, c); d.r(2, 7, 3, 6, c); for (let i = -8; i <= 4; i += 4) d.p([[i - 2, -4], [i, -9], [i + 2, -4]], "#2a9d48"); }],
+    castle:     ["замък", "ZA-mak", "toy castle", d => { d.r(-13, -2, 26, 15, "#c9ced6"); for (let x = -13; x <= 9; x += 6) d.r(x, -6, 4, 5, "#c9ced6"); d.r(-4, -12, 8, 25, "#b8b0a5"); d.p([[-5, -12], [0, -19], [5, -12]], "#e63946"); d.r(-2, 5, 4, 8, "#7a4a24"); d.r(-10, 2, 3, 4, "#bde0fe"); d.r(7, 2, 3, 4, "#bde0fe"); d.l([[0, -19], [0, -23]], "#333", 1); d.p([[0, -23], [4, -21], [0, -19]], "#ffd23f"); }],
+    marbles:    ["топчета", "TOP-che-ta", "marbles", d => { [[-7, 2, "#3a86ff"], [3, 4, "#e63946"], [-1, -5, "#2a9d48"], [8, -3, "#ffd23f"], [-9, -7, "#9b5de5"]].forEach(q => { d.c(q[0], q[1], 4.5, q[2]); d.c(q[0] - 1.5, q[1] - 1.5, 1.4, "rgba(255,255,255,.7)"); }); }],
+    cards:      ["карти", "KAR-ti", "playing cards", d => { d.rr(-11, -8, 14, 20, 2, "#eee"); d.rr(-6, -11, 14, 20, 2, WHT); d.l([[-6, -11], [8, -11], [8, 9], [-6, 9], [-6, -11]], "#ccc", 1); d.heart(1, -1, 5, "#e63946"); d.rr(-2, -14, 14, 20, 2, WHT); d.l([[-2, -14], [12, -14], [12, 6], [-2, 6], [-2, -14]], "#ccc", 1); d.star(5, -4, 4, "#333", 4); }],
+    dice:       ["зар", "ZAR", "dice", d => { d.rr(-10, -10, 20, 20, 4, WHT); d.l([[-10, -6], [-10, 6]], "#ddd", 1); [[-5, -5], [5, -5], [0, 0], [-5, 5], [5, 5]].forEach(q => d.c(q[0], q[1], 1.8, "#333")); }],
+    domino:     ["домино", "DO-mi-no", "dominoes", d => { d.rr(-13, -7, 26, 14, 2, "#333"); d.rr(-12, -6, 24, 12, 2, WHT); d.l([[0, -6], [0, 6]], "#333", 1); [[-8, -3], [-4, 3], [-8, 3], [-4, -3], [4, -3], [8, 3], [6, 0]].forEach(q => d.c(q[0], q[1], 1.5, "#333")); }],
+    whistle:    ["свирка", "SVIR-ka", "whistle", d => { d.rr(-6, -4, 18, 9, 3, "#c9ced6"); d.c(-8, 2, 6, "#c9ced6"); d.c(-8, 2, 2, "#8a9099"); d.r(4, -2, 5, 2, "#8a9099"); d.l([[-12, -2], [-14, -12]], "#e63946", 1.5); }],
+    rattle:     ["дрънкалка", "dran-KAL-ka", "rattle", d => { d.l([[0, 2], [0, 14]], "#ffd23f", 4); d.c(0, 14, 3, "#ffd23f"); d.c(0, -5, 9, "#ff6fa8"); d.c(-3, -8, 3, "rgba(255,255,255,.6)"); d.star(3, -3, 3, WHT, 5); }],
+    jumprope:   ["въже за скачане", "VA-zhe za SKA-cha-ne", "jump rope", d => { d.l([[-10, -8], [-6, 6], [0, 10], [6, 6], [10, -8]], "#e63946", 2); d.r(-13, -14, 6, 8, "#9c6b3d"); d.r(7, -14, 6, 8, "#9c6b3d"); d.r(-12, -13, 4, 2, "#ffd23f"); d.r(8, -13, 4, 2, "#ffd23f"); }],
+    xylophone:  ["ксилофон", "ksi-lo-FON", "xylophone", d => { ["#e63946", "#ff9f1c", "#ffd23f", "#2a9d48", "#3a86ff", "#9b5de5"].forEach((c, i) => d.r(-13 + i * 4.5, -8 + i * 1.2, 3.5, 18 - i * 2.4, c)); d.l([[-12, -2], [12, 2]], "#9c6b3d", 1); d.l([[-12, 6], [12, 4]], "#9c6b3d", 1); d.l([[6, -12], [12, -6]], "#9c6b3d", 1.5); d.c(12, -6, 2.5, "#e63946"); }],
+    lego:       ["конструктор", "kon-STROOK-tor", "building blocks", d => { d.r(-12, 0, 16, 9, "#e63946"); d.r(-10, -3, 4, 3, "#e63946"); d.r(-4, -3, 4, 3, "#e63946"); d.r(-4, -9, 14, 9, "#3a86ff"); d.r(-2, -12, 4, 3, "#3a86ff"); d.r(4, -12, 4, 3, "#3a86ff"); d.r(4, 2, 9, 7, "#ffd23f"); d.r(6, -1, 4, 3, "#ffd23f"); }],
+    playdoh:    ["пластилин", "plas-ti-LIN", "play dough", d => { d.r(-9, -2, 18, 14, "#ffd23f"); d.e(0, -2, 9, 3, "#e0b000"); d.e(0, -4, 9, 3, "#ffd23f"); d.c(-9, -9, 5, "#ff6fa8"); d.c(9, -8, 4, "#2a9d48"); d.e(0, -10, 5, 3, "#3a86ff"); }],
+    drawing:    ["рисунка", "ri-SOON-ka", "drawing", d => { d.r(-12, -12, 24, 24, WHT); d.l([[-12, -12], [12, -12], [12, 12], [-12, 12], [-12, -12]], "#ccc", 1); d.c(6, -6, 3, "#ffd23f"); d.p([[-10, 10], [-4, 0], [2, 10]], "#2a9d48"); d.r(-8, 2, 5, 8, "#e63946"); d.p([[-9, 2], [-5.5, -3], [-2, 2]], "#3a86ff"); }],
+    bubbles:    ["сапунени балончета", "sa-POO-ne-ni ba-LON-che-ta", "soap bubbles", d => { d.rr(-6, 0, 12, 14, 2, "#3a86ff"); d.r(-3, -4, 6, 4, "#2a4f90"); d.ring(-2, -10, 4, 4, "#7bdff2", 1.5); d.ring(8, -8, 5, 5, "#7bdff2", 1.5); d.ring(5, -16, 3, 3, "#7bdff2", 1.5); d.c(-3, -11, 1, WHT); d.c(6, -10, 1.3, WHT); }],
   };
   // Every animal is a pet friend: it hides behind a bush and joins the princess (never a pickup)
   const ANIMAL_KEYS = ["butterfly", "ladybug", "bee", "snail", "fish", "bird", "cow", "horse", "sheep", "hen", "frog", "bear", "wolf", "mouse", "spider",
@@ -885,15 +909,17 @@
       "tomato", "cucumber", "carrot", "pepper", "potato", "onion", "garlic", "corn", "peas", "beans", "cabbage", "broccoli", "pumpkin",
       "cake", "banitsa", "pancake", "chocolate", "bun"],
     bedroom: ["pillow", "blanket", "sheet", "pyjamas", "dress", "shirt", "tshirt", "trousers", "socks", "jacket", "skirt", "button", "hat", "shoes", "boots",
-      "scarf", "gloves", "teddy", "doll", "blocks", "puzzle", "toytrain", "paints", "crayons", "book", "notebook", "pencil", "scissors", "eraser",
+      "scarf", "gloves", "book", "notebook", "pencil", "scissors", "eraser",
       "glue", "paper", "ruler", "backpack", "clock", "alarm", "bow", "hairclip"],
+    playroom: ["teddy", "doll", "blocks", "puzzle", "toytrain", "paints", "crayons", "top", "toycar", "robot", "dinosaur", "castle", "marbles",
+      "cards", "dice", "domino", "whistle", "rattle", "jumprope", "xylophone", "lego", "playdoh", "drawing", "bubbles"],
     bathroom: ["soap", "toothbrush", "toothpaste", "towel", "comb", "sponge", "toiletpaper", "medicine", "bandage", "iron", "shampoo", "bathrobe",
       "slippers", "hairdryer", "rubberduck"],
     living: ["remote", "radio", "guitar", "computer", "phone", "headphones", "candle", "glasses", "wallet", "bag", "letter", "violin", "drum",
       "vase", "plant", "cushion"],
     hall: ["key", "umbrella", "lock"],
   };
-  const LOOSE_PER_ROOM = { kitchen: 6, bedroom: 6, bathroom: 5, living: 5, hall: 2 };
+  const LOOSE_PER_ROOM = { kitchen: 6, bedroom: 6, bathroom: 5, living: 5, playroom: 7, hall: 2 };
 
   // Fixed things that get a name sticker when the princess walks up to them.
   // x, y = centre; w, h = solid footprint; sc = drawing scale; keys = words labelled in turn; flat = can be walked over
@@ -937,6 +963,14 @@
       { keys: ["coffeetable"], x: 430, y: 450, w: 90, h: 50, sc: 3.4 },
       { keys: ["piano"], x: 860, y: 510, w: 90, h: 70, sc: 3.2 },
     ],
+    playroom: [
+      { keys: ["toybox"], x: 130, y: 250, w: 90, h: 60, sc: 3.2 },
+      { keys: ["dollhouse"], x: 330, y: 235, w: 100, h: 90, sc: 3.6 },
+      { keys: ["chalkboard"], x: 300, y: 108, w: 90, h: 70, sc: 3, wall: true },
+      { keys: ["tent"], x: 700, y: 240, w: 110, h: 90, sc: 3.8 },
+      { keys: ["rockinghorse"], x: 890, y: 250, w: 80, h: 70, sc: 3.2 },
+      { keys: ["beanbag"], x: 860, y: 570, w: 80, h: 56, sc: 3 },
+    ],
     hall: [
       { keys: ["stairs"], x: 110, y: 360, w: 90, h: 90, sc: 3.6 },
       { keys: ["hanger"], x: 900, y: 225, w: 70, h: 50, sc: 2.6 },
@@ -979,6 +1013,7 @@
     hall: ["коридор", "ko-ri-DOR", "hallway", "Коридорът е готов"], kitchen: ["кухня", "KOOH-nya", "kitchen", "Кухнята е готова"],
     bedroom: ["спалня", "SPAL-nya", "bedroom", "Спалнята е готова"], bathroom: ["баня", "BA-nya", "bathroom", "Банята е готова"],
     living: ["хол", "HOL", "living room", "Холът е готов"],
+    playroom: ["детска стая", "DET-ska STA-ya", "playroom", "Детската стая е готова"],
   };
   // Her favourites: animals and jewellery. Every adventure includes at least FAVE_PER_GAME of them.
   const FAVE_KEYS = [ // (animals are pets now; only the jewellery entries below still count)
@@ -1097,9 +1132,10 @@
     bedroom: { floor: "#e6cfa8", floor2: "#d9bd92", wall: "#ffe3ec", trim: "#ff8fab" },
     bathroom: { floor: "#e6f6fb", floor2: "#bfe6f2", wall: "#eafaf1", trim: "#2ec4b6" },
     living: { floor: "#e3c59a", floor2: "#d3b386", wall: "#fff2cc", trim: "#e09f1f" },
+    playroom: { floor: "#efe4ff", floor2: "#dccbf7", wall: "#fff6d6", trim: "#9b5de5" },
   };
   // doors from the hallway (on its top wall) to each room
-  const HALL_DOORS = { kitchen: 280, living: 460, bedroom: 640, bathroom: 820 };
+  const HALL_DOORS = { kitchen: 230, living: 380, bedroom: 530, playroom: 680, bathroom: 830 };
   const rooms = {};
   function roomRect(f) { return { x: f.x - f.w / 2, y: f.y - f.h / 2, w: f.w, h: f.h }; }
   Object.keys(ROOM_FIXTURES).forEach((name, ri) => {
@@ -1382,7 +1418,7 @@
     if (sc === parkScene) { got += followers.length; total += pets.length; }
     return [got, total];
   }
-  const ROOM_ICONS = { park: "🌳", hall: "🚪", kitchen: "🍳", bedroom: "🛏", bathroom: "🛁", living: "🛋" };
+  const ROOM_ICONS = { park: "🌳", hall: "🚪", kitchen: "🍳", bedroom: "🛏", bathroom: "🛁", living: "🛋", playroom: "🧸" };
   const roomEl = document.getElementById("roomCount");
   const hudEl = document.getElementById("hud");
   function fitHud() { document.documentElement.style.setProperty("--hud-h", hudEl.offsetHeight + "px"); }
@@ -2884,6 +2920,10 @@
       const cols = ["#7bdff2", "#2ec4b6", "#bde0fe", "#ffffff"];
       for (let x = 42; x < r.w - 42; x += 14) { ctx.fillStyle = cols[(x / 14) % 4]; ctx.fillRect(x + 1, WALL_TOP + 14, 12, 12); }
       for (let x = 42; x < r.w - 42; x += 14) { ctx.fillStyle = cols[(x / 14 + 2) % 4]; ctx.fillRect(x + 1, r.h - 46, 12, 12); }
+    } else if (r.name === "playroom") {
+      // soft play mat with cheerful polka dots
+      const dots = ["#ffd6e7", "#d6f0ff", "#fff3c4", "#dff5dd"];
+      for (let x = 50; x < r.w - 30; x += 60) for (let y = WALL_TOP + 30; y < r.h - 30; y += 60) circle(x + ((y / 60) % 2) * 30, y, 9, dots[((x / 60) + (y / 60)) % 4 | 0]);
     } else {
       for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(0, y, r.w, 2);
       for (let x = 0; x < r.w; x += 160) for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(x + ((y / 28) % 2) * 80, y, 2, 28);
