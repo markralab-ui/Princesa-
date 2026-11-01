@@ -199,7 +199,7 @@
 
 <div id="hud">
   <div class="pill" id="treasureCount">🎁 Words: 0 / 26</div>
-  <div class="pill green" id="petCount">🐾 Pets: 0 / 8</div>
+  <div class="pill green" id="petCount">🐾 Pets: 0 / 11</div>
   <div class="pill" id="roomCount">🌳 парк: 0 / 0</div>
   <div class="pill btn" id="dictBtn" title="Dictionary">📖</div>
   <div class="pill btn" id="soundBtn" title="Say the words out loud">🔊</div>
@@ -875,7 +875,7 @@
   for (const k of ANIMAL_KEYS) PETS[k] = [WORDS[k][0], WORDS[k][1], WORDS[k][2]];
   const PET_KEYS = Object.keys(PETS);
   const WORDS_PER_GAME = 26;
-  const PETS_PER_GAME = 8;
+  const PETS_PER_GAME = 11;
 
   // ---------- Where each word lives ----------
   // Loose objects that can be picked up, per room. Everything not listed here lives in the park.
@@ -1093,9 +1093,9 @@
   const ROOM_W = 1000, ROOM_H = 700, WALL_TOP = 170;
   const ROOM_STYLE = {
     hall: { floor: "#e8c99a", floor2: "#dcb98a", wall: "#fde9c4", trim: "#c27c3e" },
-    kitchen: { floor: "#f3f0e6", floor2: "#dcd8cc", wall: "#dff3f8", trim: "#4aa8dc" },
+    kitchen: { floor: "#f6d9b8", floor2: "#eac29c", wall: "#dff3f8", trim: "#4aa8dc" },
     bedroom: { floor: "#e6cfa8", floor2: "#d9bd92", wall: "#ffe3ec", trim: "#ff8fab" },
-    bathroom: { floor: "#dff3f8", floor2: "#c6e8f2", wall: "#eafaf1", trim: "#2ec4b6" },
+    bathroom: { floor: "#e6f6fb", floor2: "#bfe6f2", wall: "#eafaf1", trim: "#2ec4b6" },
     living: { floor: "#e3c59a", floor2: "#d3b386", wall: "#fff2cc", trim: "#e09f1f" },
   };
   // doors from the hallway (on its top wall) to each room
@@ -1411,7 +1411,7 @@
   } else {
     const learned = WORD_KEYS.filter(k => memory.seen[k]).length;
     noteEl.textContent = gameNo === 1
-      ? "Your first adventure: new words and 8 pet friends are hiding in the park, and the little house is waiting to be explored!"
+      ? "Your first adventure: new words and 11 pet friends are hiding in the park, and the little house is waiting to be explored!"
       : `Adventure ${gameNo}: new words in the park and in every room of the house. Words learned so far: ${learned} / ${WORD_KEYS.length}.`;
   }
 
@@ -2868,8 +2868,22 @@
     // floor
     ctx.fillStyle = st.floor; ctx.fillRect(0, WALL_TOP, r.w, r.h - WALL_TOP);
     ctx.fillStyle = st.floor2;
-    if (r.name === "kitchen" || r.name === "bathroom") {
-      for (let x = 0; x < r.w; x += 50) for (let y = WALL_TOP; y < r.h; y += 50) if (((x / 50) + ((y - WALL_TOP) / 50)) % 2 === 0) ctx.fillRect(x, y, 50, 50);
+    if (r.name === "kitchen") {
+      // warm terracotta tiles with a little diamond where the corners meet
+      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      for (let x = 0; x <= r.w; x += 80) ctx.fillRect(x - 1.5, WALL_TOP, 3, r.h - WALL_TOP);
+      for (let y = WALL_TOP; y <= r.h; y += 80) ctx.fillRect(0, y - 1.5, r.w, 3);
+      for (let x = 0; x <= r.w; x += 80) for (let y = WALL_TOP; y <= r.h; y += 80) {
+        ctx.fillStyle = st.floor2; ctx.beginPath(); ctx.moveTo(x, y - 7); ctx.lineTo(x + 7, y); ctx.lineTo(x, y + 7); ctx.lineTo(x - 7, y); ctx.closePath(); ctx.fill();
+      }
+    } else if (r.name === "bathroom") {
+      // pale aqua tiles with a mosaic stripe
+      ctx.fillStyle = "rgba(255,255,255,0.6)";
+      for (let x = 0; x <= r.w; x += 56) ctx.fillRect(x - 1, WALL_TOP, 2, r.h - WALL_TOP);
+      for (let y = WALL_TOP; y <= r.h; y += 56) ctx.fillRect(0, y - 1, r.w, 2);
+      const cols = ["#7bdff2", "#2ec4b6", "#bde0fe", "#ffffff"];
+      for (let x = 0; x < r.w; x += 14) { ctx.fillStyle = cols[(x / 14) % 4]; ctx.fillRect(x + 1, WALL_TOP + 14, 12, 12); }
+      for (let x = 0; x < r.w; x += 14) { ctx.fillStyle = cols[(x / 14 + 2) % 4]; ctx.fillRect(x + 1, r.h - 46, 12, 12); }
     } else {
       for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(0, y, r.w, 2);
       for (let x = 0; x < r.w; x += 160) for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(x + ((y / 28) % 2) * 80, y, 2, 28);
