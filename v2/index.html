@@ -936,7 +936,9 @@
   };
   // Park fixtures: label zones on the park's own structures (drawn by the park code, not by drawItem)
   const PARK_FIXTURES = [
-    { keys: ["house", "roof", "chimney"], x: house.x, y: house.y - 70, w: 270, h: 160 },
+    { keys: ["house"], x: house.x, y: house.y - 75, w: 260, h: 150 },
+    { keys: ["roof"], x: house.x, y: house.y - 200, w: 300, h: 110, high: true },
+    { keys: ["chimney"], x: house.x + 73, y: house.y - 195, w: 44, h: 60, high: true },
     { keys: ["fence"], x: house.x + 120, y: house.y + 66, w: 60, h: 30 },
     { keys: ["garden", "flower"], x: house.x - 175, y: house.y + 35, w: 80, h: 60 },
     { keys: ["mailbox"], x: house.x + 170, y: house.y + 40, w: 30, h: 40 },
@@ -1183,13 +1185,13 @@
   function saveGame() {
     try {
       const rs = {};
-      for (const r in rooms) rs[r] = { items: rooms[r].keys, t: rooms[r].items.map(t => t.collected ? 1 : 0), f: rooms[r].fixtures.map(f => f.labelled) };
+      const fx = fs => { const o = {}; fs.forEach((f, i) => { o[f.keys.join("+") + "#" + i] = [f.labelled, f.at || null]; }); return o; };
+      for (const r in rooms) rs[r] = { items: rooms[r].keys, t: rooms[r].items.map(t => t.collected ? 1 : 0), fx: fx(rooms[r].fixtures) };
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         g: gameNo, items: itemKeys, pets: petKeys,
         t: treasures.map(t => t.collected ? 1 : 0),
         p: pets.map(p => p.found ? 1 : 0),
-        pf: parkFixtures.map(f => f.labelled),
-        pfat: parkFixtures.map(f => f.at || null),
+        pfx: fx(parkFixtures),
         rooms: rs,
         scene: scene.name,
         x: Math.round(princess.x), y: Math.round(princess.y),
@@ -1201,12 +1203,21 @@
     if (!d || !d.t || !d.p) return false;
     d.t.forEach((v, i) => { if (treasures[i] && v) { treasures[i].collected = true; treasures[i].pop = 1; } });
     d.p.forEach((v, i) => { if (pets[i] && v) { pets[i].found = true; followers.push(pets[i]); } });
-    if (d.pf) d.pf.forEach((v, i) => { if (parkFixtures[i]) { parkFixtures[i].labelled = Math.min(v || 0, parkFixtures[i].keys.length); if (d.pfat && d.pfat[i]) parkFixtures[i].at = d.pfat[i]; } });
+    const restore = (fs, saved) => {
+      if (!saved) return;
+      fs.forEach((f, i) => {
+        const v = saved[f.keys.join("+") + "#" + i] || Object.entries(saved).find(([k]) => k.split("#")[0] === f.keys.join("+"))?.[1];
+        if (!v) return;
+        f.labelled = Math.min(v[0] || 0, f.keys.length);
+        if (v[1]) f.at = v[1];
+      });
+    };
+    restore(parkFixtures, d.pfx);
     for (const r in rooms) {
       const rs = d.rooms[r];
       if (!rs) continue;
       (rs.t || []).forEach((v, i) => { if (rooms[r].items[i] && v) { rooms[r].items[i].collected = true; rooms[r].items[i].pop = 1; } });
-      (rs.f || []).forEach((v, i) => { if (rooms[r].fixtures[i]) rooms[r].fixtures[i].labelled = Math.min(v || 0, rooms[r].fixtures[i].keys.length); });
+      restore(rooms[r].fixtures, rs.fx);
     }
     if (d.scene && rooms[d.scene]) scene = rooms[d.scene];
     if (typeof d.x === "number" && !blocked(d.x, d.y)) {
@@ -1423,8 +1434,10 @@
   }
 
   // Put a name sticker on a fixed thing the princess walks up to
+  let roofHintShown = false;
   function labelFixture(f) {
     const key = f.keys[f.labelled];
+    if (key === "house" && !roofHintShown) { roofHintShown = true; setTimeout(() => showMessage("👆 Tap the glowing roof and chimney too!"), 4500); }
     f.labelled++;
     const w = WORDS[key];
     const at = stickerBase(f);
@@ -1457,14 +1470,14 @@
     }
     if (!hit) return;
     e.preventDefault();
-    const d = Math.hypot(hitAt.x - princess.x, hitAt.y - princess.y);
-    const reach = hit.bush || hit.tree ? 90 : Math.max(hit.w, hit.h) / 2 + 90;
+    const d = hit.high ? Math.hypot(house.x - princess.x, house.y + 20 - princess.y) : Math.hypot(hitAt.x - princess.x, hitAt.y - princess.y);
+    const reach = hit.high ? 240 : hit.bush || hit.tree ? 90 : Math.max(hit.w, hit.h) / 2 + 90;
     if (d <= reach) {
       if (hitAt.sx !== undefined) hit.at = { x: hitAt.sx, y: hitAt.sy };
       labelFixture(hit);
       nearFixture = hit;
     } else {
-      showMessage("🚶 Ела по-близо! Walk closer to it.");
+      showMessage(hit.high ? "🚶 Ела до къщата! Walk up to the house, then tap it." : "🚶 Ела по-близо! Walk closer to it.");
     }
   });
 
@@ -1474,6 +1487,7 @@
       if (f.labelled >= f.keys.length) continue;
       if (f.bush) { const b = bushes.find(b => Math.hypot(b.x - princess.x, b.y - princess.y) < 48); if (b) { touching = f; f.at = { x: b.x, y: b.y - b.size * 1.4 }; } continue; }
       if (f.tree) { const t = trees.find(t => Math.hypot(t.x - princess.x, t.y - princess.y) < 44); if (t) { touching = f; f.at = { x: t.x, y: t.y - t.size * 1.9 }; } continue; }
+      if (f.high) continue;
       const z = fixtureZone(f);
       if (inRect(princess.x, princess.y, z)) { touching = f; break; }
     }
@@ -1895,6 +1909,11 @@
   function drawTree(t) {
     const s = t.size;
     shadow(t.x, t.y + 2, s * 0.7, s * 0.22);
+    const tf = scene === parkScene ? parkFixture("tree") : null;
+    withPulse(t.x, t.y, tf && nearestOf(trees) === t ? pulseOf(tf) : 1, () => drawTreeBody(t));
+  }
+  function drawTreeBody(t) {
+    const s = t.size;
     // trunk
     ctx.fillStyle = "#9c6b3d";
     ctx.beginPath();
@@ -1944,6 +1963,11 @@
   function drawBush(b) {
     const s = b.size;
     shadow(b.x, b.y + 4, s, s * 0.3);
+    const bf = scene === parkScene ? parkFixture("bush") : null;
+    withPulse(b.x, b.y, bf && nearestOf(bushes) === b ? pulseOf(bf) : 1, () => drawBushBody(b));
+  }
+  function drawBushBody(b) {
+    const s = b.size;
     circle(b.x - s * 0.55, b.y - s * 0.3, s * 0.55, "#3c9e48");
     circle(b.x + s * 0.55, b.y - s * 0.3, s * 0.55, "#3c9e48");
     circle(b.x, b.y - s * 0.6, s * 0.65, "#47b053");
@@ -2600,21 +2624,28 @@
     ctx.fillStyle = "#f1e4cc";
     ctx.fillRect(b.x - 90, house.y + 60, hx - 50 - (b.x - 90), 4); ctx.fillRect(hx + 30, house.y + 60, b.x + b.w + 90 - (hx + 30), 4);
     ctx.fillRect(b.x - 90, house.y + 72, hx - 50 - (b.x - 90), 4); ctx.fillRect(hx + 30, house.y + 72, b.x + b.w + 90 - (hx + 30), 4);
+    const hp = pulseOf(parkFixture("house")), rp = pulseOf(parkFixture("roof")), cp = pulseOf(parkFixture("chimney"));
     // walls
-    ctx.fillStyle = "#fff3e0";
-    ctx.fillRect(b.x, b.y, b.w, b.h);
-    ctx.fillStyle = "#f1dcb0";
-    ctx.fillRect(b.x, b.y + b.h - 10, b.w, 10);
-    // roof
-    ctx.fillStyle = "#d62828";
-    ctx.beginPath(); ctx.moveTo(b.x - 20, b.y + 10); ctx.lineTo(hx, b.y - 110); ctx.lineTo(b.x + b.w + 20, b.y + 10); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = "#b91c1c";
-    for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(b.x - 20 + i * 28 + 10, b.y + 10); ctx.lineTo(hx, b.y - 110); ctx.lineTo(hx, b.y - 80 + i * 5); ctx.closePath(); ctx.globalAlpha = 0.1; ctx.fill(); ctx.globalAlpha = 1; }
-    ctx.fillStyle = "#fff3e0"; ctx.fillRect(b.x, b.y + 4, b.w, 8);
-    // chimney
-    ctx.fillStyle = "#8a9099"; ctx.fillRect(hx + 60, b.y - 70, 26, 50);
-    ctx.fillStyle = "#6b7280"; ctx.fillRect(hx + 57, b.y - 74, 32, 8);
+    withPulse(hx, b.y + b.h, hp, () => {
+      ctx.fillStyle = "#fff3e0";
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+      ctx.fillStyle = "#f1dcb0";
+      ctx.fillRect(b.x, b.y + b.h - 10, b.w, 10);
+    });
+    // chimney (behind the roof)
+    withPulse(hx + 73, b.y - 20, cp, () => {
+      ctx.fillStyle = "#8a9099"; ctx.fillRect(hx + 60, b.y - 70, 26, 50);
+      ctx.fillStyle = "#6b7280"; ctx.fillRect(hx + 57, b.y - 74, 32, 8);
+    });
     for (let i = 0; i < 3; i++) circle(hx + 73 + Math.sin(time * 0.03 + i) * 6, b.y - 90 - i * 16 - ((time * 0.3 + i * 20) % 40), 7 + i * 2, "rgba(255,255,255,0.45)");
+    // roof
+    withPulse(hx, b.y + 10, rp, () => {
+      ctx.fillStyle = "#d62828";
+      ctx.beginPath(); ctx.moveTo(b.x - 20, b.y + 10); ctx.lineTo(hx, b.y - 110); ctx.lineTo(b.x + b.w + 20, b.y + 10); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#b91c1c";
+      for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(b.x - 20 + i * 28 + 10, b.y + 10); ctx.lineTo(hx, b.y - 110); ctx.lineTo(hx, b.y - 80 + i * 5); ctx.closePath(); ctx.globalAlpha = 0.1; ctx.fill(); ctx.globalAlpha = 1; }
+    });
+    ctx.fillStyle = "#fff3e0"; ctx.fillRect(b.x, b.y + 4, b.w, 8);
     // windows
     for (const wx of [hx - 80, hx + 80]) {
       ctx.fillStyle = "#9c6b3d"; ctx.fillRect(wx - 24, b.y + 40, 48, 44);
@@ -2810,16 +2841,24 @@
     for (const o of list) { const d = Math.hypot(o.x - princess.x, o.y - princess.y); if (d < bd) { bd = d; best = o; } }
     return best;
   }
+  // scale factor for something that still needs a sticker: a gentle swell, like the collectables bob
+  function pulseOf(f) { return f && f.labelled < f.keys.length && !f.silent ? 1 + 0.045 * Math.sin(time * 0.12 + (f.x || 0) * 0.01) : 1; }
+  function withPulse(x, y, sc, fn) {
+    if (sc === 1) { fn(); return; }
+    ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); ctx.translate(-x, -y); fn(); ctx.restore();
+  }
+  const parkFixture = key => parkFixtures.find(f => f.keys[0] === key);
   function haloSpot(f) {
     if (f.bush) { const b = nearestOf(bushes); return b ? { x: b.x, y: b.y + 4, rx: b.size * 1.4, ry: b.size * 0.6 } : null; }
     if (f.tree) { const t = nearestOf(trees); return t ? { x: t.x, y: t.y + 2, rx: t.size * 0.9, ry: t.size * 0.35 } : null; }
+    if (f.high) return { x: f.x, y: f.y, rx: f.w / 2 + 14, ry: f.h / 2 + 14 };
     return { x: f.x, y: f.wall ? f.y + f.h / 2 + 30 : f.y + f.h / 2, rx: f.w / 2 + 26, ry: Math.max(18, f.h / 4 + 12) };
   }
   // A pulsing glow on the ground under everything that still needs a name sticker
-  function drawHalos(fixtures) {
+  function drawHalos(fixtures, highOnes = false) {
     const pulse = (Math.sin(time * 0.1) + 1) / 2;
     for (const f of fixtures) {
-      if (f.labelled >= f.keys.length || f.silent) continue;
+      if (f.labelled >= f.keys.length || f.silent || !!f.high !== highOnes) continue;
       const h = haloSpot(f);
       if (!h) continue;
       const g = ctx.createRadialGradient(h.x, h.y, 2, h.x, h.y, h.rx);
@@ -2858,7 +2897,7 @@
     if (!f.wall && !f.flat) shadow(f.x, f.y + f.h / 2, f.w / 2, f.h / 5);
     ctx.save();
     if (f.mirror) { ctx.translate(f.x, f.y); ctx.scale(-1, 1); ctx.translate(-f.x, -f.y); }
-    drawItem(f.keys[0], f.x, f.y, f.sc);
+    drawItem(f.keys[0], f.x, f.y, f.sc * pulseOf(f));
     ctx.restore();
   }
 
@@ -2909,6 +2948,7 @@
     for (const t of treasures) if (onScreen(t.x, t.y, cam, 80)) drawSparkles(t);
     for (const b of butterflies) if (onScreen(b.x, b.y, cam, 20)) drawButterfly(b);
     drawHints(cam);
+    drawHalos(parkFixtures, true);
     drawHaloSparkles(parkFixtures);
     for (const f of parkFixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
     drawStickerPops(parkFixtures);
