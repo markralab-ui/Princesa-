@@ -810,7 +810,12 @@
     mailbox:    ["пощенска кутия", "POSHT-en-ska KOO-ti-ya", "mailbox", d => { d.r(-1, 0, 2, 14, "#8a9099"); d.rr(-10, -12, 20, 13, 3, "#3a86ff"); d.r(-7, -6, 10, 4, WHT); d.r(8, -11, 2, 6, "#e63946"); d.c(9, -12, 1.5, "#e63946"); }],
     lock:       ["ключалка", "klyu-CHAL-ka", "lock", d => { d.arc(0, -5, 7, Math.PI, Math.PI * 2, "#8a9099", 3); d.rr(-10, -4, 20, 16, 3, "#ffd23f"); d.c(0, 3, 2.5, "#333"); d.r(-1, 3, 2, 5, "#333"); }],
   };
-  const WORD_KEYS = Object.keys(WORDS);
+  // Every animal is a pet friend: it hides behind a bush and joins the princess (never a pickup)
+  const ANIMAL_KEYS = ["butterfly", "ladybug", "bee", "snail", "fish", "bird", "cow", "horse", "sheep", "hen", "frog", "bear", "wolf", "mouse", "spider",
+    "dog", "cat", "duck", "pig", "goat", "elephant", "giraffe", "lion", "tiger", "monkey", "zebra", "crocodile", "penguin", "dolphin",
+    "whale", "octopus", "crab", "lizard", "snake", "owl", "parrot", "pigeon", "stork", "swan", "rooster", "donkey", "ant"].filter(k => WORDS[k]);
+  const ANIMAL_SET = new Set(ANIMAL_KEYS);
+  const WORD_KEYS = Object.keys(WORDS).filter(k => !ANIMAL_SET.has(k));
 
   // Item drawing helpers; `ctx` is the current canvas context (swappable for the dictionary icons)
   const D = {
@@ -866,6 +871,8 @@
     turtle:   ["костенурка", "kos-te-NOOR-ka", "turtle"],
     chick:    ["пиленце", "PEE-len-tse", "chick"],
   };
+  const BABY_PETS = new Set(Object.keys(PETS));
+  for (const k of ANIMAL_KEYS) PETS[k] = [WORDS[k][0], WORDS[k][1], WORDS[k][2]];
   const PET_KEYS = Object.keys(PETS);
   const WORDS_PER_GAME = 26;
   const PETS_PER_GAME = 8;
@@ -948,7 +955,7 @@
     { keys: ["doorbell"], x: house.x + 52, y: house.y - 20, w: 26, h: 34 },
     { keys: ["flowerpot"], x: house.x - 70, y: house.y - 2, w: 36, h: 36 },
     { keys: ["fountain"], x: 1200, y: 820, w: 240, h: 150 },
-    { keys: ["pond", "duck"], x: 520, y: 1250, w: 560, h: 320 },
+    { keys: ["pond"], x: 520, y: 1250, w: 560, h: 320 },
     { keys: ["grass"], x: 1420, y: 1040, w: 90, h: 60 },
     { keys: ["bench"], x: 1330, y: 640, w: 70, h: 40 },
     { keys: ["path"], x: 1200, y: 600, w: 90, h: 60 },
@@ -974,7 +981,7 @@
     living: ["хол", "HOL", "living room", "Холът е готов"],
   };
   // Her favourites: animals and jewellery. Every adventure includes at least FAVE_PER_GAME of them.
-  const FAVE_KEYS = [
+  const FAVE_KEYS = [ // (animals are pets now; only the jewellery entries below still count)
     "butterfly", "ladybug", "bee", "snail", "fish", "bird", "cow", "horse", "sheep", "hen", "frog", "bear", "wolf", "mouse", "spider",
     "dog", "cat", "duck", "pig", "goat", "elephant", "giraffe", "lion", "tiger", "monkey", "zebra", "crocodile", "penguin", "dolphin",
     "whale", "octopus", "crab", "lizard", "snake", "owl", "parrot", "pigeon", "stork", "swan", "rooster", "donkey", "ant",
@@ -1018,7 +1025,19 @@
     // shuffle so the favourites are spread around the park rather than grouped
     return faves.concat(rest).map(k => ({ k, r: Math.random() })).sort((a, b) => a.r - b.r).map(o => o.k);
   }
-  const petKeys = savedGame ? savedGame.pets : pickLeastSeen(PET_KEYS, memory.pets, PETS_PER_GAME);
+  const PET_PAIR = { puppy: "dog", kitten: "cat", piglet: "pig", lamb: "sheep", chick: "hen", duckling: "duck", deer: "deer" };
+  function pickPets() {
+    const order = PET_KEYS.map(k => ({ k, c: memory.pets[k] || 0, r: Math.random() })).sort((a, b) => a.c - b.c || a.r - b.r).map(o => o.k);
+    const chosen = [];
+    for (const k of order) {
+      if (chosen.length >= PETS_PER_GAME) break;
+      const pair = PET_PAIR[k] || Object.keys(PET_PAIR).find(b => PET_PAIR[b] === k);
+      if (pair && chosen.includes(pair)) continue;
+      chosen.push(k);
+    }
+    return chosen;
+  }
+  const petKeys = savedGame ? savedGame.pets : pickPets();
   const itemKeys = savedGame ? savedGame.items : pickWords();
 
   // ---------- Treasures ----------
@@ -1317,9 +1336,9 @@
     document.getElementById("dictStats").textContent =
       `Words learned: ${learned} / ${WORD_KEYS.length} · Pet friends met: ${met} / ${PET_KEYS.length} · Adventures: ${memory.games}`;
     const secP = document.createElement("div"); secP.className = "sec"; secP.textContent = "🐾 Pet friends"; list.appendChild(secP);
-    PET_KEYS.slice().sort((a, b) => (memory.pets[b] ? 1 : 0) - (memory.pets[a] ? 1 : 0)).forEach(k => {
+    PET_KEYS.slice().sort((a, b) => (memory.pets[b] ? 1 : 0) - (memory.pets[a] ? 1 : 0) || PETS[a][0].localeCompare(PETS[b][0], "bg")).forEach(k => {
       const fake = { type: k, walk: 0, hop: 0 };
-      list.appendChild(makeRow(PETS[k][0], PETS[k][1], PETS[k][2], memory.pets[k] || 0, () => { ctx.scale(0.55, 0.55); drawPetBody(fake, 30, 60, 1, false); }));
+      list.appendChild(makeRow(PETS[k][0], PETS[k][1], PETS[k][2], memory.pets[k] || 0, BABY_PETS.has(k) ? () => { ctx.scale(0.55, 0.55); drawPetBody(fake, 30, 60, 1, false); } : () => drawItem(k, 18, 18, 1.1)));
     });
     const secW = document.createElement("div"); secW.className = "sec"; secW.textContent = "🎁 Treasures"; list.appendChild(secW);
     WORD_KEYS.slice().sort((a, b) => (memory.seen[b] ? 1 : 0) - (memory.seen[a] ? 1 : 0) || WORDS[a][0].localeCompare(WORDS[b][0], "bg")).forEach(k => {
@@ -2298,7 +2317,7 @@
       ctx.restore();
       return;
     }
-    const hopY = p.moving ? Math.abs(Math.sin(p.walk * 0.8)) * (p.type === "bunny" || p.type === "chick" ? 7 : p.type === "turtle" ? 1 : 3) : 0;
+    const hopY = p.moving ? Math.abs(Math.sin(p.walk * 0.8)) * (p.type === "bunny" || p.type === "chick" || p.type === "frog" ? 7 : p.type === "turtle" || p.type === "snail" ? 1 : 3) : 0;
     const jump = Math.sin(p.hop * Math.PI) * 25;
     shadow(x, y, 12, 4);
     drawPetBody(p, x, y - hopY - jump, p.dir, p.moving);
@@ -2309,6 +2328,14 @@
     ctx.translate(x, y);
     ctx.scale(dir * 1.25, 1.25);
     const legSw = moving ? Math.sin(p.walk) * 3 : 0;
+    if (!BABY_PETS.has(p.type)) {
+      // grown-up animal: its word picture, leaning into each step
+      const lean = moving ? Math.sin(p.walk) * 0.08 : 0;
+      ctx.rotate(lean);
+      drawItem(p.type, 0, -16, 1.5);
+      ctx.restore();
+      return;
+    }
     switch (p.type) {
       case "bunny": {
         const c = "#ffffff", inner = "#ffc2d9";
