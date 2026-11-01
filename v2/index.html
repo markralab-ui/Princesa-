@@ -170,9 +170,7 @@
   }
   .card button.small { font-size: 14px; padding: 6px 16px; background: #c1121f; box-shadow: 0 3px 0 #7a0c14; margin-top: 0; }
   .card .note { font-size: 13px; color: #9c6b3d; }
-  .card .sizes { display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap; font-size: 14px; margin-top: 6px; }
-  .card button.size { font-size: 14px; padding: 5px 12px; margin: 0; background: #fff; color: #5a2a0c; border: 2px solid #e09f1f; box-shadow: none; }
-  .card button.size.on { background: #ffd23f; border-color: #e09f1f; }
+
   .card button:active { transform: translateY(2px); box-shadow: 0 2px 0 #1c6b31; }
   .hidden { display: none !important; }
   #pad {
@@ -256,10 +254,6 @@
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find the sparkly <b>treasures</b> to learn their <b>Bulgarian names</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <p class="note" id="startNote"></p>
-    <div class="sizes"><span>Adventure size:</span>
-      <button class="size" data-size="small">Small</button><button class="size" data-size="medium">Medium</button><button class="size" data-size="big">Big</button>
-    </div>
-    <p class="note" id="sizeNote"></p>
     <button id="startBtn">Let's go! 🌸</button>
     <br><button id="newBtn" class="hidden small">Start a new adventure</button>
   </div>
@@ -963,11 +957,8 @@
   for (const k of ANIMAL_KEYS) PETS[k] = [WORDS[k][0], WORDS[k][1], WORDS[k][2]];
   const PET_KEYS = Object.keys(PETS);
   // Adventure size: how much to find per adventure (pets are always 11)
-  // Adventure sizes (pets are always 11). Medium is about ten minutes of play.
-  const SIZES = { small: { treasures: 5, perRoom: 1, visiting: 2, fixedRoom: 1, fixedPark: 2 }, medium: { treasures: 8, perRoom: 2, visiting: 3, fixedRoom: 1, fixedPark: 3 }, big: { treasures: 12, perRoom: 3, visiting: 4, fixedRoom: 2, fixedPark: 5 } };
-  let sizeName = "medium";
-  try { if (SIZES[localStorage.getItem("princesa2-size")]) sizeName = localStorage.getItem("princesa2-size"); } catch (e) { /* ignore */ }
-  const SIZE = SIZES[sizeName];
+  // One adventure is about ten minutes of play (pets are always 11)
+  const SIZE = { treasures: 8, perRoom: 2, visiting: 3, fixedRoom: 1, fixedPark: 3 };
   const WORDS_PER_GAME = SIZE.treasures;
   const PETS_PER_GAME = 11;
 
@@ -1351,14 +1342,7 @@
     showMessage("Mama: \"Let's find some treasures, my little princess!\"");
   };
   const newAdventure = () => { clearSave(); location.reload(); };
-  document.querySelectorAll("button.size").forEach(btn => {
-    btn.classList.toggle("on", btn.dataset.size === sizeName);
-    btn.onclick = () => {
-      try { localStorage.setItem("princesa2-size", btn.dataset.size); } catch (e) { /* ignore */ }
-      if (savedGame) { document.querySelectorAll("button.size").forEach(b => b.classList.toggle("on", b === btn)); document.getElementById("sizeNote").textContent = "The new size starts with the next adventure."; }
-      else location.reload();
-    };
-  });
+
   document.getElementById("newBtn").onclick = newAdventure;
   document.getElementById("nextBtn").onclick = newAdventure;
   document.getElementById("againBtn").onclick = () => {
