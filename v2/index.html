@@ -252,7 +252,7 @@
 <div id="start">
   <div class="card">
     <h1>Princess Raya's Park Adventure 2</h1>
-    <p class="note build">build 30</p>
+    <p class="note build">build 31</p>
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find the sparkly <b>treasures</b> to learn their <b>Bulgarian names</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <p class="note" id="startNote"></p>
@@ -1616,7 +1616,7 @@
     f = canonical(f);
     if (f.labelled >= f.keys.length) return;
     const key = f.keys[f.labelled];
-    if (key === "house" && !roofHintShown) { roofHintShown = true; setTimeout(() => showMessage("🔴 Stand on the red dots to name the roof and chimney too!"), 4500); }
+    if (key === "house" && !roofHintShown) { roofHintShown = true; setTimeout(() => showMessage("👆 Tap the roof and the chimney too!"), 4500); }
     f.labelled++;
     syncTwins(f);
     const w = WORDS[key];
@@ -1699,7 +1699,7 @@
       labelFixture(hit);
       wasInZone = true;
     } else {
-      showMessage("🚶 Ела до точката! Walk to its red dot.");
+      showMessage("🚶 Ела по-близо! Walk closer to it.");
     }
   });
 
@@ -3095,7 +3095,6 @@
         if (e.to === "park") { const [a, b] = areaProgress(parkScene); drawBadge(e.x + e.w + 4, r.h - 24, a >= b ? "✓" : String(b - a), a >= b); }
       }
     }
-    drawSpots(r.fixtures);
     // fixtures on walls, flat ones first
     for (const f of r.fixtures) if (f.wall || f.flat) drawFixture(f);
   }
@@ -3215,7 +3214,6 @@
     if (scene !== parkScene) { renderRoom(scene); ctx.restore(); return; }
 
     drawGround(cam);
-    drawSpots(parkFixtures);
     drawPlayground();
     drawGrassPatch();
 
