@@ -1140,6 +1140,7 @@
   };
   let scene = parkScene;
   let exitCooldown = 0;
+  let petsWaitHintShown = false;
   function sceneItems() { return scene === parkScene ? treasures : scene.items; }
   function allFixtureKeys() { let n = 0; for (const f of parkFixtures) n += f.keys.length; for (const r in rooms) for (const f of rooms[r].fixtures) if (!f.silent) n += f.keys.length; return n; }
   function labelledCount() { let n = 0; for (const f of parkFixtures) n += f.labelled; for (const r in rooms) for (const f of rooms[r].fixtures) if (!f.silent) n += f.labelled; return n; }
@@ -1444,12 +1445,16 @@
     placeParty(spawn.x, spawn.y);
     camSnap = true;
     exitCooldown = 40;
-    if (scene === parkScene) showMessage("🌳 Обратно в парка · Back to the park");
+    if (scene === parkScene) {
+      followers.forEach((f, i) => { f.x = spawn.x - 70 - (i % 4) * 34; f.y = spawn.y + 30 + Math.floor(i / 4) * 30; f.hop = 1; });
+      showMessage(followers.length ? "🐾 Your friends waited for you! · Обратно в парка" : "🌳 Обратно в парка · Back to the park");
+    }
     else {
       const n = ROOM_NAMES[scene.name];
       const [a, b] = areaProgress(scene);
       if (a >= b) showMessage(`✓ ${n[0]} · ${n[2]} — всичко е намерено! Everything here is found.`);
       else showWord(n[0], n[1], n[2]);
+      if (to === "hall" && followers.length && !petsWaitHintShown) { petsWaitHintShown = true; setTimeout(() => showMessage("🐾 The pet friends are waiting outside the house."), 4500); }
     }
     updateHud();
     saveGame();
@@ -1580,7 +1585,7 @@
 
     // Mom follows along the trail
     moveFollower(mom, 20);
-    followers.forEach((p, i) => moveFollower(p, 36 + i * 16));
+    if (scene === parkScene) followers.forEach((p, i) => moveFollower(p, 36 + i * 16)); // pet friends wait outside the house
 
     // Doors
     if (exitCooldown > 0) exitCooldown -= dt;
@@ -3023,7 +3028,6 @@
     for (const f of r.fixtures) if (!f.wall && !f.flat) list.push({ y: f.y + f.h / 2, d: () => drawFixture(f) });
     for (const t of r.items) list.push({ y: t.y, d: () => drawTreasure(t) });
     list.push({ y: mom.y, d: () => drawMom(mom) });
-    for (const p of followers) list.push({ y: p.y, d: () => drawPet(p) });
     list.push({ y: princess.y + 0.1, d: () => drawPrincess(princess) });
     list.sort((a, b) => a.y - b.y);
     for (const it of list) it.d();
