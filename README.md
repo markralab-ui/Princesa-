@@ -19,6 +19,14 @@ Every spoken word — all 568 words in the bank (including the 76 animal pets), 
 
 To re-record (e.g. after adding words): with `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION` set and the region's `*.tts.speech.microsoft.com` host allowed, ask Claude to record the new words with Kalina; each clip is named after the word's key (`apple.mp3`, `pet-bunny.mp3`, `room-kitchen.mp3`) and listed in the `CLIPS` table in `index.html`.
 
+### What works for fixing Kalina's stress (learned from the listening check)
+
+- Asking Kalina for the stress does not work reliably: neither an accent mark nor a phonetic (IPA) hint, and not saying the word inside a sentence.
+- What works: keep Kalina's own recording and change it. Azure reports when each sound starts, so the stressed syllable (the capital one in the pronunciation guide, e.g. ba-ra-BAN) can be found exactly. That syllable is made about 4 semitones higher, the loudest, and the longest (at least 0.15–0.2 s); syllables after it are shortened and softened.
+- Spell Bulgarian "о" as open `ɔ` and "е" as `ɛ` in the phonetic hint, otherwise Kalina says "ou". Use full `a` for "а" so it stays a clear "a".
+- Kalina's voice creaks at the end of a word. Raising the pitch there makes it sound raspy, so the last moment (at most 70 ms) is faded out where her voice stops being clear. Never trim more than that, or a whole syllable is lost.
+- The tools are Azure Speech (voice, sound timings), Praat via parselmouth (pitch, length, loudness changes) and ffmpeg.
+
 Stress fixes: Kalina sometimes guesses the stress wrong, because Bulgarian spelling doesn't mark it. These words are re-recorded with the stress spelled out in SSML (`<phoneme alphabet="ipa" ph="...">`); keep them when re-recording:
 - барабан (`drum.mp3`): `bɐrɐˈban`
 - бисквита (`cookie.mp3`): `bisˈkvitɐ`
