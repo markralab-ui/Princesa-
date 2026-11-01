@@ -1032,6 +1032,15 @@
     { keys: ["tree"], x: 0, y: 0, w: 0, h: 0, tree: true },
     { keys: ["bridge"], x: 520 + 260 + 10, y: 1250, w: 60, h: 90, spot: { x: 520 + 260 + 10, y: 1250 + 74 } },
   ];
+  // true when a park spot is too close to a fixed thing (or its red dot) for a treasure
+  function nearParkFixture(x, y, pad = 90) {
+    for (const f of PARK_FIXTURES) {
+      if (f.bush || f.tree) continue;
+      if (inRect(x, y, { x: f.x - f.w / 2, y: f.y - f.h / 2, w: f.w, h: f.h }, pad)) return true;
+      if (f.spot && Math.hypot(f.spot.x - x, f.spot.y - y) < pad) return true;
+    }
+    return false;
+  }
   const HOUSE_KEYS = new Set();
   for (const r in ROOM_LOOSE) ROOM_LOOSE[r].forEach(k => HOUSE_KEYS.add(k));
   for (const r in ROOM_FIXTURES) ROOM_FIXTURES[r].forEach(f => f.keys.forEach(k => HOUSE_KEYS.add(k)));
@@ -1113,7 +1122,7 @@
   while (treasures.length < itemKeys.length && tries < 20000) {
     tries++;
     const x = rr(80, WORLD_W - 80), y = rr(80, WORLD_H - 80);
-    if (!freeSpot(x, y, 0)) continue;
+    if (!freeSpot(x, y, 0) || nearParkFixture(x, y)) continue;
     let ok = true;
     for (const t of treasures) if (Math.hypot(t.x - x, t.y - y) < 170) { ok = false; break; }
     // never under a tree canopy or behind a bush, so every treasure stays visible
@@ -1145,7 +1154,7 @@
     while (moves < 400 && chosen.some(b => Math.hypot(b.x - t.x, b.y - t.y) < 130)) {
       moves++;
       const x = rr(80, WORLD_W - 80), y = rr(80, WORLD_H - 80);
-      if (!freeSpot(x, y, 0)) continue;
+      if (!freeSpot(x, y, 0) || nearParkFixture(x, y)) continue;
       if (treasures.some(o => o !== t && Math.hypot(o.x - x, o.y - y) < 170)) continue;
       if (trees.some(tr => Math.abs(tr.x - x) < tr.size * 1.1 && y > tr.y - tr.size * 2 && y < tr.y + 20)) continue;
       if (bushes.some(bb => Math.abs(bb.x - x) < bb.size * 1.4 && y > bb.y - bb.size * 1.6 && y < bb.y + 24)) continue;
@@ -1202,8 +1211,9 @@
       tries2++;
       const x = rr(70, ROOM_W - 70), y = rr(WALL_TOP + 60, ROOM_H - 70);
       let ok = true;
-      for (const r of rects) if (inRect(x, y, r, 40)) { ok = false; break; }
+      for (const r of rects) if (inRect(x, y, r, 50)) { ok = false; break; }
       for (const f of fixtures) if (f.flat && inRect(x, y, roomRect(f), 10)) { ok = false; break; }
+      for (const f of fixtures) { const sy = f.wall ? WALL_TOP + 44 : f.flat ? f.y : f.y + f.h / 2 + 34; if (Math.hypot(f.x - x, sy - y) < 70) { ok = false; break; } }
       for (const e of exits) if (inRect(x, y, e, 60)) { ok = false; break; }
       for (const it of items) if (Math.hypot(it.x - x, it.y - y) < 110) { ok = false; break; }
       if (Math.hypot(x - ROOM_W / 2, y - (ROOM_H - 90)) < 90) ok = false; // spawn spot
