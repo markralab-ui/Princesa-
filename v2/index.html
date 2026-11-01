@@ -170,6 +170,9 @@
   }
   .card button.small { font-size: 14px; padding: 6px 16px; background: #c1121f; box-shadow: 0 3px 0 #7a0c14; margin-top: 0; }
   .card .note { font-size: 13px; color: #9c6b3d; }
+  .card .sizes { display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap; font-size: 14px; margin-top: 6px; }
+  .card button.size { font-size: 14px; padding: 5px 12px; margin: 0; background: #fff; color: #5a2a0c; border: 2px solid #e09f1f; box-shadow: none; }
+  .card button.size.on { background: #ffd23f; border-color: #e09f1f; }
   .card button:active { transform: translateY(2px); box-shadow: 0 2px 0 #1c6b31; }
   .hidden { display: none !important; }
   #pad {
@@ -253,6 +256,10 @@
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find the sparkly <b>treasures</b> to learn their <b>Bulgarian names</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <p class="note" id="startNote"></p>
+    <div class="sizes"><span>Adventure size:</span>
+      <button class="size" data-size="small">Small</button><button class="size" data-size="medium">Medium</button><button class="size" data-size="big">Big</button>
+    </div>
+    <p class="note" id="sizeNote"></p>
     <button id="startBtn">Let's go! 🌸</button>
     <br><button id="newBtn" class="hidden small">Start a new adventure</button>
   </div>
@@ -345,6 +352,9 @@
     { x: PLOT.x - 80, y: PLOT.y - 120, w: PLOT.w + 160, h: PLOT.h + 200 }, // the flower garden
     { x: MAILBOX.x - 90, y: MAILBOX.y - 120, w: 180, h: 300 }, // the mailbox
   ];
+  // slots for the visiting park things (a different few each adventure)
+  const VISIT_SLOTS = [{ x: 700, y: 520 }, { x: 1600, y: 1000 }, { x: 300, y: 1560 }, { x: 2150, y: 300 }, { x: 1000, y: 1560 }];
+  for (const sl of VISIT_SLOTS) reserved.push({ x: sl.x - 130, y: sl.y - 150, w: 260, h: 260 });
   function inRect(x, y, r, pad = 0) { return x > r.x - pad && x < r.x + r.w + pad && y > r.y - pad && y < r.y + r.h + pad; }
   // solid parts of the park structures
   rectObstacles.push(houseBody);
@@ -864,6 +874,27 @@
     waterlily:  ["водна лилия", "VOD-na LEE-li-ya", "water lily", d => { d.e(0, 6, 13, 7, "#3fae4a"); d.p([[0, 6], [13, 6], [9, 0]], "#4aa8dc"); for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; d.e(Math.cos(a) * 5, 1 + Math.sin(a) * 3, 4.5, 2, "#ffc2d9", a); } d.c(0, 1, 2.5, "#ffd23f"); }],
     frisbee:    ["фризби", "FRIZ-bi", "frisbee", d => { d.e(0, 0, 14, 7, "#e63946"); d.e(0, -1, 11, 5, "#ff6b6b"); d.e(0, -1, 6, 2.5, "#e63946"); }],
     spade:      ["лопатка", "lo-PAT-ka", "spade", d => { d.l([[0, -14], [0, -2]], "#9c6b3d", 3); d.r(-3, -16, 6, 3, "#9c6b3d"); d.p([[-7, -3], [7, -3], [6, 8], [0, 13], [-6, 8]], "#3a86ff"); d.p([[-4, -1], [4, -1], [3, 7], [0, 10], [-3, 7]], "#4f8fe0"); }],
+    // visiting park things (immovable, a different few each adventure)
+    statue:     ["статуя", "STA-tu-ya", "statue", d => { d.r(-10, 6, 20, 8, "#8a9099"); d.r(-7, 2, 14, 4, "#b8b0a5"); d.e(0, -4, 6, 7, "#c9ced6"); d.c(0, -13, 4.5, "#c9ced6"); d.r(-3, -8, 6, 3, "#c9ced6"); d.l([[-6, -6], [-11, 0]], "#c9ced6", 2.5); d.l([[6, -6], [10, -12]], "#c9ced6", 2.5); }],
+    picnictable:["маса за пикник", "MA-sa za PIK-nik", "picnic table", d => { d.r(-14, -6, 28, 4, "#c27c3e"); d.r(-9, -2, 3, 12, "#9c6b3d"); d.r(6, -2, 3, 12, "#9c6b3d"); d.r(-14, 6, 10, 3, "#c27c3e"); d.r(4, 6, 10, 3, "#c27c3e"); d.r(-6, -10, 12, 4, "#e63946"); d.c(3, -11, 2.5, "#ffd23f"); }],
+    lamppost:   ["улична лампа", "OO-lich-na LAM-pa", "lamppost", d => { d.r(-6, 11, 12, 3, "#333"); d.r(-2, -6, 4, 17, "#333"); d.p([[-7, -6], [7, -6], [5, -16], [-5, -16]], "#333"); d.p([[-5, -7], [5, -7], [3, -15], [-3, -15]], "#ffe066"); d.c(0, -18, 2.5, "#333"); }],
+    well:       ["кладенец", "KLA-de-nets", "well", d => { d.e(0, 6, 12, 7, "#8a9099"); d.e(0, 4, 12, 7, "#b8b0a5"); d.e(0, 4, 8, 4, "#4aa8dc"); d.r(-10, -4, 3, 10, "#9c6b3d"); d.r(7, -4, 3, 10, "#9c6b3d"); d.p([[-13, -4], [0, -14], [13, -4]], "#e63946"); d.l([[0, -4], [0, 2]], "#555", 1); d.r(-2, 1, 4, 3, "#9c6b3d"); }],
+    birdhouse:  ["къщичка за птици", "KASH-tich-ka za PTEE-tsi", "birdhouse", d => { d.r(-1, 2, 2, 12, "#9c6b3d"); d.r(-8, -6, 16, 10, "#d9934f"); d.p([[-10, -6], [0, -14], [10, -6]], "#e63946"); d.c(0, -1, 2.5, "#333"); d.r(-3, 3, 6, 1.5, "#9c6b3d"); d.c(6, -9, 1.5, "#4f8fe0"); }],
+    signpost:   ["табела", "ta-BE-la", "signpost", d => { d.r(-1, -4, 2, 18, "#9c6b3d"); d.p([[-12, -12], [8, -12], [12, -8], [8, -4], [-12, -4]], "#e63946"); d.l([[-9, -8], [4, -8]], WHT, 2); d.p([[-8, -2], [6, -2], [10, 1], [6, 4], [-8, 4]], "#2a9d48"); d.l([[-5, 1], [3, 1]], WHT, 2); }],
+    icecreamstand: ["будка за сладолед", "BOOD-ka za sla-do-LED", "ice-cream stand", d => { d.r(-12, -4, 24, 16, "#fff3e0"); d.r(-12, 2, 24, 3, "#4aa8dc"); for (let i = -14; i < 14; i += 7) d.p([[i, -4], [i + 7, -4], [i + 3.5, -13]], (i / 7) % 2 ? "#e63946" : WHT); d.r(-14, -4, 28, 2, "#c1121f"); d.p([[-3, 5], [3, 5], [0, 11]], "#e8b06a"); d.c(0, 3, 3, "#ffb3cf"); }],
+    litterbin:  ["кошче", "KOSH-che", "litter bin", d => { d.p([[-9, -8], [9, -8], [7, 12], [-7, 12]], "#2a9d48"); d.r(-10, -10, 20, 3, "#1c6b31"); d.l([[-4, -4], [-3, 9]], "#1c6b31", 1.5); d.l([[4, -4], [3, 9]], "#1c6b31", 1.5); d.r(-3, -14, 6, 4, "#1c6b31"); }],
+    flagpole:   ["пилон", "pi-LON", "flagpole", d => { d.r(-1, -14, 2, 28, "#c9ced6"); d.c(0, -15, 2, "#ffd23f"); d.r(1, -13, 14, 4, WHT); d.r(1, -9, 14, 4, "#00966e"); d.r(1, -5, 14, 4, "#d62612"); d.e(0, 14, 6, 2, "#8a9099"); }],
+    scarecrow:  ["плашило", "pla-SHEE-lo", "scarecrow", d => { d.r(-1, -4, 2, 18, "#9c6b3d"); d.r(-12, -6, 24, 2, "#9c6b3d"); d.r(-6, -5, 12, 10, "#e63946"); d.r(-6, -2, 12, 2, "#ffd23f"); d.c(0, -10, 5, "#e8b06a"); d.p([[-8, -13], [8, -13], [0, -19]], "#c27c3e"); d.r(-8, -13, 16, 2, "#c27c3e"); d.c(-2, -10, 1, "#333"); d.c(2, -10, 1, "#333"); }],
+    gazebo:     ["беседка", "be-SED-ka", "gazebo", d => { d.p([[-14, -4], [0, -14], [14, -4]], "#e63946"); d.r(-11, -4, 3, 16, WHT); d.r(8, -4, 3, 16, WHT); d.r(-2, -4, 3, 16, WHT); d.r(-11, 6, 22, 2, WHT); d.e(0, 13, 14, 3, "#b8b0a5"); }],
+    drinkfountain: ["чешма", "chesh-MA", "drinking fountain", d => { d.r(-6, -4, 12, 16, "#8a9099"); d.r(-8, -6, 16, 3, "#c9ced6"); d.l([[6, -6], [6, -11], [2, -11]], "#c9ced6", 2.5); d.l([[2, -11], [1, -4]], "#7bdff2", 2); d.e(0, 13, 9, 2, "#4aa8dc"); }],
+    climbingframe: ["катерушка", "ka-te-ROOSH-ka", "climbing frame", d => { for (let x = -12; x <= 12; x += 8) d.r(x - 1, -12, 2, 24, "#3a86ff"); for (let y = -10; y <= 10; y += 7) d.r(-12, y - 1, 24, 2, "#e63946"); }],
+    hammock:    ["хамак", "ha-MAK", "hammock", d => { d.r(-14, -12, 3, 24, "#9c6b3d"); d.r(11, -12, 3, 24, "#9c6b3d"); d.l([[-12, -6], [-8, 2]], "#555", 1); d.l([[12, -6], [8, 2]], "#555", 1); d.p([[-8, 2], [8, 2], [5, 8], [-5, 8]], "#ffd23f"); d.l([[-6, 5], [6, 5]], "#e0b000", 1); }],
+    barbecue:   ["барбекю", "bar-be-KYU", "barbecue", d => { d.e(0, -2, 12, 5, "#333"); d.e(0, -4, 12, 5, "#555"); d.l([[-8, -4], [8, -4]], "#888", 1); d.l([[-9, -1], [9, -1]], "#888", 1); d.r(-9, 0, 3, 12, "#333"); d.r(6, 0, 3, 12, "#333"); d.c(-4, -6, 2, "#ff9f1c"); d.c(3, -6, 2, "#e63946"); }],
+    beehive:    ["кошер", "KO-sher", "beehive", d => { d.e(0, 8, 11, 4, "#e8b06a"); d.e(0, 3, 10, 5, "#ffd23f"); d.e(0, -3, 8, 5, "#e8b06a"); d.e(0, -8, 6, 4, "#ffd23f"); d.e(0, 4, 3, 2, "#5a2e14"); d.c(10, -10, 2, "#333"); d.c(10, -10, 1, "#ffd23f"); }],
+    busstop:    ["спирка", "SPIR-ka", "bus stop", d => { d.r(-1, -10, 2, 24, "#8a9099"); d.rr(-9, -14, 18, 10, 2, "#3a86ff"); d.rr(-6, -11, 12, 5, 1, "#ffd23f"); d.r(-6, -10, 3, 3, "#3a86ff"); d.r(-1, -10, 3, 3, "#3a86ff"); d.e(0, 14, 7, 2, "#8a9099"); }],
+    parasol:    ["чадър за слънце", "cha-DAR za SLAN-tse", "parasol", d => { d.half(0, -2, 14, "#e63946"); for (let i = -1; i <= 1; i += 2) d.p([[i * 4, -2], [i * 10, -2], [i * 7, -14]], "#fff3e0"); d.r(-1, -2, 2, 16, "#9c6b3d"); d.e(0, 14, 8, 2, "#c27c3e"); }],
+    deckchair:  ["шезлонг", "shez-LONG", "deck chair", d => { d.l([[-12, 10], [-6, -10]], "#9c6b3d", 2.5); d.l([[12, 10], [6, -4]], "#9c6b3d", 2.5); d.p([[-8, -8], [8, -2], [10, 8], [-10, 8]], "#3a86ff"); d.l([[-6, -4], [8, 1]], WHT, 2); d.l([[-8, 2], [9, 5]], WHT, 2); }],
+    sandcastle: ["пясъчен замък", "PYA-sa-chen ZA-mak", "sandcastle", d => { d.e(0, 11, 14, 4, "#f3dca2"); d.r(-12, 0, 24, 11, "#e8c98c"); d.r(-6, -8, 12, 10, "#e8c98c"); for (let x = -12; x <= 9; x += 6) d.r(x, -3, 3, 3, "#e8c98c"); d.p([[-3, -8], [3, -8], [0, -14]], "#e8c98c"); d.l([[0, -14], [0, -18]], "#555", 1); d.p([[0, -18], [4, -16], [0, -14]], "#e63946"); d.r(-2, 5, 4, 6, "#c9a86a"); }],
   };
   // Every animal is a pet friend: it hides behind a bush and joins the princess (never a pickup)
   const ANIMAL_KEYS = ["butterfly", "ladybug", "bee", "snail", "fish", "bird", "cow", "horse", "sheep", "hen", "frog", "bear", "wolf", "mouse", "spider",
@@ -931,7 +962,12 @@
   const BABY_PETS = new Set(Object.keys(PETS));
   for (const k of ANIMAL_KEYS) PETS[k] = [WORDS[k][0], WORDS[k][1], WORDS[k][2]];
   const PET_KEYS = Object.keys(PETS);
-  const WORDS_PER_GAME = 26;
+  // Adventure size: how much to find per adventure (pets are always 11)
+  const SIZES = { small: { treasures: 6, perRoom: 2, visiting: 3, fixedRoom: 2, fixedPark: 3 }, medium: { treasures: 10, perRoom: 3, visiting: 4, fixedRoom: 3, fixedPark: 5 }, big: { treasures: 16, perRoom: 4, visiting: 5, fixedRoom: 4, fixedPark: 7 } };
+  let sizeName = "medium";
+  try { if (SIZES[localStorage.getItem("princesa2-size")]) sizeName = localStorage.getItem("princesa2-size"); } catch (e) { /* ignore */ }
+  const SIZE = SIZES[sizeName];
+  const WORDS_PER_GAME = SIZE.treasures;
   const PETS_PER_GAME = 11;
 
   // ---------- Where each word lives ----------
@@ -952,7 +988,7 @@
       "vase", "plant", "cushion"],
     hall: ["key", "umbrella", "lock"],
   };
-  const LOOSE_PER_ROOM = { kitchen: 6, bedroom: 6, bathroom: 5, living: 5, playroom: 7, hall: 2 };
+  const LOOSE_PER_ROOM = { kitchen: SIZE.perRoom, bedroom: SIZE.perRoom, bathroom: SIZE.perRoom, living: SIZE.perRoom, playroom: SIZE.perRoom, hall: 1 };
 
   // Fixed things that get a name sticker when the princess walks up to them.
   // x, y = centre; w, h = solid footprint; sc = drawing scale; keys = words labelled in turn; flat = can be walked over
@@ -1041,7 +1077,11 @@
     }
     return false;
   }
+  // Visiting park things: a few immovable objects that change from adventure to adventure
+  const VISIT_KEYS = ["statue", "picnictable", "lamppost", "well", "birdhouse", "signpost", "icecreamstand", "litterbin", "flagpole", "scarecrow",
+    "gazebo", "drinkfountain", "climbingframe", "hammock", "barbecue", "beehive", "busstop", "parasol", "deckchair", "sandcastle"].filter(k => WORDS[k]);
   const HOUSE_KEYS = new Set();
+  VISIT_KEYS.forEach(k => HOUSE_KEYS.add(k));
   for (const r in ROOM_LOOSE) ROOM_LOOSE[r].forEach(k => HOUSE_KEYS.add(k));
   for (const r in ROOM_FIXTURES) ROOM_FIXTURES[r].forEach(f => f.keys.forEach(k => HOUSE_KEYS.add(k)));
   PARK_FIXTURES.forEach(f => f.keys.forEach(k => HOUSE_KEYS.add(k)));
@@ -1063,15 +1103,15 @@
     "ring", "necklace", "crown", "diamond", "bracelet", "earrings", "pearl", "coin",
     "tiara", "locket", "brooch", "crystal", "ruby", "emerald", "sapphire", "gold", "silver", "treasure", "chain", "hairclip", "bow", "jewelrybox", "wand", "gemstone",
   ].filter(k => WORDS[k]);
-  const FAVE_PER_GAME = 7;
+  const FAVE_PER_GAME = Math.max(2, Math.round(SIZE.treasures * 0.3));
 
   // ---------- Memory across adventures ----------
   const MEM_KEY = "princesa2-vocab-v1";
   const SAVE_KEY = "princesa2-park-save-v1";
-  let memory = { seen: {}, pets: {}, games: 0 };
+  let memory = { seen: {}, pets: {}, labels: {}, games: 0 };
   try {
     const m = JSON.parse(localStorage.getItem(MEM_KEY) || "null");
-    if (m && m.seen && m.pets) memory = { seen: m.seen, pets: m.pets, games: m.games || 0 };
+    if (m && m.seen && m.pets) memory = { seen: m.seen, pets: m.pets, labels: m.labels || {}, games: m.games || 0 };
   } catch (e) { /* storage unavailable */ }
   function saveMemory() {
     try { localStorage.setItem(MEM_KEY, JSON.stringify(memory)); } catch (e) { /* ignore */ }
@@ -1114,6 +1154,10 @@
   }
   const petKeys = savedGame ? savedGame.pets : pickPets();
   const itemKeys = savedGame ? savedGame.items : pickWords();
+  // visiting things: only ones never named yet, least seen first
+  const visitKeys = savedGame && Array.isArray(savedGame.visit) && savedGame.visit.every(k => WORDS[k]) ? savedGame.visit
+    : pickLeastSeen(VISIT_KEYS.filter(k => !memory.labels[k]), memory.seen, SIZE.visiting);
+  visitKeys.forEach((k, i) => { const sl = VISIT_SLOTS[i]; PARK_FIXTURES.push({ keys: [k], x: sl.x, y: sl.y - 20, w: 80, h: 60, sc: 3.2, visiting: true, spot: { x: sl.x, y: sl.y + 44 } }); rectObstacles.push({ x: sl.x - 40, y: sl.y - 30, w: 80, h: 40 }); });
 
   // ---------- Treasures ----------
   seed = 4242 + gameNo * 7919; // treasure spots differ from adventure to adventure
@@ -1124,7 +1168,7 @@
     const x = rr(80, WORLD_W - 80), y = rr(80, WORLD_H - 80);
     if (!freeSpot(x, y, 0) || nearParkFixture(x, y)) continue;
     let ok = true;
-    for (const t of treasures) if (Math.hypot(t.x - x, t.y - y) < 170) { ok = false; break; }
+    for (const t of treasures) if (Math.hypot(t.x - x, t.y - y) < 250) { ok = false; break; }
     // never under a tree canopy or behind a bush, so every treasure stays visible
     for (const tr of trees) if (Math.abs(tr.x - x) < tr.size * 1.1 && y > tr.y - tr.size * 2 && y < tr.y + 20) { ok = false; break; }
     for (const b of bushes) if (Math.abs(b.x - x) < b.size * 1.4 && y > b.y - b.size * 1.6 && y < b.y + 24) { ok = false; break; }
@@ -1155,7 +1199,7 @@
       moves++;
       const x = rr(80, WORLD_W - 80), y = rr(80, WORLD_H - 80);
       if (!freeSpot(x, y, 0) || nearParkFixture(x, y)) continue;
-      if (treasures.some(o => o !== t && Math.hypot(o.x - x, o.y - y) < 170)) continue;
+      if (treasures.some(o => o !== t && Math.hypot(o.x - x, o.y - y) < 250)) continue;
       if (trees.some(tr => Math.abs(tr.x - x) < tr.size * 1.1 && y > tr.y - tr.size * 2 && y < tr.y + 20)) continue;
       if (bushes.some(bb => Math.abs(bb.x - x) < bb.size * 1.4 && y > bb.y - bb.size * 1.6 && y < bb.y + 24)) continue;
       t.x = x; t.y = y;
@@ -1177,6 +1221,24 @@
     };
   });
 
+  // A thing named in an earlier adventure keeps its sticker for good: it starts labelled and is not counted again
+  function withPermanent(f) {
+    let n = 0;
+    while (n < f.keys.length && memory.labels[f.keys[n]]) n++;
+    f.base = n; f.labelled = n;
+    return f;
+  }
+  const fixtureTodo = f => f.silent || f.sleep ? 0 : f.keys.length - (f.base || 0);
+  const fixtureDone = f => f.silent || f.sleep ? 0 : Math.max(0, f.labelled - (f.base || 0));
+  // Of the fixed things still to be named, only `n` are awake this adventure (seeded, so a reload keeps the same ones)
+  function wakeSome(fixtures, n, seedBase) {
+    seed = seedBase;
+    const todo = fixtures.filter(f => !f.silent && !f.visiting && f.keys.length - (f.base || 0) > 0);
+    const order = todo.map(f => ({ f, r: rand() })).sort((a, b) => a.r - b.r).map(o => o.f);
+    order.forEach((f, i) => { f.sleep = i >= n; });
+    for (const f of fixtures) if (f.silent) { const main = fixtures.find(g => !g.silent && g.keys.join() === f.keys.join()); if (main) f.sleep = main.sleep; }
+  }
+
   // ---------- The house: rooms, fixtures and loose objects ----------
   const ROOM_W = 1000, ROOM_H = 700, WALL_TOP = 170;
   const ROOM_STYLE = {
@@ -1192,7 +1254,8 @@
   const rooms = {};
   function roomRect(f) { return { x: f.x - f.w / 2, y: f.y - f.h / 2, w: f.w, h: f.h }; }
   Object.keys(ROOM_FIXTURES).forEach((name, ri) => {
-    const fixtures = ROOM_FIXTURES[name].map(f => ({ ...f, labelled: 0 }));
+    const fixtures = ROOM_FIXTURES[name].map(f => withPermanent({ ...f, labelled: 0 }));
+    wakeSome(fixtures, SIZE.fixedRoom, 5151 + gameNo * 271 + ri * 53);
     const rects = fixtures.filter(f => !f.flat && !f.wall).map(roomRect);
     const exits = [];
     if (name === "hall") {
@@ -1222,7 +1285,8 @@
     }
     rooms[name] = { name, w: ROOM_W, h: ROOM_H, fixtures, rects, exits, items, keys, style: ROOM_STYLE[name] };
   });
-  const parkFixtures = PARK_FIXTURES.map(f => ({ ...f, labelled: 0 }));
+  const parkFixtures = PARK_FIXTURES.map(f => withPermanent({ ...f, labelled: 0 }));
+  wakeSome(parkFixtures, SIZE.fixedPark, 777 + gameNo * 131);
   // the park scene
   const parkScene = {
     name: "park", w: WORLD_W, h: WORLD_H, fixtures: parkFixtures, rects: rectObstacles, items: null, // items = treasures
@@ -1232,8 +1296,8 @@
   let exitCooldown = 0;
   let petsWaitHintShown = false;
   function sceneItems() { return scene === parkScene ? treasures : scene.items; }
-  function allFixtureKeys() { let n = 0; for (const f of parkFixtures) n += f.keys.length; for (const r in rooms) for (const f of rooms[r].fixtures) if (!f.silent) n += f.keys.length; return n; }
-  function labelledCount() { let n = 0; for (const f of parkFixtures) n += f.labelled; for (const r in rooms) for (const f of rooms[r].fixtures) if (!f.silent) n += f.labelled; return n; }
+  function allFixtureKeys() { let n = 0; for (const f of parkFixtures) n += fixtureTodo(f); for (const r in rooms) for (const f of rooms[r].fixtures) n += fixtureTodo(f); return n; }
+  function labelledCount() { let n = 0; for (const f of parkFixtures) n += fixtureDone(f); for (const r in rooms) for (const f of rooms[r].fixtures) n += fixtureDone(f); return n; }
   function roomItemsTotal() { let n = 0; for (const r in rooms) n += rooms[r].items.length; return n; }
   function roomItemsCollected() { let n = 0; for (const r in rooms) n += rooms[r].items.filter(t => t.collected).length; return n; }
 
@@ -1288,6 +1352,14 @@
     showMessage("Mama: \"Let's find some treasures, my little princess!\"");
   };
   const newAdventure = () => { clearSave(); location.reload(); };
+  document.querySelectorAll("button.size").forEach(btn => {
+    btn.classList.toggle("on", btn.dataset.size === sizeName);
+    btn.onclick = () => {
+      try { localStorage.setItem("princesa2-size", btn.dataset.size); } catch (e) { /* ignore */ }
+      if (savedGame) { document.querySelectorAll("button.size").forEach(b => b.classList.toggle("on", b === btn)); document.getElementById("sizeNote").textContent = "The new size starts with the next adventure."; }
+      else location.reload();
+    };
+  });
   document.getElementById("newBtn").onclick = newAdventure;
   document.getElementById("nextBtn").onclick = newAdventure;
   document.getElementById("againBtn").onclick = () => {
@@ -1301,7 +1373,7 @@
       const fx = fs => { const o = {}; fs.forEach((f, i) => { o[f.keys.join("+") + "#" + i] = [f.labelled, f.at || null]; }); return o; };
       for (const r in rooms) rs[r] = { items: rooms[r].keys, t: rooms[r].items.map(t => t.collected ? 1 : 0), fx: fx(rooms[r].fixtures) };
       localStorage.setItem(SAVE_KEY, JSON.stringify({
-        g: gameNo, items: itemKeys, pets: petKeys,
+        g: gameNo, items: itemKeys, pets: petKeys, visit: visitKeys,
         t: treasures.map(t => t.collected ? 1 : 0),
         p: pets.map(p => p.found ? 1 : 0),
         pfx: fx(parkFixtures),
@@ -1321,7 +1393,7 @@
       fs.forEach((f, i) => {
         const v = saved[f.keys.join("+") + "#" + i] || Object.entries(saved).find(([k]) => k.split("#")[0] === f.keys.join("+"))?.[1];
         if (!v) return;
-        f.labelled = Math.min(v[0] || 0, f.keys.length);
+        f.labelled = Math.max(f.base || 0, Math.min(v[0] || 0, f.keys.length));
         if (v[1]) f.at = v[1];
       });
     };
@@ -1468,7 +1540,7 @@
   function areaProgress(sc) {
     const items = sc === parkScene ? treasures : sc.items;
     let got = items.filter(t => t.collected).length, total = items.length;
-    for (const f of sc.fixtures) if (!f.silent) { got += f.labelled; total += f.keys.length; }
+    for (const f of sc.fixtures) { got += fixtureDone(f); total += fixtureTodo(f); }
     if (sc === parkScene) { got += followers.length; total += pets.length; }
     return [got, total];
   }
@@ -1501,7 +1573,7 @@
   } else {
     const learned = WORD_KEYS.filter(k => memory.seen[k]).length;
     noteEl.textContent = gameNo === 1
-      ? "Your first adventure: new words and 11 pet friends are hiding in the park, and the little house is waiting to be explored!"
+      ? "Your first adventure: treasures and 11 pet friends are hiding in the park, and the little house is waiting to be explored!"
       : `Adventure ${gameNo}: new words in the park and in every room of the house. Words learned so far: ${learned} / ${WORD_KEYS.length}.`;
   }
 
@@ -1567,7 +1639,7 @@
     burst(at.x, at.y, ["#ffd23f", "#ffffff", "#ff6fa8", "#7bdff2"], 22);
     f.pop = { text: w[0], x: at.x, y: at.y, t: 0 }; // the sticker pops up and flies into her collection
     showWord(w[0], w[1], w[2]);
-    if (!f.silent) { memory.seen[key] = (memory.seen[key] || 0) + 1; saveMemory(); }
+    if (!f.silent) { memory.seen[key] = (memory.seen[key] || 0) + 1; memory.labels[key] = true; saveMemory(); }
     updateHud();
     saveGame();
     checkRoomDone();
@@ -1595,6 +1667,7 @@
   // One touch = one sticker: she has to step out of every zone before the next thing reacts
   let wasInZone = false;
   function fixtureContains(f) {
+    if (f.sleep) return null;
     if (onSpot(f)) return { area: 100, at: f.bush || f.tree ? (f.bush ? (b => b && { x: b.x, y: b.y - b.size * 1.4 })(nearestOf(freeBushes())) : (t => t && { x: t.x, y: t.y - t.size * 1.9 })(nearestOf(trees))) : undefined };
     if (f.high) return null;
     if (f.bush) { const b = bushes.find(b => !b.hasPet && Math.hypot(b.x - princess.x, b.y - princess.y) < 48); return b ? { at: { x: b.x, y: b.y - b.size * 1.4 }, area: 1e9 } : null; }
@@ -1621,7 +1694,7 @@
     const wx = e.clientX - rc.left + cam.x, wy = e.clientY - rc.top + cam.y;
     let hit = null, hitAt = null, hitArea = Infinity;
     for (const f of scene.fixtures) {
-      if (f.silent) continue;
+      if (f.silent || f.sleep) continue;
       if (f.bush) { const b = bushes.find(b => !b.hasPet && Math.hypot(b.x - wx, b.y - 20 - wy) < b.size * 1.3); if (b && hitArea > 1) { hit = f; hitAt = { x: b.x, y: b.y, sx: b.x, sy: b.y - b.size * 1.4 }; hitArea = 1; } continue; }
       if (f.tree) { const t = trees.find(t => Math.abs(t.x - wx) < t.size && wy > t.y - t.size * 1.9 && wy < t.y + 10); if (t && hitArea > 1) { hit = f; hitAt = { x: t.x, y: t.y, sx: t.x, sy: t.y - t.size * 1.9 }; hitArea = 1; } continue; }
       const z = fixtureZone(f);
@@ -1649,7 +1722,7 @@
     if (scene === parkScene) return;
     const r = scene;
     if (r.done) return;
-    if (r.items.every(t => t.collected) && r.fixtures.every(f => f.silent || f.labelled >= f.keys.length)) {
+    if (r.items.every(t => t.collected) && r.fixtures.every(f => f.silent || f.sleep || f.labelled >= f.keys.length)) {
       r.done = true;
       const n = ROOM_NAMES[r.name];
       setTimeout(() => showMessage(`🎉 Браво! ${n[3]}! The ${n[2]} is complete — nothing more to find here.`), 2500);
@@ -3049,7 +3122,7 @@
     return best;
   }
   // scale factor for something that still needs a sticker: a gentle swell, like the collectables bob
-  function pulseOf(f) { return f && f.labelled < f.keys.length && !f.silent ? 1 + 0.045 * Math.sin(time * 0.12 + (f.x || 0) * 0.01) : 1; }
+  function pulseOf(f) { return f && f.labelled < f.keys.length && !f.silent && !f.sleep ? 1 + 0.045 * Math.sin(time * 0.12 + (f.x || 0) * 0.01) : 1; }
   function withPulse(x, y, sc, fn) {
     if (sc === 1) { fn(); return; }
     ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); ctx.translate(-x, -y); fn(); ctx.restore();
@@ -3086,7 +3159,7 @@
   function drawSpots(fixtures, withIcon) {
     const pulse = (Math.sin(time * 0.12) + 1) / 2;
     for (const f of fixtures) {
-      if (f.labelled >= f.keys.length || f.silent) continue;
+      if (f.labelled >= f.keys.length || f.silent || f.sleep) continue;
       const sp = fixtureSpot(f);
       if (!sp) continue;
       ctx.save();
@@ -3115,7 +3188,7 @@
   }
   function drawHaloSparkles(fixtures) {
     for (const f of fixtures) {
-      if (f.labelled >= f.keys.length || f.silent) continue;
+      if (f.labelled >= f.keys.length || f.silent || f.sleep) continue;
       const h = haloSpot(f);
       if (!h) continue;
       const cy = f.bush || f.tree ? h.y - h.ry * 2.2 : (f.wall ? f.y : f.y - f.h / 4);
@@ -3174,6 +3247,7 @@
     }
     list.push({ y: fountain.y + 20, d: drawFountain });
     list.push({ y: house.y + 2, d: drawHouse });
+    for (const f of parkFixtures) if (f.visiting) list.push({ y: f.y + f.h / 2, d: () => { shadow(f.x, f.y + f.h / 2, f.w / 2, f.h / 5); drawItem(f.keys[0], f.x, f.y, f.sc * pulseOf(f)); } });
     list.push({ y: MAILBOX.y + 56, d: drawMailbox });
     list.push({ y: PLOT.y + PLOT.h, d: drawGardenPlot });
     list.push({ y: mom.y, d: () => drawMom(mom) });

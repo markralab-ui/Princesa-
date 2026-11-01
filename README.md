@@ -10,7 +10,7 @@ Raya's first game
 
 - Play version 1: https://markralab-ui.github.io/Princesa-/ (`index.html`)
 - Play version 2 (work in progress, iterated separately): https://markralab-ui.github.io/Princesa-/v2/ (`v2/index.html`)
-  - Version 2 adds a cottage in the park with a hallway, kitchen, bedroom, bathroom, living room and playroom. Furniture gets a Bulgarian name sticker when the princess walks up to it; loose household objects are collected like treasures and rotate each adventure. Words are allocated by theme: park (nature, play, picnic, jewellery), kitchen, bedroom, bathroom, living room, hallway. Every animal (54 in all) is a pet friend that hides behind a bush and joins the princess; 8 appear per adventure.
+  - Version 2 adds a cottage in the park with a hallway, kitchen, bedroom, bathroom, living room and playroom. Furniture gets a Bulgarian name sticker when the princess walks up to it; loose household objects are collected like treasures and rotate each adventure. Words are allocated by theme: park (nature, play, picnic, jewellery), kitchen, bedroom, bathroom, living room, hallway. Every animal (54 in all) is a pet friend that hides behind a bush and joins the princess; 11 appear per adventure. An adventure is sized Small/Medium/Big (6/10/16 treasures, 2/3/4 objects per room). Fixed things are named once for good; a few of them wake up per adventure, plus a rotating set of 'visiting' park objects (statue, picnic table, lamppost, well…) that change every time.
 - Controls: arrow keys (on-screen arrows on touch devices)
 
 ## Planned: native-quality Bulgarian voice
