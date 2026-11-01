@@ -835,13 +835,26 @@
     playdoh:    ["пластилин", "plas-ti-LIN", "play dough", d => { d.r(-9, -2, 18, 14, "#ffd23f"); d.e(0, -2, 9, 3, "#e0b000"); d.e(0, -4, 9, 3, "#ffd23f"); d.c(-9, -9, 5, "#ff6fa8"); d.c(9, -8, 4, "#2a9d48"); d.e(0, -10, 5, 3, "#3a86ff"); }],
     drawing:    ["рисунка", "ri-SOON-ka", "drawing", d => { d.r(-12, -12, 24, 24, WHT); d.l([[-12, -12], [12, -12], [12, 12], [-12, 12], [-12, -12]], "#ccc", 1); d.c(6, -6, 3, "#ffd23f"); d.p([[-10, 10], [-4, 0], [2, 10]], "#2a9d48"); d.r(-8, 2, 5, 8, "#e63946"); d.p([[-9, 2], [-5.5, -3], [-2, 2]], "#3a86ff"); }],
     bubbles:    ["сапунени балончета", "sa-POO-ne-ni ba-LON-che-ta", "soap bubbles", d => { d.rr(-6, 0, 12, 14, 2, "#3a86ff"); d.r(-3, -4, 6, 4, "#2a4f90"); d.ring(-2, -10, 4, 4, "#7bdff2", 1.5); d.ring(8, -8, 5, 5, "#7bdff2", 1.5); d.ring(5, -16, 3, 3, "#7bdff2", 1.5); d.c(-3, -11, 1, WHT); d.c(6, -10, 1.3, WHT); }],
+    // nature finds & park gear
+    pinecone:   ["шишарка", "shi-SHAR-ka", "pine cone", d => { d.e(0, 1, 8, 12, "#8a5a30"); for (let y = -9; y <= 9; y += 4.5) for (let x = -6; x <= 6; x += 4) d.p([[x - 2, y + 2], [x, y - 2], [x + 2, y + 2]], (x + y) % 8 ? "#b07d4a" : "#9c6b3d"); d.l([[0, -12], [0, -16]], "#5a2e14", 2); }],
+    chestnut:   ["кестен", "KES-ten", "chestnut", d => { d.c(0, 1, 11, "#7a4a24"); d.p([[-11, 1], [-8, -7], [0, -11], [8, -7], [11, 1], [0, -2]], "#c9a86a"); d.c(0, -2, 1.5, "#5a2e14"); d.e(5, 4, 2.5, 1.5, "rgba(255,255,255,.3)", -0.5); }],
+    twig:       ["клонка", "KLON-ka", "twig", d => { d.l([[-13, 10], [12, -10]], "#8a5a30", 3); d.l([[-2, 1], [-6, -8]], "#8a5a30", 2); d.l([[5, -4], [10, 0]], "#8a5a30", 2); d.e(-7, -9, 4, 2.5, GRN, -0.7); d.e(11, 1, 4, 2.5, GRN, 0.5); d.e(2, -9, 3.5, 2, GRN, -0.9); }],
+    seed:       ["семе", "SE-me", "seed", d => { d.e(0, 3, 7, 9, "#c9a86a", 0.3); d.e(-1, 0, 3, 5, "#e8d5a8", 0.3); d.l([[0, -6], [0, -14]], "#3fae4a", 2); d.e(3, -12, 4, 2, GRN, -0.5); d.e(-3, -9, 3, 1.8, GRN, 0.6); }],
+    dandelion:  ["глухарче", "glu-HAR-che", "dandelion", d => { d.l([[0, 2], [0, 14]], "#4a8f3a", 2); d.c(0, -4, 8, "rgba(255,255,255,.55)"); for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; d.l([[0, -4], [Math.cos(a) * 9, -4 + Math.sin(a) * 9]], "rgba(255,255,255,.9)", 1); d.c(Math.cos(a) * 9, -4 + Math.sin(a) * 9, 1.3, WHT); } d.c(0, -4, 2.5, "#e8d5a8"); }],
+    clover:     ["детелина", "de-te-LEE-na", "clover", d => { d.l([[0, 2], [2, 14]], "#4a8f3a", 2); [[-5, -5], [5, -5], [-5, 3], [5, 3]].forEach(q => { d.c(q[0], q[1], 5.5, "#3fae4a"); d.c(q[0] - 1, q[1] - 1, 2, "rgba(255,255,255,.25)"); }); d.c(0, -1, 2, "#2a7a30"); }],
+    snowdrop:   ["кокиче", "ko-KEE-che", "snowdrop", d => { d.l([[0, -6], [0, 14]], "#4a8f3a", 2); d.e(-4, 8, 2.5, 7, GRN, 0.2); d.l([[0, -6], [4, -12]], "#4a8f3a", 1.5); d.e(4, -7, 3, 6, WHT, 0.3); d.e(2, -6, 2.5, 5, "#f4f4f4", 0.3); d.e(6, -6, 2.5, 5, "#f4f4f4", 0.3); d.c(4, -12, 1.5, "#9be39b"); }],
+    waterlily:  ["водна лилия", "VOD-na LEE-li-ya", "water lily", d => { d.e(0, 6, 13, 7, "#3fae4a"); d.p([[0, 6], [13, 6], [9, 0]], "#4aa8dc"); for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; d.e(Math.cos(a) * 5, 1 + Math.sin(a) * 3, 4.5, 2, "#ffc2d9", a); } d.c(0, 1, 2.5, "#ffd23f"); }],
+    frisbee:    ["фризби", "FRIZ-bi", "frisbee", d => { d.e(0, 0, 14, 7, "#e63946"); d.e(0, -1, 11, 5, "#ff6b6b"); d.e(0, -1, 6, 2.5, "#e63946"); }],
+    spade:      ["лопатка", "lo-PAT-ka", "spade", d => { d.l([[0, -14], [0, -2]], "#9c6b3d", 3); d.r(-3, -16, 6, 3, "#9c6b3d"); d.p([[-7, -3], [7, -3], [6, 8], [0, 13], [-6, 8]], "#3a86ff"); d.p([[-4, -1], [4, -1], [3, 7], [0, 10], [-3, 7]], "#4f8fe0"); }],
   };
   // Every animal is a pet friend: it hides behind a bush and joins the princess (never a pickup)
   const ANIMAL_KEYS = ["butterfly", "ladybug", "bee", "snail", "fish", "bird", "cow", "horse", "sheep", "hen", "frog", "bear", "wolf", "mouse", "spider",
     "dog", "cat", "duck", "pig", "goat", "elephant", "giraffe", "lion", "tiger", "monkey", "zebra", "crocodile", "penguin", "dolphin",
     "whale", "octopus", "crab", "lizard", "snake", "owl", "parrot", "pigeon", "stork", "swan", "rooster", "donkey", "ant"].filter(k => WORDS[k]);
   const ANIMAL_SET = new Set(ANIMAL_KEYS);
-  const WORD_KEYS = Object.keys(WORDS).filter(k => !ANIMAL_SET.has(k));
+  // Body parts are parked (nowhere in a park to find them); they can come back with a mirror feature
+  const PARKED = new Set(["eye", "nose", "mouth", "ear", "hand", "foot", "hair", "tooth"]);
+  const WORD_KEYS = Object.keys(WORDS).filter(k => !ANIMAL_SET.has(k) && !PARKED.has(k));
 
   // Item drawing helpers; `ctx` is the current canvas context (swappable for the dictionary icons)
   const D = {
@@ -982,26 +995,26 @@
   };
   // Park fixtures: label zones on the park's own structures (drawn by the park code, not by drawItem)
   const PARK_FIXTURES = [
-    { keys: ["house"], x: house.x, y: house.y - 105, w: 360, h: 210 },
-    { keys: ["roof"], x: house.x, y: house.y - 290, w: 420, h: 150, high: true },
-    { keys: ["chimney"], x: house.x + 110, y: house.y - 295, w: 50, h: 80, high: true },
-    { keys: ["fence"], x: house.x + 150, y: house.y + 66, w: 60, h: 30 },
-    { keys: ["garden", "flower"], x: GARDEN.x + GARDEN.w / 2, y: GARDEN.y + GARDEN.h / 2, w: GARDEN.w, h: GARDEN.h },
-    { keys: ["mailbox"], x: MAILBOX.x, y: MAILBOX.y + 15, w: 34, h: 50 },
-    { keys: ["doorbell"], x: house.x + 52, y: house.y - 20, w: 26, h: 34 },
-    { keys: ["flowerpot"], x: house.x - 120, y: house.y + 30, w: 36, h: 40 },
-    { keys: ["fountain"], x: 1200, y: 820, w: 240, h: 150 },
-    { keys: ["pond"], x: 520, y: 1250, w: 560, h: 320 },
-    { keys: ["grass"], x: 1420, y: 1040, w: 90, h: 60 },
-    { keys: ["bench"], x: 1330, y: 640, w: 70, h: 40 },
-    { keys: ["path"], x: 1200, y: 600, w: 90, h: 60 },
-    { keys: ["swing"], x: playground.x - 230, y: playground.y - 40, w: 70, h: 50 },
-    { keys: ["slide"], x: playground.x - 15, y: playground.y - 40, w: 100, h: 60 },
-    { keys: ["sandbox"], x: playground.x + 205, y: playground.y + 15, w: 120, h: 80 },
-    { keys: ["carousel"], x: playground.x - 35, y: playground.y + 135, w: 100, h: 60 },
+    { keys: ["house"], x: house.x, y: house.y - 105, w: 360, h: 210, spot: { x: house.x - 60, y: house.y + 30 } },
+    { keys: ["roof"], x: house.x, y: house.y - 290, w: 420, h: 150, high: true, spot: { x: house.x + 110, y: house.y + 30 } },
+    { keys: ["chimney"], x: house.x + 110, y: house.y - 295, w: 50, h: 80, high: true, spot: { x: house.x + 190, y: house.y + 30 } },
+    { keys: ["fence"], x: house.x + 150, y: house.y + 66, w: 60, h: 30, spot: { x: house.x + 150, y: house.y + 118 } },
+    { keys: ["garden", "flower"], x: GARDEN.x + GARDEN.w / 2, y: GARDEN.y + GARDEN.h / 2, w: GARDEN.w, h: GARDEN.h, spot: { x: GARDEN.x - 34, y: GARDEN.y + 24 } },
+    { keys: ["mailbox"], x: MAILBOX.x, y: MAILBOX.y + 15, w: 34, h: 50, spot: { x: MAILBOX.x + 46, y: MAILBOX.y + 12 } },
+    { keys: ["doorbell"], x: house.x + 52, y: house.y - 20, w: 26, h: 34, spot: { x: house.x + 58, y: house.y + 30 } },
+    { keys: ["flowerpot"], x: house.x - 120, y: house.y + 30, w: 36, h: 40, spot: { x: house.x - 166, y: house.y + 34 } },
+    { keys: ["fountain"], x: 1200, y: 820, w: 240, h: 150, spot: { x: 1075, y: 950 } },
+    { keys: ["pond"], x: 520, y: 1250, w: 560, h: 320, spot: { x: 520, y: 1250 + 150 + 44 } },
+    { keys: ["grass"], x: 1420, y: 1040, w: 90, h: 60, spot: { x: 1420, y: 1095 } },
+    { keys: ["bench"], x: 1330, y: 640, w: 70, h: 40, spot: { x: 1330, y: 690 } },
+    { keys: ["path"], x: 1200, y: 600, w: 90, h: 60, spot: { x: 1200, y: 600 } },
+    { keys: ["swing"], x: playground.x - 230, y: playground.y - 40, w: 70, h: 50, spot: { x: playground.x - 230, y: playground.y + 24 } },
+    { keys: ["slide"], x: playground.x - 15, y: playground.y - 40, w: 100, h: 60, spot: { x: playground.x + 10, y: playground.y + 26 } },
+    { keys: ["sandbox"], x: playground.x + 205, y: playground.y + 15, w: 120, h: 80, spot: { x: playground.x + 205, y: playground.y + 86 } },
+    { keys: ["carousel"], x: playground.x - 35, y: playground.y + 135, w: 100, h: 60, spot: { x: playground.x - 35, y: playground.y + 200 } },
     { keys: ["bush"], x: 0, y: 0, w: 0, h: 0, bush: true },
     { keys: ["tree"], x: 0, y: 0, w: 0, h: 0, tree: true },
-    { keys: ["bridge"], x: 520 + 260 + 10, y: 1250, w: 60, h: 90 },
+    { keys: ["bridge"], x: 520 + 260 + 10, y: 1250, w: 60, h: 90, spot: { x: 520 + 260 + 10, y: 1250 + 74 } },
   ];
   const HOUSE_KEYS = new Set();
   for (const r in ROOM_LOOSE) ROOM_LOOSE[r].forEach(k => HOUSE_KEYS.add(k));
@@ -1507,7 +1520,7 @@
     f = canonical(f);
     if (f.labelled >= f.keys.length) return;
     const key = f.keys[f.labelled];
-    if (key === "house" && !roofHintShown) { roofHintShown = true; setTimeout(() => showMessage("👆 Tap the glowing roof and chimney too!"), 4500); }
+    if (key === "house" && !roofHintShown) { roofHintShown = true; setTimeout(() => showMessage("🔴 Stand on the red dots to name the roof and chimney too!"), 4500); }
     f.labelled++;
     syncTwins(f);
     const w = WORDS[key];
@@ -1526,9 +1539,24 @@
     const pad = f.wall ? 72 : 22;
     return { x: f.x - f.w / 2 - pad, y: f.y - f.h / 2 - pad, w: f.w + pad * 2, h: f.h + pad * 2 };
   }
+  // The "stand here" dot: a reachable spot in front of each fixed thing
+  function fixtureSpot(f) {
+    if (f.spot) return f.spot;
+    if (f.bush) { const b = nearestOf(freeBushes()); return b ? { x: b.x, y: b.y + 30 } : null; }
+    if (f.tree) { const t = nearestOf(trees); return t ? { x: t.x, y: t.y + 28 } : null; }
+    if (scene !== parkScene) {
+      if (f.wall) return { x: f.x, y: WALL_TOP + 44 };
+      if (f.flat) return { x: f.x, y: f.y };
+      return { x: f.x, y: f.y + f.h / 2 + 34 };
+    }
+    return { x: f.x, y: f.y + f.h / 2 + 34 };
+  }
+  const SPOT_R = 34;
+  function onSpot(f) { const sp = fixtureSpot(f); return sp && Math.hypot(princess.x - sp.x, princess.y - sp.y) < SPOT_R; }
   // One touch = one sticker: she has to step out of every zone before the next thing reacts
   let wasInZone = false;
   function fixtureContains(f) {
+    if (onSpot(f)) return { area: 100, at: f.bush || f.tree ? (f.bush ? (b => b && { x: b.x, y: b.y - b.size * 1.4 })(nearestOf(freeBushes())) : (t => t && { x: t.x, y: t.y - t.size * 1.9 })(nearestOf(trees))) : undefined };
     if (f.high) return null;
     if (f.bush) { const b = bushes.find(b => !b.hasPet && Math.hypot(b.x - princess.x, b.y - princess.y) < 48); return b ? { at: { x: b.x, y: b.y - b.size * 1.4 }, area: 1e9 } : null; }
     if (f.tree) { const t = trees.find(t => Math.hypot(t.x - princess.x, t.y - princess.y) < 44); return t ? { at: { x: t.x, y: t.y - t.size * 1.9 }, area: 1e9 } : null; }
@@ -1575,7 +1603,7 @@
       labelFixture(hit);
       wasInZone = true;
     } else {
-      showMessage(hit.high ? "🚶 Ела до къщата! Walk up to the house, then tap it." : "🚶 Ела по-близо! Walk closer to it.");
+      showMessage("🚶 Ела до точката! Walk to its red dot.");
     }
   });
 
@@ -2979,6 +3007,7 @@
         if (e.to === "park") { const [a, b] = areaProgress(parkScene); drawBadge(e.x + e.w + 4, r.h - 24, a >= b ? "✓" : String(b - a), a >= b); }
       }
     }
+    drawSpots(r.fixtures);
     // fixtures on walls, flat ones first
     for (const f of r.fixtures) if (f.wall || f.flat) drawFixture(f);
   }
@@ -3023,6 +3052,39 @@
     }
   }
   // Sparkles circling the glowing things (drawn on top)
+  // "Stand here" dots for everything still to be named
+  function drawSpots(fixtures, withIcon) {
+    const pulse = (Math.sin(time * 0.12) + 1) / 2;
+    for (const f of fixtures) {
+      if (f.labelled >= f.keys.length || f.silent) continue;
+      const sp = fixtureSpot(f);
+      if (!sp) continue;
+      ctx.save();
+      ctx.translate(sp.x, sp.y);
+      ctx.scale(1, 0.45);
+      ctx.fillStyle = `rgba(255, 230, 120, ${0.3 + pulse * 0.2})`;
+      ctx.beginPath(); ctx.arc(0, 0, 22 + pulse * 6, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = `rgba(214, 40, 40, ${0.7 + pulse * 0.3})`; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(0, 0, 26 + pulse * 6, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = "#d62828"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+  }
+  function drawSpotIcons(fixtures) {
+    const pulse = (Math.sin(time * 0.12) + 1) / 2;
+    for (const f of fixtures) {
+      if (f.labelled >= f.keys.length || f.silent) continue;
+      const sp = fixtureSpot(f);
+      if (!sp) continue;
+      const y = sp.y - 44 - pulse * 5;
+      ctx.fillStyle = "rgba(0,0,0,0.12)"; ctx.beginPath(); ctx.arc(sp.x + 2, y + 2, 20, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#fffbe6"; ctx.beginPath(); ctx.arc(sp.x, y, 20, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#d62828"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(sp.x, y, 20, 0, Math.PI * 2); ctx.stroke();
+      drawItem(f.keys[f.labelled], sp.x, y, 1.1);
+      // little pointer down to the dot
+      ctx.fillStyle = "#d62828"; ctx.beginPath(); ctx.moveTo(sp.x - 6, y + 19); ctx.lineTo(sp.x + 6, y + 19); ctx.lineTo(sp.x, y + 28); ctx.closePath(); ctx.fill();
+    }
+  }
   function drawHaloSparkles(fixtures) {
     for (const f of fixtures) {
       if (f.labelled >= f.keys.length || f.silent) continue;
@@ -3067,6 +3129,7 @@
     if (scene !== parkScene) { renderRoom(scene); ctx.restore(); return; }
 
     drawGround(cam);
+    drawSpots(parkFixtures);
     drawPlayground();
     drawGrassPatch();
 
@@ -3092,6 +3155,7 @@
     for (const b of butterflies) if (onScreen(b.x, b.y, cam, 20)) drawButterfly(b);
     drawHints(cam);
     drawHaloSparkles(parkFixtures);
+    drawSpotIcons(parkFixtures);
     for (const f of parkFixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
     drawStickerPops(parkFixtures);
     drawParticles();
