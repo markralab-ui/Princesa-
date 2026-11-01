@@ -252,7 +252,7 @@
 <div id="start">
   <div class="card">
     <h1>Princess Raya's Park Adventure 2</h1>
-    <p class="note build">build 34</p>
+    <p class="note build">build 35</p>
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find the sparkly <b>treasures</b> to learn their <b>Bulgarian names</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <p class="note" id="startNote"></p>
@@ -345,6 +345,8 @@
     { x: houseBody.x - 120, y: houseBody.y - 190, w: houseBody.w + 240, h: houseBody.h + 190 + 200 },
     { x: playground.x - 300, y: playground.y - 170, w: 620, h: 360 },
     { x: 1330, y: 980, w: 180, h: 120 }, // the grassy patch
+    { x: 800, y: 230, w: 200, h: 150 },  // the meadow
+    { x: 1040, y: 1420, w: 120, h: 120 }, // the stump
     { x: PLOT.x - 80, y: PLOT.y - 120, w: PLOT.w + 160, h: PLOT.h + 200 }, // the flower garden
     { x: MAILBOX.x - 90, y: MAILBOX.y - 120, w: 180, h: 300 }, // the mailbox
   ];
@@ -360,6 +362,7 @@
   rectObstacles.push({ x: PLOT.x, y: PLOT.y + PLOT.h - 12, w: PLOT.w / 2 - 30, h: 12 });                  // front, left of the little gate
   rectObstacles.push({ x: PLOT.x + PLOT.w / 2 + 30, y: PLOT.y + PLOT.h - 12, w: PLOT.w / 2 - 30, h: 12 }); // front, right of the gate
   rectObstacles.push(GARDEN);                                                       // flower bed
+  rectObstacles.push({ x: 1080, y: 1465, w: 40, h: 30 });                           // tree stump
   rectObstacles.push({ x: MAILBOX.x - 10, y: MAILBOX.y + 10, w: 20, h: 40 });        // mailbox post
   rectObstacles.push({ x: playground.x - 260, y: playground.y - 40, w: 60, h: 30 });     // swing frame
   rectObstacles.push({ x: playground.x - 60, y: playground.y - 60, w: 90, h: 40 });      // slide
@@ -1041,11 +1044,68 @@
     gymbag:     ["спортен сак", "SPOR-ten SAK", "gym bag", d => { d.rr(-13, -4, 26, 14, 6, "#3a86ff"); d.arc(0, -4, 7, Math.PI, Math.PI * 2, "#2a4f90", 2.5); d.r(-13, 0, 26, 3, "#ffd23f"); d.c(-8, 5, 2, "#2a4f90"); d.c(8, 5, 2, "#2a4f90"); }],
     waterbottle:["бутилка за вода", "bu-TIL-ka za vo-DA", "water bottle", d => { d.rr(-6, -8, 12, 22, 3, "#4aa8dc"); d.r(-4, -12, 8, 5, "#e63946"); d.rr(-4, -2, 8, 8, 1, WHT); d.c(0, 2, 2, "#4aa8dc"); d.l([[-4, -12], [-4, -16], [4, -16], [4, -12]], "#e63946", 1.5); }],
     sunglasses: ["слънчеви очила", "SLAN-che-vi o-chi-LA", "sunglasses", d => { d.e(-7, 0, 6, 5, "#333"); d.e(7, 0, 6, 5, "#333"); d.e(-7, 0, 4.5, 3.5, "#2a2a2a"); d.e(7, 0, 4.5, 3.5, "#2a2a2a"); d.l([[-1, 0], [1, 0]], "#333", 2); d.l([[-13, -1], [-16, -3]], "#333", 2); d.l([[13, -1], [16, -3]], "#333", 2); d.c(-8, -1.5, 1, "rgba(255,255,255,.5)"); d.c(6, -1.5, 1, "rgba(255,255,255,.5)"); }],
+    // ---- more animals (pets) ----
+    goose:      ["гъска", "GAS-ka", "goose", d => { d.e(-2, 3, 11, 7, WHT); d.e(-8, 1, 6, 3.5, "#eee", -0.4); d.l([[5, 0], [8, -10]], WHT, 4); d.c(8, -12, 4, WHT); d.p([[11, -12], [18, -10], [11, -9]], "#ff9f1c"); d.c(9, -13, 1.1, "#222"); d.l([[-3, 10], [-3, 14]], "#ff9f1c", 1.5); d.l([[3, 10], [3, 14]], "#ff9f1c", 1.5); }],
+    turkey:     ["пуйка", "POOY-ka", "turkey", d => { for (let i = 0; i < 7; i++) { const a = Math.PI + i * Math.PI / 6; d.e(-2 + Math.cos(a) * 9, 2 + Math.sin(a) * 9, 5, 2.5, i % 2 ? "#c27c3e" : "#7a4a24", a); } d.e(-2, 3, 9, 7, "#5a2e14"); d.c(7, -4, 4.5, "#5a2e14"); d.p([[11, -4], [16, -3], [11, -1]], "#ff9f1c"); d.l([[11, -2], [11, 2]], "#e63946", 2); d.c(8, -5, 1, WHT); }],
+    rabbit:     ["заек", "ZA-ek", "rabbit", d => { const c = "#b8b0a5"; d.e(-2, 4, 11, 8, c); d.c(7, -5, 7, c); d.e(4, -16, 3, 8, c); d.e(10, -16, 3, 8, c); d.e(4, -16, 1.5, 5, "#ffc2d9"); d.e(10, -16, 1.5, 5, "#ffc2d9"); d.c(9, -6, 1.5, "#333"); d.c(13, -3, 1.2, "#ff8fab"); d.c(-12, 2, 3, "#eee"); }],
+    camel:      ["камила", "ka-MEE-la", "camel", d => { const c = "#e8b06a"; d.e(-2, 4, 12, 7, c); d.c(-5, -5, 5, c); d.c(3, -5, 5, c); d.p([[7, 0], [9, -12], [14, -10], [13, 2]], c); d.e(13, -12, 5, 3.5, c); d.c(15, -13, 1, "#222"); d.r(-9, 8, 3, 7, c); d.r(4, 8, 3, 7, c); }],
+    panda:      ["панда", "PAN-da", "panda", d => { d.c(0, 3, 10, WHT); d.c(0, -5, 8, WHT); d.c(-6, -11, 3.5, "#222"); d.c(6, -11, 3.5, "#222"); d.e(-3, -6, 2.5, 3, "#222", 0.4); d.e(3, -6, 2.5, 3, "#222", -0.4); d.c(-3, -6, 1, WHT); d.c(3, -6, 1, WHT); d.c(0, -2, 1.5, "#222"); d.e(-7, 6, 4, 6, "#222"); d.e(7, 6, 4, 6, "#222"); }],
+    koala:      ["коала", "ko-A-la", "koala", d => { const c = "#8a9099"; d.c(0, 4, 9, c); d.c(0, -5, 8, c); d.c(-8, -8, 4.5, c); d.c(8, -8, 4.5, c); d.c(-8, -8, 2.5, "#ffc2d9"); d.c(8, -8, 2.5, "#ffc2d9"); d.c(-3, -6, 1.2, "#222"); d.c(3, -6, 1.2, "#222"); d.e(0, -2, 3, 2.5, "#333"); d.r(-10, 4, 4, 10, "#9c6b3d"); }],
+    kangaroo:   ["кенгуру", "ken-goo-ROO", "kangaroo", d => { const c = "#c48a5a"; d.e(0, 2, 8, 10, c); d.e(1, 5, 5, 6, "#f3d6a8"); d.c(4, -10, 6, c); d.e(2, -17, 2, 4, c); d.e(7, -17, 2, 4, c); d.c(6, -11, 1.2, "#222"); d.l([[-6, 8], [-16, 12]], c, 4); d.e(-2, 11, 5, 2.5, c); d.e(6, 11, 5, 2.5, c); d.c(1, 6, 2, "#9c6b3d"); }],
+    hippo:      ["хипопотам", "hi-po-po-TAM", "hippo", d => { const c = "#8a9099"; d.e(-2, 2, 12, 8, c); d.e(9, -1, 8, 6, c); d.e(12, 1, 6, 4, "#b8b0a5"); d.c(7, -6, 1.2, "#222"); d.c(6, -8, 2, c); d.c(11, -2, 0.8, "#333"); d.c(14, -2, 0.8, "#333"); d.r(-9, 8, 4, 6, c); d.r(2, 8, 4, 6, c); }],
+    rhino:      ["носорог", "no-so-ROG", "rhino", d => { const c = "#8a9099"; d.e(-3, 2, 12, 8, c); d.e(8, 0, 8, 6, c); d.p([[13, -4], [17, -12], [15, -2]], "#c9ced6"); d.p([[9, -6], [10, -11], [11, -5]], "#c9ced6"); d.c(6, -3, 1.2, "#222"); d.r(-10, 8, 4, 6, c); d.r(2, 8, 4, 6, c); d.e(4, -7, 2, 2.5, c); }],
+    seal:       ["тюлен", "tyu-LEN", "seal", d => { const c = "#8a9099"; d.e(0, 2, 13, 7, c, -0.2); d.c(9, -3, 6, c); d.p([[-12, 0], [-18, -6], [-16, 6]], c); d.c(11, -4, 1.3, "#222"); d.c(14, -1, 1.2, "#333"); d.e(10, 0, 3, 1.5, "#c9ced6"); d.l([[13, 0], [17, -1]], "#555", 0.8); d.e(2, 8, 5, 2, c, 0.5); }],
+    flamingo:   ["фламинго", "fla-MIN-go", "flamingo", d => { const c = "#ff8fab"; d.e(-2, -2, 8, 5, c); d.l([[4, -4], [8, -14]], c, 3); d.c(9, -15, 3.5, c); d.l([[12, -15], [15, -12], [13, -10]], "#333", 2.5); d.c(10, -16, 0.9, "#222"); d.l([[-1, 3], [-1, 14]], c, 1.5); d.l([[2, 3], [2, 9], [4, 9]], c, 1.5); }],
+    swallow:    ["лястовица", "LYAS-to-vi-tsa", "swallow", d => { d.e(0, 0, 9, 4, "#2a4f90"); d.e(2, 1, 5, 2.5, WHT); d.c(8, -3, 3.5, "#2a4f90"); d.c(9, -2, 1.5, "#e63946"); d.p([[-2, -2], [-12, -10], [-4, 0]], "#2a4f90"); d.p([[-8, 1], [-16, 7], [-8, 3]], "#2a4f90"); d.p([[-8, 1], [-15, -1], [-8, -1]], "#2a4f90"); d.c(9, -4, 0.8, WHT); }],
+    sparrow:    ["врабче", "VRAB-che", "sparrow", d => { d.e(0, 2, 8, 5, "#b07d4a"); d.e(1, 3, 5, 3, "#e8d5a8"); d.c(7, -3, 4, "#8a5a30"); d.e(-3, 0, 5, 2.5, "#7a4a24", -0.4); d.p([[10, -3], [14, -2], [10, -1]], "#333"); d.c(8, -4, 1, "#222"); d.p([[-8, 2], [-14, 0], [-13, 5]], "#7a4a24"); d.l([[-2, 7], [-2, 10]], "#9c6b3d", 1.2); d.l([[2, 7], [2, 10]], "#9c6b3d", 1.2); }],
+    eagle:      ["орел", "o-REL", "eagle", d => { d.e(0, 2, 8, 6, "#5a2e14"); d.c(6, -5, 4.5, WHT); d.p([[10, -5], [15, -3], [10, -2]], "#ffd23f"); d.c(7, -6, 1, "#222"); d.p([[-4, 0], [-16, -10], [-10, 2]], "#5a2e14"); d.p([[-4, 0], [-16, -2], [-8, 4]], "#5a2e14"); d.e(-6, 7, 4, 2, "#8a5a30"); d.l([[0, 8], [0, 11]], "#ffd23f", 1.5); }],
+    seagull:    ["чайка", "CHAY-ka", "seagull", d => { d.e(0, 2, 9, 5, WHT); d.e(-3, 0, 6, 2.5, "#c9ced6", -0.3); d.c(7, -3, 4, WHT); d.p([[10, -3], [15, -2], [10, -1]], "#ff9f1c"); d.c(8, -4, 1, "#222"); d.p([[-8, 2], [-15, 0], [-13, 5]], "#c9ced6"); d.l([[-14, 10], [14, 10]], "#4aa8dc", 1.5); }],
+    peacock:    ["паун", "pa-OON", "peacock", d => { for (let i = 0; i < 7; i++) { const a = Math.PI + i * Math.PI / 6; const x = Math.cos(a) * 12, y = 2 + Math.sin(a) * 12; d.l([[0, 2], [x, y]], "#2a9d48", 2); d.c(x, y, 3, "#2ec4b6"); d.c(x, y, 1.3, "#3a86ff"); } d.e(0, 4, 6, 5, "#3a86ff"); d.c(3, -4, 3.5, "#3a86ff"); d.p([[6, -4], [10, -3], [6, -2]], "#ffd23f"); d.c(4, -5, 0.8, "#222"); }],
+    ostrich:    ["щраус", "SHTRA-us", "ostrich", d => { d.c(-2, 2, 8, "#333"); d.e(-6, 1, 6, 4, "#555", -0.4); d.l([[4, -2], [8, -14]], "#ffd9b8", 3); d.c(9, -15, 3.5, "#ffd9b8"); d.p([[12, -15], [16, -14], [12, -13]], "#333"); d.c(10, -16, 0.9, "#222"); d.l([[-3, 9], [-4, 14]], "#ffd9b8", 1.5); d.l([[1, 9], [2, 14]], "#ffd9b8", 1.5); }],
+    adultdeer:  ["елен", "e-LEN", "deer", d => { const c = "#c48a5a"; d.e(-2, 3, 11, 7, c); d.r(-9, 8, 3, 7, c); d.r(5, 8, 3, 7, c); d.p([[6, -1], [8, -12], [15, -10], [13, 1]], c); d.e(14, -12, 5, 3.5, c); d.c(16, -13, 1, "#222"); d.l([[9, -14], [6, -22]], "#7a4a24", 2); d.l([[7, -18], [3, -20]], "#7a4a24", 1.5); d.l([[12, -14], [15, -22]], "#7a4a24", 2); d.l([[14, -18], [18, -20]], "#7a4a24", 1.5); }],
+    adultfox:   ["лисица", "li-SEE-tsa", "fox", d => { const c = "#ff7a29"; d.e(-14, -6, 9, 5, c, -0.5); d.c(-21, -10, 3.5, WHT); d.e(-1, 2, 11, 7, c); d.e(1, 5, 6, 3, WHT); d.p([[2, -10], [19, -2], [4, 3]], c); d.c(7, -5, 6, c); d.p([[7, -2], [19, -2], [7, 2]], WHT); d.c(19, -2, 1.4, "#222"); d.p([[2, -9], [2, -18], [8, -11]], c); d.p([[7, -11], [12, -18], [13, -8]], c); d.c(9, -6, 1.3, "#222"); d.r(-7, 8, 3, 5, "#3b2a20"); d.r(4, 8, 3, 5, "#3b2a20"); }],
+    adultsquirrel: ["катерица", "ka-te-REE-tsa", "squirrel", d => { const c = "#c0622b"; d.e(-11, -6, 6, 12, c, 0.3); d.e(-11, -8, 3, 8, "#d97a3f", 0.3); d.e(0, 2, 9, 8, c); d.e(2, 4, 5, 4, "#f3d6a8"); d.c(7, -6, 6, c); d.e(3, -13, 2, 4, c); d.e(10, -14, 2, 4, c); d.c(8, -7, 1.4, "#222"); d.c(13, -4, 1.1, "#333"); d.r(-5, 9, 3, 4, "#9a4a1c"); d.r(3, 9, 3, 4, "#9a4a1c"); }],
+    mole:       ["къртица", "KAR-ti-tsa", "mole", d => { d.e(0, 4, 11, 7, "#3b2a20"); d.e(10, 2, 5, 3.5, "#3b2a20"); d.c(15, 2, 1.5, "#ff8fab"); d.c(8, 0, 0.8, "#111"); d.e(-4, 9, 4, 2, "#ffd9b8", 0.4); d.e(5, 9, 4, 2, "#ffd9b8", -0.4); d.e(0, 12, 14, 3, "#7a4a24"); }],
+    bat:        ["прилеп", "PRI-lep", "bat", d => { d.p([[-2, 0], [-14, -8], [-12, -2], [-8, -4], [-6, 2]], "#333"); d.p([[2, 0], [14, -8], [12, -2], [8, -4], [6, 2]], "#333"); d.e(0, 1, 4, 6, "#333"); d.c(0, -5, 3.5, "#333"); d.p([[-3, -7], [-3, -11], [-1, -8]], "#333"); d.p([[3, -7], [3, -11], [1, -8]], "#333"); d.c(-1.5, -5, 0.8, WHT); d.c(1.5, -5, 0.8, WHT); }],
+    otter:      ["видра", "VID-ra", "otter", d => { const c = "#7a4a24"; d.e(-2, 2, 12, 6, c, -0.1); d.e(0, 4, 8, 3, "#c48a5a"); d.c(9, -3, 5, c); d.e(10, -1, 3, 2, "#c48a5a"); d.c(11, -4, 1.2, "#222"); d.c(13, -1, 1, "#333"); d.l([[-13, 3], [-18, 1]], c, 3); d.e(-5, 8, 4, 2, c); d.e(4, 8, 4, 2, c); }],
+    beaver:     ["бобър", "BO-bar", "beaver", d => { const c = "#7a4a24"; d.e(-10, 5, 8, 4, "#3b2a20", 0.3); d.e(0, 2, 10, 7, c); d.c(8, -4, 6, c); d.e(10, -1, 3, 2, "#c48a5a"); d.r(9, 0, 2, 3, WHT); d.c(10, -5, 1.2, "#222"); d.c(13, -3, 1, "#333"); d.r(-5, 8, 3, 4, "#3b2a20"); d.r(3, 8, 3, 4, "#3b2a20"); }],
+    leopard:    ["леопард", "le-o-PARD", "leopard", d => { const c = "#ffd23f"; d.e(-2, 3, 12, 7, c); d.r(-9, 8, 3, 6, c); d.r(3, 8, 3, 6, c); d.c(8, -4, 6.5, c); d.c(4, -9, 2, c); d.c(12, -9, 2, c); d.c(6, -5, 1.3, "#222"); d.c(11, -5, 1.3, "#222"); d.c(10, -2, 1, "#333"); [[-8, 1], [-3, -1], [2, 3], [-5, 5], [3, 7], [-10, 6]].forEach(q => d.c(q[0], q[1], 1.6, "#5a2e14")); d.l([[-13, 2], [-18, -4]], c, 3); }],
+    gorilla:    ["горила", "go-REE-la", "gorilla", d => { d.c(0, 4, 10, "#333"); d.c(0, -5, 8, "#333"); d.e(0, -2, 6, 4, "#8a9099"); d.c(-2.5, -4, 1.2, "#222"); d.c(2.5, -4, 1.2, "#222"); d.c(-1, 0, 0.8, "#222"); d.c(1, 0, 0.8, "#222"); d.e(-11, 6, 4, 8, "#333", 0.3); d.e(11, 6, 4, 8, "#333", -0.3); d.e(-5, 13, 4, 2, "#333"); d.e(5, 13, 4, 2, "#333"); }],
+    sloth:      ["ленивец", "le-NEE-vets", "sloth", d => { d.l([[-14, -10], [14, -10]], "#9c6b3d", 3); d.l([[-8, -10], [-6, -2]], "#c9a86a", 3); d.l([[8, -10], [6, -2]], "#c9a86a", 3); d.e(0, 2, 9, 7, "#c9a86a"); d.c(0, -4, 6, "#e8d5a8"); d.e(-2.5, -5, 2.5, 1.5, "#5a2e14", 0.4); d.e(2.5, -5, 2.5, 1.5, "#5a2e14", -0.4); d.c(-2.5, -5, 0.8, "#222"); d.c(2.5, -5, 0.8, "#222"); d.arc(0, -2, 2, 0.3, Math.PI - 0.3, "#5a2e14", 1); }],
+    llama:      ["лама", "LA-ma", "llama", d => { const c = "#f3e5c8"; d.e(-3, 3, 10, 7, c); d.r(-9, 8, 3, 7, c); d.r(3, 8, 3, 7, c); d.p([[5, 0], [7, -13], [12, -13], [11, 1]], c); d.e(10, -14, 5, 3.5, c); d.e(8, -18, 1.5, 3, c); d.e(12, -18, 1.5, 3, c); d.c(12, -15, 1, "#222"); d.r(-6, -2, 10, 3, "#e63946"); d.r(-6, 1, 10, 3, "#ffd23f"); }],
+    hamster:    ["хамстер", "HAM-ster", "hamster", d => { const c = "#e8b06a"; d.e(0, 2, 11, 9, c); d.e(0, 5, 7, 5, "#fff3e0"); d.c(-5, -6, 3, c); d.c(5, -6, 3, c); d.c(-5, -6, 1.5, "#ffc2d9"); d.c(5, -6, 1.5, "#ffc2d9"); d.c(-3, -2, 1.2, "#222"); d.c(3, -2, 1.2, "#222"); d.c(0, 1, 1, "#ff8fab"); d.e(-7, 2, 3, 3, "#f3d6a8"); d.e(7, 2, 3, 3, "#f3d6a8"); }],
+    guineapig:  ["морско свинче", "MOR-sko SVIN-che", "guinea pig", d => { d.e(0, 2, 12, 8, "#c48a5a"); d.e(-5, 1, 6, 6, WHT); d.e(6, 2, 5, 5, "#3b2a20"); d.c(9, -3, 1.2, "#222"); d.c(12, 1, 1, "#ff8fab"); d.e(5, -6, 2, 3, "#c48a5a", 0.4); d.l([[12, 1], [16, 0]], "#555", 0.8); }],
+    goldfish:   ["златна рибка", "ZLAT-na RIB-ka", "goldfish", d => { d.p([[-6, 0], [-14, -8], [-14, 8]], "#ff9f1c"); d.e(2, 0, 11, 7, "#ffb627"); d.e(1, -1, 5, 3, "#ffd23f"); d.p([[2, -6], [6, -12], [8, -6]], "#ff9f1c"); d.c(8, -2, 1.8, "#222"); d.c(8.5, -2.5, 0.6, WHT); }],
+    shark:      ["акула", "a-KOO-la", "shark", d => { const c = "#8a9099"; d.e(0, 0, 14, 6, c); d.e(2, 2, 10, 3, "#c9ced6"); d.p([[-2, -5], [2, -14], [6, -5]], c); d.p([[-12, -1], [-18, -8], [-17, 5]], c); d.c(9, -2, 1.3, "#222"); d.p([[6, 2], [13, 2], [9, 4]], WHT); }],
+    jellyfish:  ["медуза", "me-DOO-za", "jellyfish", d => { d.half(0, -2, 11, "#c77dff"); d.e(0, -2, 11, 3, "#9b5de5"); for (let i = -3; i <= 3; i += 2) d.l([[i * 3, 0], [i * 3 + 2, 7], [i * 3 - 1, 14]], "#c77dff", 2); d.c(-4, -7, 1.5, "rgba(255,255,255,.6)"); }],
+    starfish:   ["морска звезда", "MOR-ska zvez-DA", "starfish", d => { d.star(0, 0, 13, "#ff8c42", 5); for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i * Math.PI * 2 / 5; d.c(Math.cos(a) * 6, Math.sin(a) * 6, 1.2, "#ffd23f"); } d.c(0, 0, 1.5, "#ffd23f"); }],
+    // ---- more visiting park things ----
+    lantern:    ["фенер", "fe-NER", "lantern", d => { d.r(-5, -14, 10, 3, "#333"); d.p([[-7, -11], [7, -11], [5, 6], [-5, 6]], "#333"); d.p([[-5, -10], [5, -10], [3.5, 5], [-3.5, 5]], "#ffe066"); d.r(-4, 6, 8, 3, "#333"); d.c(0, -14, 2, "#333"); d.l([[-1, 9], [-1, 14]], "#333", 2); }],
+    doghouse:   ["къщичка за кучета", "KASH-tich-ka za KOO-che-ta", "dog house", d => { d.r(-11, -2, 22, 15, "#d9934f"); d.p([[-14, -2], [0, -14], [14, -2]], "#e63946"); d.p([[-5, 13], [-5, 3], [0, -1], [5, 3], [5, 13]], "#3b2a20"); d.c(0, 2, 2, "#c48a5a"); }],
+    flowerbox:  ["цветарник", "tsve-TAR-nik", "flower box", d => { d.r(-13, 2, 26, 10, "#9c6b3d"); d.r(-13, 0, 26, 3, "#c27c3e"); for (let i = -2; i <= 2; i++) { d.l([[i * 5, 1], [i * 5, -5]], "#3f9a3a", 1.5); d.c(i * 5, -8, 3.5, i % 2 ? "#ff6fa8" : "#ffd23f"); d.c(i * 5, -8, 1.3, "#ff8c42"); } }],
+    snowman:    ["снежен човек", "SNE-zhen cho-VEK", "snowman", d => { d.c(0, 6, 8, WHT); d.c(0, -5, 6, WHT); d.c(-2, -6, 1, "#222"); d.c(2, -6, 1, "#222"); d.p([[0, -4], [6, -3], [0, -2]], "#ff9f1c"); d.c(0, 3, 1, "#222"); d.c(0, 7, 1, "#222"); d.r(-5, -13, 10, 3, "#333"); d.r(-3, -17, 6, 5, "#333"); d.l([[-8, 2], [-14, -3]], "#9c6b3d", 1.5); d.l([[8, 2], [14, -3]], "#9c6b3d", 1.5); d.r(-6, -2, 12, 2, "#e63946"); }],
+    // ---- more fixed park things ----
+    meadow:     ["поляна", "po-LYA-na", "meadow", d => { d.e(0, 4, 14, 8, "#7cc35a"); for (let i = 0; i < 6; i++) { const x = -10 + i * 4, y = 2 + (i % 2) * 4; d.l([[x, y + 4], [x, y - 3]], "#3f9a3a", 1.5); d.c(x, y - 4, 2, ["#ff6fa8", "#ffd23f", WHT][i % 3]); } }],
+    alley:      ["алея", "a-LE-ya", "tree-lined path", d => { d.p([[-5, -14], [5, -14], [14, 14], [-14, 14]], "#f3dca2"); d.c(-12, -6, 5, "#3fae4a"); d.c(12, -6, 5, "#3fae4a"); d.c(-11, 6, 5, "#4fbf55"); d.c(11, 6, 5, "#4fbf55"); d.r(-13, -1, 2, 4, "#9c6b3d"); d.r(11, -1, 2, 4, "#9c6b3d"); }],
+    gate:       ["порта", "POR-ta", "gate", d => { d.r(-13, -10, 3, 22, "#9c6b3d"); d.r(10, -10, 3, 22, "#9c6b3d"); for (let x = -8; x <= 8; x += 4) { d.r(x - 1, -6, 2, 16, "#fff7e6"); d.p([[x - 1.5, -6], [x, -9], [x + 1.5, -6]], "#fff7e6"); } d.r(-10, -3, 20, 2, "#f1e4cc"); d.r(-10, 6, 20, 2, "#f1e4cc"); d.c(-13, -11, 2.5, "#c27c3e"); d.c(11.5, -11, 2.5, "#c27c3e"); }],
+    stump:      ["пън", "PAN", "tree stump", d => { d.r(-9, -2, 18, 12, "#9c6b3d"); d.e(0, 10, 9, 3, "#7a4a24"); d.e(0, -2, 9, 4, "#e8b06a"); d.ring(0, -2, 6, 2.5, "#c9a86a", 1); d.ring(0, -2, 3, 1.2, "#c9a86a", 1); d.l([[-9, 0], [-9, 8]], "#7a4a24", 1); d.l([[-4, 0], [-4, 9]], "#7a4a24", 1); d.l([[3, 0], [3, 9]], "#7a4a24", 1); }],
+    playgroundsign: ["детска площадка", "DET-ska plo-SHTAD-ka", "playground", d => { d.r(-1, -2, 2, 16, "#9c6b3d"); d.rr(-13, -14, 26, 13, 2, "#ffd23f"); d.l([[-9, -5], [-7, -12], [-3, -12], [-1, -5]], "#333", 1.5); d.l([[-7, -12], [-3, -12]], "#333", 1.5); d.r(-6, -8, 4, 1.5, "#e63946"); d.l([[3, -12], [10, -5]], "#3a86ff", 3); d.l([[3, -12], [3, -5]], "#9c6b3d", 1.5); }],
+    // ---- more room fixtures ----
+    boiler:     ["бойлер", "BOY-ler", "water heater", d => { d.rr(-8, -13, 16, 26, 5, WHT); d.l([[-8, -13], [8, -13], [8, 13], [-8, 13], [-8, -13]], "#c9ced6", 1); d.c(0, 6, 3, "#eee"); d.ring(0, 6, 3, 3, "#8a9099", 1); d.c(2, 4, 0.8, "#e63946"); d.r(-3, 13, 2, 4, "#8a9099"); d.r(1, 13, 2, 4, "#8a9099"); }],
+    drawingtable: ["масичка за рисуване", "MA-sich-ka za ri-SOO-va-ne", "drawing table", d => { d.r(-13, -5, 26, 4, "#ff6fa8"); d.r(-11, -1, 3, 11, "#e0245e"); d.r(8, -1, 3, 11, "#e0245e"); d.r(-8, -10, 10, 5, WHT); d.l([[-6, -8], [0, -8]], "#3a86ff", 1); d.r(4, -9, 2, 4, "#e63946"); d.r(7, -9, 2, 4, "#2a9d48"); }],
+    toyshelf:   ["рафт за играчки", "RAFT za ig-RACH-ki", "toy shelf", d => { d.r(-14, 4, 28, 3, "#c27c3e"); d.r(-14, -8, 28, 3, "#c27c3e"); d.c(-9, -1, 3.5, "#ffd23f"); d.r(-3, -5, 6, 6, "#e63946"); d.c(8, -2, 4, "#c48a5a"); d.c(8, -4, 2.5, "#c48a5a"); d.r(-10, 7, 5, 6, "#3a86ff"); d.p([[0, 13], [4, 7], [8, 13]], "#2a9d48"); d.c(11, 10, 2.5, "#ff6fa8"); }],
+    shoebench:  ["пейка за обувки", "PEY-ka za o-BOOV-ki", "shoe bench", d => { d.r(-13, -6, 26, 4, "#d9934f"); d.r(-11, -2, 3, 14, "#9c6b3d"); d.r(8, -2, 3, 14, "#9c6b3d"); d.r(-11, 4, 22, 2, "#9c6b3d"); d.e(-4, 8, 4, 2, "#e63946"); d.e(3, 8, 4, 2, "#3a86ff"); d.r(-5, -11, 10, 5, "#ffc2d9"); }],
+    coatcloset: ["гардероб за палта", "gar-de-ROB za pal-TA", "coat closet", d => { d.r(-13, -14, 26, 28, "#7a4a24"); d.r(-11, -12, 10, 24, "#9c6b3d"); d.r(1, -12, 10, 24, "#9c6b3d"); d.c(-3, 0, 1.3, "#ffd23f"); d.c(3, 0, 1.3, "#ffd23f"); d.r(-9, -10, 6, 10, "#e63946"); d.r(3, -10, 6, 10, "#3a86ff"); }],
+    walllamp:   ["аплик", "ap-LIK", "wall lamp", d => { d.r(-3, -3, 6, 10, "#8a9099"); d.p([[-10, -3], [10, -3], [7, -13], [-7, -13]], "#ffd23f"); d.e(0, -2, 8, 2, "rgba(255,230,109,.7)"); d.r(-2, 7, 4, 4, "#8a9099"); }],
+    keyholder:  ["поставка за ключове", "pos-TAV-ka za klyu-CHO-ve", "key holder", d => { d.rr(-13, -10, 26, 12, 2, "#9c6b3d"); for (let x = -9; x <= 9; x += 6) { d.c(x, -1, 1.5, "#333"); d.l([[x, -1], [x, 6]], "#ffd23f", 2.5); d.l([[x, 4], [x + 2, 4]], "#ffd23f", 1.5); } }],
   };
   // Every animal is a pet friend: it hides behind a bush and joins the princess (never a pickup)
   const ANIMAL_KEYS = ["butterfly", "ladybug", "bee", "snail", "fish", "bird", "cow", "horse", "sheep", "hen", "frog", "bear", "wolf", "mouse", "spider",
     "dog", "cat", "duck", "pig", "goat", "elephant", "giraffe", "lion", "tiger", "monkey", "zebra", "crocodile", "penguin", "dolphin",
-    "whale", "octopus", "crab", "lizard", "snake", "owl", "parrot", "pigeon", "stork", "swan", "rooster", "donkey", "ant"].filter(k => WORDS[k]);
+    "whale", "octopus", "crab", "lizard", "snake", "owl", "parrot", "pigeon", "stork", "swan", "rooster", "donkey", "ant",
+    "goose", "turkey", "rabbit", "camel", "panda", "koala", "kangaroo", "hippo", "rhino", "seal", "flamingo", "swallow", "sparrow", "eagle", "seagull",
+    "peacock", "ostrich", "adultdeer", "adultfox", "adultsquirrel", "mole", "bat", "otter", "beaver", "leopard", "gorilla", "sloth", "llama", "hamster",
+    "guineapig", "goldfish", "shark", "jellyfish", "starfish"].filter(k => WORDS[k]);
   const ANIMAL_SET = new Set(ANIMAL_KEYS);
   // Body parts are parked (nowhere in a park to find them); they can come back with a mirror feature
   const PARKED = new Set(["eye", "nose", "mouth", "ear", "hand", "foot", "hair", "tooth"]);
@@ -1110,7 +1170,7 @@
   const PET_KEYS = Object.keys(PETS);
   // Adventure size: how much to find per adventure (pets are always 11)
   // One adventure is about ten minutes of play (pets are always 11)
-  const SIZE = { treasures: 14, visiting: 3, fixedRoom: 3, fixedPark: 3 };
+  const SIZE = { treasures: 14, visiting: 3, fixedRoom: 1, fixedPark: 3 };
   const WORDS_PER_GAME = SIZE.treasures;
   const PETS_PER_GAME = 11;
 
@@ -1180,6 +1240,7 @@
       { keys: ["washer"], x: 720, y: 240, w: 80, h: 80, sc: 3 },
       { keys: ["toilet"], x: 900, y: 250, w: 60, h: 80, sc: 3 },
       { keys: ["laundrybasket"], x: 880, y: 580, w: 60, h: 60, sc: 2.8 },
+      { keys: ["boiler"], x: 760, y: 108, w: 50, h: 80, sc: 2.8, wall: true },
       { keys: ["scale"], x: 140, y: 600, w: 70, h: 50, sc: 2.6, flat: true },
     ],
     living: [
@@ -1199,12 +1260,18 @@
       { keys: ["tent"], x: 700, y: 240, w: 110, h: 90, sc: 3.8 },
       { keys: ["rockinghorse"], x: 890, y: 250, w: 80, h: 70, sc: 3.2 },
       { keys: ["beanbag"], x: 860, y: 570, w: 80, h: 56, sc: 3 },
+      { keys: ["drawingtable"], x: 420, y: 480, w: 90, h: 50, sc: 3.2 },
+      { keys: ["toyshelf"], x: 700, y: 108, w: 90, h: 70, sc: 3, wall: true },
     ],
     hall: [
       { keys: ["stairs"], x: 110, y: 360, w: 90, h: 90, sc: 3.6 },
       { keys: ["hanger"], x: 900, y: 225, w: 70, h: 50, sc: 2.6 },
       { keys: ["doormat"], x: 500, y: 600, w: 90, h: 40, sc: 3, flat: true },
       { keys: ["door"], x: 500, y: 680, w: 80, h: 30, sc: 3, wall: true },
+      { keys: ["shoebench"], x: 300, y: 470, w: 90, h: 50, sc: 3.2 },
+      { keys: ["coatcloset"], x: 880, y: 450, w: 80, h: 80, sc: 3.2 },
+      { keys: ["walllamp"], x: 940, y: 108, w: 50, h: 60, sc: 2.6, wall: true },
+      { keys: ["keyholder"], x: 110, y: 108, w: 70, h: 40, sc: 2.6, wall: true },
     ],
   };
   // Park fixtures: label zones on the park's own structures (drawn by the park code, not by drawItem)
@@ -1227,6 +1294,11 @@
     { keys: ["bush"], x: 0, y: 0, w: 0, h: 0, bush: true },
     { keys: ["tree"], x: 0, y: 0, w: 0, h: 0, tree: true },
     { keys: ["bridge"], x: 520 + 260 + 10, y: 1250, w: 60, h: 90, spot: { x: 520 + 260 + 10, y: 1250 + 74 } },
+    { keys: ["meadow"], x: 900, y: 300, w: 160, h: 90, spot: { x: 900, y: 300 } },
+    { keys: ["alley"], x: 1475, y: 600, w: 90, h: 60, spot: { x: 1475, y: 600 } },
+    { keys: ["gate"], x: PLOT.x + PLOT.w / 2, y: PLOT.y + PLOT.h - 6, w: 60, h: 20, spot: { x: PLOT.x + PLOT.w / 2, y: PLOT.y + PLOT.h + 30 } },
+    { keys: ["stump"], x: 1100, y: 1480, w: 50, h: 40, spot: { x: 1100, y: 1530 } },
+    { keys: ["playgroundsign"], x: playground.x + 60, y: playground.y - 110, w: 30, h: 60, spot: { x: playground.x + 60, y: playground.y - 60 } },
   ];
   // true when a park spot is too close to a fixed thing (or its red dot) for a treasure
   function nearParkFixture(x, y, pad = 90) {
@@ -1239,7 +1311,8 @@
   }
   // Visiting park things: a few immovable objects that change from adventure to adventure
   const VISIT_KEYS = ["statue", "picnictable", "lamppost", "well", "birdhouse", "signpost", "icecreamstand", "litterbin", "flagpole", "scarecrow",
-    "gazebo", "drinkfountain", "climbingframe", "hammock", "barbecue", "beehive", "busstop", "parasol", "deckchair", "sandcastle"].filter(k => WORDS[k]);
+    "gazebo", "drinkfountain", "climbingframe", "hammock", "barbecue", "beehive", "busstop", "parasol", "deckchair", "sandcastle",
+    "lantern", "doghouse", "flowerbox", "snowman"].filter(k => WORDS[k]);
   const HOUSE_KEYS = new Set();
   VISIT_KEYS.forEach(k => HOUSE_KEYS.add(k));
   for (const r in ROOM_LOOSE) ROOM_LOOSE[r].forEach(k => HOUSE_KEYS.add(k));
@@ -1300,7 +1373,7 @@
     // shuffle so the favourites are spread around the park rather than grouped
     return faves.concat(rest).map(k => ({ k, r: Math.random() })).sort((a, b) => a.r - b.r).map(o => o.k);
   }
-  const PET_PAIR = { puppy: "dog", kitten: "cat", piglet: "pig", lamb: "sheep", chick: "hen", duckling: "duck", deer: "deer" };
+  const PET_PAIR = { puppy: "dog", kitten: "cat", piglet: "pig", lamb: "sheep", chick: "hen", duckling: "duck", deer: "adultdeer", bunny: "rabbit", fox: "adultfox", squirrel: "adultsquirrel" };
   function pickPets() {
     const order = PET_KEYS.map(k => ({ k, c: memory.pets[k] || 0, r: Math.random() })).sort((a, b) => a.c - b.c || a.r - b.r).map(o => o.k);
     const chosen = [];
@@ -3069,6 +3142,23 @@
   function drawGrassPatch() {
     const gx = 1420, gy = 1040;
     withPulse(gx, gy + 10, 1 + (pp("grass") - 1) * 2, drawGrassPatchBody);
+    // the meadow: a soft lighter patch with flowers
+    withPulse(900, 330, 1 + (pp("meadow") - 1) * 2, () => {
+      ellipse(900, 330, 90, 42, "#9bdc78");
+      for (let i = 0; i < 10; i++) { const a = i * 0.63, dd = 20 + (i * 13) % 55; const x = 900 + Math.cos(a) * dd, y = 330 + Math.sin(a) * dd * 0.45; circle(x, y - 4, 4, petalColors[i % petalColors.length]); circle(x, y - 4, 1.5, "#ffd23f"); }
+    });
+    // the tree stump
+    withPulse(1100, 1480, 1 + (pp("stump") - 1) * 2, () => { shadow(1100, 1492, 22, 6); drawItem("stump", 1100, 1478, 2.4); });
+    // the playground sign
+    withPulse(playground.x + 60, playground.y - 80, 1 + (pp("playgroundsign") - 1) * 2, () => { drawItem("playgroundsign", playground.x + 60, playground.y - 100, 2.6); });
+    // the garden gate (the gap in the plot's fence gets two posts)
+    withPulse(PLOT.x + PLOT.w / 2, PLOT.y + PLOT.h, 1 + (pp("gate") - 1) * 2, () => {
+      ctx.fillStyle = "#c27c3e";
+      ctx.fillRect(PLOT.x + PLOT.w / 2 - 34, PLOT.y + PLOT.h - 34, 8, 34); ctx.fillRect(PLOT.x + PLOT.w / 2 + 26, PLOT.y + PLOT.h - 34, 8, 34);
+      circle(PLOT.x + PLOT.w / 2 - 30, PLOT.y + PLOT.h - 36, 5, "#9c6b3d"); circle(PLOT.x + PLOT.w / 2 + 30, PLOT.y + PLOT.h - 36, 5, "#9c6b3d");
+    });
+    // the alley: a brighter patch on the diagonal path
+    { const pf = parkFixture("alley"); if (pf && pf.labelled < pf.keys.length) { const k = (Math.sin(time * 0.12) + 1) / 2; ellipse(pf.x, pf.y, 44 + k * 10, 26 + k * 6, `rgba(255,255,255,${0.35 + k * 0.35})`); } }
   }
   function drawGrassPatchBody() {
     const gx = 1420, gy = 1040;
