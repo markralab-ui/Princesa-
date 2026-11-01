@@ -938,12 +938,13 @@
   const PARK_FIXTURES = [
     { keys: ["house", "roof", "chimney"], x: house.x, y: house.y - 70, w: 270, h: 160 },
     { keys: ["fence"], x: house.x + 120, y: house.y + 66, w: 60, h: 30 },
-    { keys: ["garden"], x: house.x - 175, y: house.y + 35, w: 80, h: 60 },
+    { keys: ["garden", "flower"], x: house.x - 175, y: house.y + 35, w: 80, h: 60 },
     { keys: ["mailbox"], x: house.x + 170, y: house.y + 40, w: 30, h: 40 },
     { keys: ["doorbell"], x: house.x + 40, y: house.y - 10, w: 24, h: 30 },
     { keys: ["flowerpot"], x: house.x - 45, y: house.y, w: 30, h: 30 },
     { keys: ["fountain"], x: 1200, y: 820, w: 240, h: 150 },
-    { keys: ["pond"], x: 520, y: 1250, w: 560, h: 320 },
+    { keys: ["pond", "duck"], x: 520, y: 1250, w: 560, h: 320 },
+    { keys: ["grass"], x: 1420, y: 1040, w: 90, h: 60 },
     { keys: ["bench"], x: 1330, y: 640, w: 70, h: 40 },
     { keys: ["path"], x: 1200, y: 600, w: 90, h: 60 },
     { keys: ["swing"], x: playground.x - 170, y: playground.y - 40, w: 70, h: 50 },
@@ -959,6 +960,8 @@
   for (const r in ROOM_FIXTURES) ROOM_FIXTURES[r].forEach(f => f.keys.forEach(k => HOUSE_KEYS.add(k)));
   PARK_FIXTURES.forEach(f => f.keys.forEach(k => HOUSE_KEYS.add(k)));
   const PARK_LOOSE = WORD_KEYS.filter(k => !HOUSE_KEYS.has(k));
+  // the grown-up animal of each pet: not a park treasure in the same adventure as the pet
+  const PET_PARENT = { puppy: "dog", kitten: "cat", piglet: "pig", lamb: "sheep", chick: "hen", duckling: "duck" };
   // [name, how to say it, English, "the <room> is ready" in Bulgarian]
   const ROOM_NAMES = {
     hall: ["коридор", "ko-ri-DOR", "hallway", "Коридорът е готов"], kitchen: ["кухня", "KOOH-nya", "kitchen", "Кухнята е готова"],
@@ -1003,13 +1006,15 @@
 
   const gameNo = savedGame ? savedGame.g : memory.games + 1;
   function pickWords() {
-    const faves = pickLeastSeen(FAVE_KEYS.filter(k => PARK_LOOSE.includes(k)), memory.seen, FAVE_PER_GAME);
-    const rest = pickLeastSeen(PARK_LOOSE.filter(k => !faves.includes(k)), memory.seen, WORDS_PER_GAME - faves.length);
+    const skip = new Set(petKeys.map(k => PET_PARENT[k]).filter(Boolean));
+    const pool = PARK_LOOSE.filter(k => !skip.has(k));
+    const faves = pickLeastSeen(FAVE_KEYS.filter(k => pool.includes(k)), memory.seen, FAVE_PER_GAME);
+    const rest = pickLeastSeen(pool.filter(k => !faves.includes(k)), memory.seen, WORDS_PER_GAME - faves.length);
     // shuffle so the favourites are spread around the park rather than grouped
     return faves.concat(rest).map(k => ({ k, r: Math.random() })).sort((a, b) => a.r - b.r).map(o => o.k);
   }
-  const itemKeys = savedGame ? savedGame.items : pickWords();
   const petKeys = savedGame ? savedGame.pets : pickLeastSeen(PET_KEYS, memory.pets, PETS_PER_GAME);
+  const itemKeys = savedGame ? savedGame.items : pickWords();
 
   // ---------- Treasures ----------
   seed = 4242 + gameNo * 7919; // treasure spots differ from adventure to adventure
@@ -2621,6 +2626,17 @@
       circle(fx, fy - 2, 5, petalColors[(i * 3) % petalColors.length]); circle(fx, fy - 2, 2, "#ffd23f");
     }
   }
+  function drawGrassPatch() {
+    const gx = 1420, gy = 1040;
+    ellipse(gx, gy + 10, 55, 30, "#7cc35a");
+    ctx.strokeStyle = "#4f9f3a"; ctx.lineWidth = 2.5; ctx.lineCap = "round";
+    for (let i = 0; i < 26; i++) {
+      const a = i * 2.4, d = 8 + (i * 7) % 40;
+      const x = gx + Math.cos(a) * d, y = gy + 10 + Math.sin(a) * d * 0.5;
+      const sw = Math.sin(time * 0.03 + i) * 2;
+      ctx.beginPath(); ctx.moveTo(x - 4, y); ctx.lineTo(x - 5 + sw, y - 12); ctx.moveTo(x, y); ctx.lineTo(x + sw, y - 15); ctx.moveTo(x + 4, y); ctx.lineTo(x + 5 + sw, y - 11); ctx.stroke();
+    }
+  }
   function drawPlayground() {
     const px = playground.x, py = playground.y;
     // swing
@@ -2793,6 +2809,7 @@
 
     drawGround(cam);
     drawPlayground();
+    drawGrassPatch();
 
     // y-sorted drawables
     const list = [];
