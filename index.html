@@ -128,7 +128,6 @@
     max-width: calc(100vw - 40px);
   }
   #message.show { opacity: 1; }
-  .playtime { color: #6c6779; font-size: .95em; }
   #start, #win {
     position: fixed;
     inset: 0;
@@ -276,7 +275,6 @@
     <h1>Браво! Hooray! 🎉</h1>
     <p>You found every treasure and every pet friend!</p>
     <p id="winStats"></p>
-    <p id="winTime" class="playtime"></p>
     <p>Next time the park will have <b>new words and new pets</b> to discover.</p>
     <button id="nextBtn">New adventure 🌟</button>
     <br><button id="againBtn" class="small">Keep exploring here</button>
@@ -466,9 +464,9 @@
     flowers.push({ x, y, c: petalColors[Math.floor(rand() * petalColors.length)], s: rr(4, 7), ph: rand() * 6.28 });
   }
   // A ring of roses around the fountain (Bulgaria, land of roses!)
-  for (let i = 0; i < 28; i++) {
-    const a = (i / 28) * Math.PI * 2;
-    flowers.push({ x: fountain.x + Math.cos(a) * (fountain.r + 55), y: fountain.y + Math.sin(a) * (fountain.r + 40),
+  for (let i = 0; i < 32; i++) {
+    const a = (i / 32) * Math.PI * 2;
+    flowers.push({ x: fountain.x + Math.cos(a) * (fountain.r + 48), y: fountain.y + 10 + Math.sin(a) * (fountain.r + 48),
       c: i % 2 ? "#ff4d6d" : "#ff8fab", s: 7, ph: a });
   }
 
@@ -1353,20 +1351,14 @@
   // ---------- Memory across adventures ----------
   const MEM_KEY = "princesa2-vocab-v1";
   const SAVE_KEY = "princesa2-park-save-v1";
-  let memory = { seen: {}, pets: {}, labels: {}, last: {}, games: 0, playMs: 0, lastMs: 0 };
+  let memory = { seen: {}, pets: {}, labels: {}, last: {}, games: 0 };
   try {
     const m = JSON.parse(localStorage.getItem(MEM_KEY) || "null");
-    if (m && m.seen && m.pets) memory = { seen: m.seen, pets: m.pets, labels: m.labels || {}, last: m.last || {}, games: m.games || 0, playMs: m.playMs || 0, lastMs: m.lastMs || 0 };
+    if (m && m.seen && m.pets) memory = { seen: m.seen, pets: m.pets, labels: m.labels || {}, last: m.last || {}, games: m.games || 0 };
   } catch (e) { /* storage unavailable */ }
   // play time of the current adventure (restored from the save), and when the player last touched the controls
   let advMs = 0, lastInput = performance.now();
   ["keydown", "pointerdown", "touchstart"].forEach(ev => window.addEventListener(ev, () => { lastInput = performance.now(); }, { passive: true }));
-  function fmtTime(ms) {
-    const m = Math.round(ms / 60000);
-    if (m < 1) return "under a minute";
-    if (m < 60) return m + " min";
-    return Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0") + " min";
-  }
   function saveMemory() {
     try { localStorage.setItem(MEM_KEY, JSON.stringify(memory)); } catch (e) { /* ignore */ }
   }
@@ -1762,8 +1754,7 @@
     const learned = WORD_KEYS.filter(k => memory.seen[k]).length;
     const met = PET_KEYS.filter(k => memory.pets[k]).length;
     document.getElementById("dictStats").textContent =
-      `Words learned: ${learned} / ${WORD_KEYS.length} · Pet friends met: ${met} / ${PET_KEYS.length} · Adventures: ${memory.games}` +
-      (memory.playMs > 30000 ? ` · ⏱ Play time: ${fmtTime(memory.playMs)}` + (memory.lastMs ? ` (last finished adventure: ${fmtTime(memory.lastMs)})` : "") : "");
+      `Words learned: ${learned} / ${WORD_KEYS.length} · Pet friends met: ${met} / ${PET_KEYS.length} · Adventures: ${memory.games}`;
     const secP = document.createElement("div"); secP.className = "sec"; secP.textContent = "🐾 Pet friends"; list.appendChild(secP);
     PET_KEYS.slice().sort((a, b) => (memory.pets[b] ? 1 : 0) - (memory.pets[a] ? 1 : 0) || PETS[a][0].localeCompare(PETS[b][0], "bg")).forEach(k => {
       const fake = { type: k, walk: 0, hop: 0 };
@@ -1835,7 +1826,7 @@
     updateHud();
     document.getElementById("startBtn").textContent = "Continue! 🌸";
     document.getElementById("newBtn").classList.remove("hidden");
-    noteEl.textContent = `Adventure ${gameNo} is waiting for you.` + (advMs > 30000 ? ` (${fmtTime(advMs)} so far)` : "");
+    noteEl.textContent = `Adventure ${gameNo} is waiting for you.`;
   } else {
     const learned = WORD_KEYS.filter(k => memory.seen[k]).length;
     noteEl.textContent = gameNo === 1
@@ -2121,8 +2112,6 @@
       const met = PET_KEYS.filter(k => memory.pets[k]).length;
       document.getElementById("winStats").textContent =
         `Words learned so far: ${learned} / ${WORD_KEYS.length} · Pet friends met: ${met} / ${PET_KEYS.length}`;
-      memory.lastMs = advMs; saveMemory();
-      document.getElementById("winTime").textContent = "⏱ This adventure took " + fmtTime(advMs);
       for (let i = 0; i < 6; i++) setTimeout(() => burst(princess.x + rr(-80, 80), princess.y - 60 + rr(-40, 40), ["#d62828", "#ffffff", "#2a9d48", "#ffd23f"], 26), i * 250);
       setTimeout(() => document.getElementById("win").classList.remove("hidden"), 1200);
     }
@@ -3612,8 +3601,8 @@
     // play time: only while actually playing (page visible, no menu open, a key/tap in the last minute)
     const overlay = !document.getElementById("dict").classList.contains("hidden") || !document.getElementById("win").classList.contains("hidden");
     if (started && !won && !document.hidden && !overlay && now - lastInput < 60000) {
-      advMs += ms; memory.playMs += ms; saveTick += ms;
-      if (saveTick > 15000) { saveTick = 0; saveGame(); saveMemory(); }
+      advMs += ms; saveTick += ms;
+      if (saveTick > 15000) { saveTick = 0; saveGame(); }
     }
     const secs = Math.floor(advMs / 1000);
     if (secs !== shownSecs) { shownSecs = secs; timeHud.textContent = "⏱ " + Math.floor(secs / 60) + ":" + String(secs % 60).padStart(2, "0"); }
@@ -3623,7 +3612,7 @@
   }
   requestAnimationFrame(frame);
   // keep the play time when the page is closed or hidden
-  const saveNow = () => { if (started) { saveGame(); saveMemory(); } };
+  const saveNow = () => { if (started && !won) saveGame(); };
   window.addEventListener("pagehide", saveNow);
   document.addEventListener("visibilitychange", () => { if (document.hidden) saveNow(); });
 })();
