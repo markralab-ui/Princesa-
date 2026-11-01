@@ -963,7 +963,8 @@
   for (const k of ANIMAL_KEYS) PETS[k] = [WORDS[k][0], WORDS[k][1], WORDS[k][2]];
   const PET_KEYS = Object.keys(PETS);
   // Adventure size: how much to find per adventure (pets are always 11)
-  const SIZES = { small: { treasures: 6, perRoom: 2, visiting: 3, fixedRoom: 2, fixedPark: 3 }, medium: { treasures: 10, perRoom: 3, visiting: 4, fixedRoom: 3, fixedPark: 5 }, big: { treasures: 16, perRoom: 4, visiting: 5, fixedRoom: 4, fixedPark: 7 } };
+  // Adventure sizes (pets are always 11). Medium is about ten minutes of play.
+  const SIZES = { small: { treasures: 5, perRoom: 1, visiting: 2, fixedRoom: 1, fixedPark: 2 }, medium: { treasures: 8, perRoom: 2, visiting: 3, fixedRoom: 1, fixedPark: 3 }, big: { treasures: 12, perRoom: 3, visiting: 4, fixedRoom: 2, fixedPark: 5 } };
   let sizeName = "medium";
   try { if (SIZES[localStorage.getItem("princesa2-size")]) sizeName = localStorage.getItem("princesa2-size"); } catch (e) { /* ignore */ }
   const SIZE = SIZES[sizeName];
@@ -1108,10 +1109,10 @@
   // ---------- Memory across adventures ----------
   const MEM_KEY = "princesa2-vocab-v1";
   const SAVE_KEY = "princesa2-park-save-v1";
-  let memory = { seen: {}, pets: {}, labels: {}, games: 0 };
+  let memory = { seen: {}, pets: {}, labels: {}, last: {}, games: 0 };
   try {
     const m = JSON.parse(localStorage.getItem(MEM_KEY) || "null");
-    if (m && m.seen && m.pets) memory = { seen: m.seen, pets: m.pets, labels: m.labels || {}, games: m.games || 0 };
+    if (m && m.seen && m.pets) memory = { seen: m.seen, pets: m.pets, labels: m.labels || {}, last: m.last || {}, games: m.games || 0 };
   } catch (e) { /* storage unavailable */ }
   function saveMemory() {
     try { localStorage.setItem(MEM_KEY, JSON.stringify(memory)); } catch (e) { /* ignore */ }
@@ -1156,7 +1157,7 @@
   const itemKeys = savedGame ? savedGame.items : pickWords();
   // visiting things: only ones never named yet, least seen first
   const visitKeys = savedGame && Array.isArray(savedGame.visit) && savedGame.visit.every(k => WORDS[k]) ? savedGame.visit
-    : pickLeastSeen(VISIT_KEYS.filter(k => !memory.labels[k]), memory.seen, SIZE.visiting);
+    : (() => { const fresh = VISIT_KEYS.filter(k => memory.last[k] !== gameNo - 1); return pickLeastSeen(fresh.length >= SIZE.visiting ? fresh : VISIT_KEYS, memory.seen, SIZE.visiting); })();
   visitKeys.forEach((k, i) => { const sl = VISIT_SLOTS[i]; PARK_FIXTURES.push({ keys: [k], x: sl.x, y: sl.y - 20, w: 80, h: 60, sc: 3.2, visiting: true, spot: { x: sl.x, y: sl.y + 44 } }); rectObstacles.push({ x: sl.x - 40, y: sl.y - 30, w: 80, h: 40 }); });
 
   // ---------- Treasures ----------
@@ -1222,19 +1223,17 @@
   });
 
   // A thing named in an earlier adventure keeps its sticker for good: it starts labelled and is not counted again
-  function withPermanent(f) {
-    let n = 0;
-    while (n < f.keys.length && memory.labels[f.keys[n]]) n++;
-    f.base = n; f.labelled = n;
-    return f;
-  }
+  function withPermanent(f) { f.base = 0; f.labelled = 0; return f; }
   const fixtureTodo = f => f.silent || f.sleep ? 0 : f.keys.length - (f.base || 0);
   const fixtureDone = f => f.silent || f.sleep ? 0 : Math.max(0, f.labelled - (f.base || 0));
   // Of the fixed things still to be named, only `n` are awake this adventure (seeded, so a reload keeps the same ones)
   function wakeSome(fixtures, n, seedBase) {
     seed = seedBase;
-    const todo = fixtures.filter(f => !f.silent && !f.visiting && f.keys.length - (f.base || 0) > 0);
-    const order = todo.map(f => ({ f, r: rand() })).sort((a, b) => a.r - b.r).map(o => o.f);
+    const todo = fixtures.filter(f => !f.silent && !f.visiting);
+    // least-named first; anything named in the previous adventure waits a turn; ties broken by the seeded shuffle
+    const score = f => Math.min(...f.keys.map(k => memory.seen[k] || 0));
+    const recent = f => f.keys.some(k => memory.last[k] === gameNo - 1) ? 1 : 0;
+    const order = todo.map(f => ({ f, s: score(f), c: recent(f), r: rand() })).sort((a, b) => a.c - b.c || a.s - b.s || a.r - b.r).map(o => o.f);
     order.forEach((f, i) => { f.sleep = i >= n; });
     for (const f of fixtures) if (f.silent) { const main = fixtures.find(g => !g.silent && g.keys.join() === f.keys.join()); if (main) f.sleep = main.sleep; }
   }
@@ -1639,7 +1638,7 @@
     burst(at.x, at.y, ["#ffd23f", "#ffffff", "#ff6fa8", "#7bdff2"], 22);
     f.pop = { text: w[0], x: at.x, y: at.y, t: 0 }; // the sticker pops up and flies into her collection
     showWord(w[0], w[1], w[2]);
-    if (!f.silent) { memory.seen[key] = (memory.seen[key] || 0) + 1; memory.labels[key] = true; saveMemory(); }
+    if (!f.silent) { memory.seen[key] = (memory.seen[key] || 0) + 1; memory.labels[key] = true; memory.last[key] = gameNo; saveMemory(); }
     updateHud();
     saveGame();
     checkRoomDone();
