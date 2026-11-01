@@ -252,7 +252,7 @@
 <div id="start">
   <div class="card">
     <h1>Princess Raya's Park Adventure 2</h1>
-    <p class="note build">build 37</p>
+    <p class="note build">build 38</p>
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find the sparkly <b>treasures</b> to learn their <b>Bulgarian names</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <p class="note" id="startNote"></p>
@@ -1775,8 +1775,8 @@
   window.addEventListener("resize", fitHud);
   function updateHud() {
     fitHud();
-    const got = treasures.filter(t => t.collected).length + roomItemsCollected() + labelledCount();
-    const total = treasures.length + roomItemsTotal() + allFixtureKeys();
+    const got = treasures.filter(t => t.collected).length + roomItemsCollected() + labelledCount() + followers.length;
+    const total = treasures.length + roomItemsTotal() + allFixtureKeys() + pets.length;
     treasureEl.textContent = `🎁 Words: ${got} / ${total}`;
     petEl.textContent = `🐾 Pets: ${followers.length} / ${pets.length}`;
     const [a, b] = areaProgress(scene);
@@ -3293,9 +3293,6 @@
       // soft play mat with cheerful polka dots
       const dots = ["#ffd6e7", "#d6f0ff", "#fff3c4", "#dff5dd"];
       for (let x = 50; x < r.w - 30; x += 60) for (let y = WALL_TOP + 30; y < r.h - 30; y += 60) circle(x + ((y / 60) % 2) * 30, y, 9, dots[((x / 60) + (y / 60)) % 4 | 0]);
-    } else if (r.name === "bedroom") {
-      for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(0, y, r.w, 2);
-      for (let x = 0; x < r.w; x += 160) for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(x + ((y / 28) % 2) * 80, y, 2, 28);
     } else {
       // smooth warm floor: long soft boards, no joints
       const g = ctx.createLinearGradient(0, WALL_TOP, 0, r.h);
@@ -3315,6 +3312,9 @@
         ctx.fillStyle = "#ffe066";
         for (let x = 300; x < 720; x += 60) for (let y = 390; y < 540; y += 60) { ctx.beginPath(); ctx.moveTo(x, y - 12); ctx.lineTo(x + 12, y); ctx.lineTo(x, y + 12); ctx.lineTo(x - 12, y); ctx.closePath(); ctx.fill(); }
         ctx.strokeStyle = "#ffd23f"; ctx.lineWidth = 2; ctx.strokeRect(280, 380, 440, 160);
+      } else if (r.name === "bedroom") {
+        // a soft oval bedside rug
+        ["#ffc2d9", "#ffd6e7", "#ffe9f1"].forEach((c, i) => { ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(190, 420, 120 - i * 28, 46 - i * 11, 0, 0, Math.PI * 2); ctx.fill(); });
       } else if (r.name === "hall") {
         // a long striped runner down the middle
         ctx.fillStyle = "#2a9d48"; ctx.fillRect(400, WALL_TOP + 20, 200, r.h - WALL_TOP - 60);
