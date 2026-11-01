@@ -53,3 +53,10 @@ Stress fixes: Kalina sometimes guesses the stress wrong, because Bulgarian spell
 - сърце (`heart.mp3`): `sɐrˈtsɛ`
 - хвърчило (`kite.mp3`): `xvɐrˈtʃilo`
 - яйце (`egg.mp3`): `jajˈtsɛ`
+
+## After the voice recordings are done: remove the Azure key
+
+The key was only needed to record the clips once. Afterwards:
+1. claude.ai/code → gear next to the **Princesa** environment → **Environment variables** → delete the `AZURE_SPEECH_KEY=` line (and the region line) → Save changes.
+2. Optional: portal.azure.com → your Speech resource → Keys and Endpoint → **Regenerate Key 1**.
+The recordings in the game keep working; they are plain audio files.
