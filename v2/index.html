@@ -314,9 +314,29 @@
   const fountain = { x: 1200, y: 820, r: 110 };
   const pond = { x: 520, y: 1250, rx: 260, ry: 150 };
 
-  // Circular obstacles {x, y, r}
+  // Circular obstacles {x, y, r} and rectangular ones {x, y, w, h}
   const obstacles = [];
+  const rectObstacles = [];
   obstacles.push({ x: fountain.x, y: fountain.y + 10, r: fountain.r - 8 });
+
+  // The cottage (bottom right) and the playground (top left): reserved so no trees grow there
+  const house = { x: 1930, y: 1330 }; // door position (front, bottom centre)
+  const houseBody = { x: house.x - 130, y: house.y - 150, w: 260, h: 150 };
+  const playground = { x: 420, y: 420 };
+  const reserved = [
+    { x: houseBody.x - 120, y: houseBody.y - 140, w: houseBody.w + 240, h: houseBody.h + 300 },
+    { x: playground.x - 260, y: playground.y - 160, w: 520, h: 330 },
+  ];
+  function inRect(x, y, r, pad = 0) { return x > r.x - pad && x < r.x + r.w + pad && y > r.y - pad && y < r.y + r.h + pad; }
+  // solid parts of the park structures
+  rectObstacles.push(houseBody);
+  rectObstacles.push({ x: house.x - 220, y: house.y + 52, w: 170, h: 30 }); // fence left of the gate
+  rectObstacles.push({ x: house.x + 30, y: house.y + 52, w: 190, h: 30 });  // fence right of the gate
+  rectObstacles.push({ x: houseBody.x - 80, y: house.y + 10, w: 70, h: 50 });           // flower bed (garden)
+  rectObstacles.push({ x: playground.x - 200, y: playground.y - 40, w: 60, h: 30 });     // swing frame
+  rectObstacles.push({ x: playground.x - 40, y: playground.y - 60, w: 90, h: 40 });      // slide
+  rectObstacles.push({ x: playground.x + 100, y: playground.y - 20, w: 110, h: 70 });    // sandbox
+  rectObstacles.push({ x: playground.x - 60, y: playground.y + 80, w: 90, h: 50 });      // merry-go-round
 
   function inPond(x, y, pad = 0) {
     const dx = (x - pond.x) / (pond.rx + pad);
@@ -332,6 +352,7 @@
     [[fountain.x, 820], [fountain.x, WORLD_H]],
     [[fountain.x, 820], [800, 1120]],
     [[fountain.x, 820], [1750, 380]],
+    [[fountain.x, 1400], [house.x, 1400]],
   ];
 
   function distToSeg(px, py, ax, ay, bx, by) {
@@ -353,6 +374,7 @@
     if (inPond(x, y, 40 + pad)) return false;
     if (nearPath(x, y, pad)) return false;
     if (Math.hypot(x - 1200, y - 1000) < 160) return false; // start area
+    for (const r of reserved) if (inRect(x, y, r, pad)) return false;
     for (const o of obstacles) {
       if (Math.hypot(x - o.x, y - o.y) < o.r + pad + 30) return false;
     }
@@ -735,6 +757,52 @@
     jewelrybox: ["кутия за бижута", "ku-TEE-ya za bi-ZHOO-ta", "jewellery box", d => { d.r(-12, -1, 24, 12, "#9b5de5"); d.p([[-12, -1], [12, -1], [12, -9], [-12, -9]], "#c77dff"); d.r(-12, -2, 24, 2, GD); d.c(0, 5, 1.5, G); d.c(-5, -5, 2, "#ff6fa8"); d.c(0, -6, 2, "#7bdff2"); d.c(5, -5, 2, "#ffd23f"); }],
     wand:       ["вълшебна пръчица", "val-SHEB-na PRA-chi-tsa", "magic wand", d => { d.l([[-10, 12], [6, -4]], "#9b5de5", 3); d.l([[-10, 12], [6, -4]], "#c77dff", 1); d.star(9, -8, 7, "#ffd23f", 5); d.star(1, -11, 2.5, "#ffe66d", 4); d.star(13, 0, 2, "#ffe66d", 4); }],
     gemstone:   ["скъпоценен камък", "ska-po-TSE-nen KA-mak", "gemstone", d => { d.gem(-5, 2, 7, "#9b5de5"); d.gem(6, -3, 6, "#2ec4b6"); d.gem(3, 7, 5, "#ff6fa8"); }],
+    // park structures
+    bench:      ["пейка", "PEY-ka", "bench", d => { d.r(-13, -8, 26, 5, "#d9934f"); d.r(-13, -1, 26, 4, "#c27c3e"); d.r(-11, 3, 3, 9, "#7a4a24"); d.r(8, 3, 3, 9, "#7a4a24"); d.r(-11, -8, 3, 7, "#7a4a24"); d.r(8, -8, 3, 7, "#7a4a24"); }],
+    fountain:   ["фонтан", "fon-TAN", "fountain", d => { d.e(0, 8, 14, 5, "#b8b0a5"); d.e(0, 6, 12, 4, "#6cc6f0"); d.r(-2, -4, 4, 10, "#d9d4cc"); d.e(0, -4, 7, 2.5, "#d9d4cc"); d.e(0, -5, 5, 1.5, "#6cc6f0"); d.l([[0, -6], [-5, -14], [-8, -5]], "#7bdff2", 2); d.l([[0, -6], [5, -14], [8, -5]], "#7bdff2", 2); d.l([[0, -6], [0, -15]], "#7bdff2", 2); }],
+    pond:       ["езеро", "E-ze-ro", "pond", d => { d.e(0, 2, 14, 9, "#e8d39a"); d.e(0, 2, 12, 7, "#4aa8dc"); d.e(-2, 1, 9, 4.5, "#6cc6f0"); d.e(-5, 3, 3, 2, "#3fae4a"); d.e(5, -1, 2.5, 1.5, "#3fae4a"); d.c(6, 4, 2, "#fff7d6"); }],
+    bridge:     ["мост", "MOST", "bridge", d => { d.l([[-14, 8], [14, 8]], "#4aa8dc", 3); d.arc(0, 10, 13, Math.PI, Math.PI * 2, "#9c6b3d", 4); d.arc(0, 4, 13, Math.PI, Math.PI * 2, "#c27c3e", 2); for (let i = -2; i <= 2; i++) d.l([[i * 6, 4 - Math.sqrt(169 - 36 * i * i) + 13 - 6], [i * 6, 10 - Math.sqrt(169 - 36 * i * i) + 13 - 6]], "#c27c3e", 1.5); }],
+    path:       ["пътека", "pa-TE-ka", "path", d => { d.p([[-6, -14], [6, -14], [14, 14], [-14, 14]], "#f3dca2"); d.l([[-6, -14], [-14, 14]], "#e2c27e", 1.5); d.l([[6, -14], [14, 14]], "#e2c27e", 1.5); [[-2, -6], [3, 0], [-5, 6], [5, 9]].forEach(q => d.c(q[0], q[1], 1.3, "#e6c98c")); }],
+    sandbox:    ["пясъчник", "PYA-sach-nik", "sandbox", d => { d.r(-14, -6, 28, 16, "#9c6b3d"); d.r(-11, -3, 22, 10, "#f3dca2"); d.r(-14, -6, 28, 2, "#c27c3e"); d.p([[-4, 0], [4, 0], [2, -8], [-2, -8]], "#e63946"); d.c(6, 3, 2.5, "#3a86ff"); }],
+    bush:       ["храст", "HRAST", "bush", d => { d.c(-7, 2, 7, "#3c9e48"); d.c(7, 2, 7, "#3c9e48"); d.c(0, -4, 8, "#47b053"); d.c(-3, -7, 3, "rgba(255,255,255,.15)"); d.c(-6, 0, 1.8, "#ff4d6d"); d.c(5, -2, 1.8, "#ff4d6d"); }],
+    carousel:   ["въртележка", "var-te-LEZH-ka", "merry-go-round", d => { d.e(0, 8, 14, 5, "#c9ced6"); d.r(-1, -10, 2, 18, "#8a9099"); d.e(0, -10, 14, 4, "#e63946"); for (let i = -2; i <= 2; i += 2) { d.l([[i * 5, -8], [i * 5, 4]], "#ffd23f", 1.5); d.c(i * 5, 1, 2.5, i ? "#3a86ff" : "#ff6fa8"); } }],
+    // kitchen
+    sink:       ["мивка", "MIV-ka", "sink", d => { d.r(-13, -2, 26, 14, "#c9ced6"); d.rr(-11, 0, 22, 9, 2, "#eef1f5"); d.c(0, 5, 1.5, "#8a9099"); d.l([[6, -2], [6, -10], [2, -10]], "#8a9099", 2.5); d.c(2, -10, 1.5, "#8a9099"); d.r(-13, 12, 26, 2, "#8a9099"); }],
+    oven:       ["фурна", "FOOR-na", "oven", d => { d.r(-13, -12, 26, 26, "#eef1f5"); d.r(-13, -12, 26, 5, "#c9ced6"); d.c(-9, -9.5, 1.5, "#333"); d.c(-4, -9.5, 1.5, "#333"); d.r(-10, -4, 20, 15, "#333"); d.r(-8, -2, 16, 10, "#ffd23f"); d.e(0, 4, 5, 3, "#d9934f"); d.r(-10, -5, 20, 1.5, "#8a9099"); }],
+    cupboard:   ["шкаф", "SHKAF", "cupboard", d => { d.r(-13, -13, 26, 26, "#c27c3e"); d.r(-11, -11, 10, 22, "#d9934f"); d.r(1, -11, 10, 22, "#d9934f"); d.c(-3, 0, 1.3, "#5a2e14"); d.c(3, 0, 1.3, "#5a2e14"); }],
+    jug:        ["кана", "KA-na", "jug", d => { d.p([[-8, -9], [8, -9], [10, 13], [-10, 13]], "#4f8fe0"); d.p([[-8, -9], [-11, -13], [-6, -13]], "#4f8fe0"); d.arc(11, 0, 5, -Math.PI / 2, Math.PI / 2, "#4f8fe0", 3); d.r(-8, 2, 16, 9, "#ff9f1c"); d.l([[-6, -6], [-7, 10]], "rgba(255,255,255,.5)", 1.5); }],
+    napkin:     ["салфетка", "sal-FET-ka", "napkin", d => { d.p([[-12, -10], [12, -10], [12, 10], [-12, 10]], "#eef1f5"); d.p([[-12, -10], [12, -10], [-12, 10]], WHT); d.l([[-12, -10], [12, -10], [12, 10], [-12, 10], [-12, -10]], "#c9ced6", 1); d.l([[12, -10], [-12, 10]], "#c9ced6", 1); d.c(-5, -3, 2, "#ff6fa8"); }],
+    apron:      ["престилка", "pres-TIL-ka", "apron", d => { d.p([[-5, -14], [5, -14], [5, -6], [12, -4], [11, 13], [-11, 13], [-12, -4], [-5, -6]], "#ff6fa8"); d.l([[-5, -14], [-9, -8]], "#333", 1); d.l([[5, -14], [9, -8]], "#333", 1); d.r(-6, 2, 12, 7, "#ffc2d9"); d.c(0, -9, 2, "#ffd23f"); }],
+    board:      ["дъска за рязане", "DAS-ka za RYA-za-ne", "cutting board", d => { d.rr(-12, -8, 24, 18, 3, "#d9934f"); d.c(9, -5, 1.5, "#9c6b3d"); d.l([[-8, -2], [4, 4]], "#c27c3e", 1); d.l([[-6, 5], [6, -1]], "#c27c3e", 1); d.e(-3, 0, 4, 3, "#e63946"); }],
+    coffee:     ["кафе", "ka-FE", "coffee", d => { d.rr(-8, -4, 16, 15, 2, WHT); d.e(0, -4, 8, 3, "#5a2e14"); d.arc(10, 3, 4, -Math.PI / 2, Math.PI / 2, WHT, 2.5); d.e(0, 11, 11, 2.5, "#eee"); d.l([[-3, -8], [-2, -14]], "rgba(200,200,200,.7)", 1.5); d.l([[2, -8], [3, -14]], "rgba(200,200,200,.7)", 1.5); }],
+    // bedroom
+    alarm:      ["будилник", "bu-DIL-nik", "alarm clock", d => { d.c(-8, -9, 4, "#e63946"); d.c(8, -9, 4, "#e63946"); d.c(0, 1, 11, "#e63946"); d.c(0, 1, 9, WHT); d.l([[0, 1], [0, -5]], "#333", 1.5); d.l([[0, 1], [4, 3]], "#333", 1.5); d.c(0, 1, 1.2, "#333"); d.l([[-5, 11], [-7, 14]], "#333", 1.5); d.l([[5, 11], [7, 14]], "#333", 1.5); }],
+    nightstand: ["нощно шкафче", "NOSHT-no SHKAF-che", "nightstand", d => { d.r(-11, -8, 22, 20, "#c27c3e"); d.r(-12, -10, 24, 3, "#d9934f"); d.r(-9, -5, 18, 7, "#9c6b3d"); d.c(0, -1.5, 1.3, "#ffd23f"); d.r(-9, 4, 18, 6, "#9c6b3d"); }],
+    curtain:    ["завеса", "za-VE-sa", "curtain", d => { d.r(-14, -13, 28, 3, "#9c6b3d"); for (const sx of [-1, 1]) { d.p([[sx * 13, -10], [sx * 3, -10], [sx * 4, 2], [sx * 8, 12], [sx * 13, 12]], "#ff6fa8"); d.l([[sx * 11, -10], [sx * 9, 2]], "#e0245e", 1); d.l([[sx * 8, -10], [sx * 6, 2]], "#e0245e", 1); d.e(sx * 7, 3, 4, 1.5, "#ffd23f"); } }],
+    shelf:      ["рафт", "RAFT", "shelf", d => { d.r(-14, 4, 28, 3, "#c27c3e"); d.r(-14, -8, 28, 3, "#c27c3e"); d.r(-10, -5, 4, 9, "#e63946"); d.r(-5, -5, 3, 9, "#3a86ff"); d.r(-1, -5, 4, 9, "#2a9d48"); d.c(8, 0, 3.5, "#ffd23f"); d.r(-9, 7, 3, 6, "#9b5de5"); d.c(6, 10, 3, "#ff6fa8"); }],
+    sheet:      ["чаршаф", "char-SHAF", "sheet", d => { d.p([[-13, -6], [13, -6], [13, 10], [-13, 10]], "#bde0fe"); d.p([[-13, -6], [13, -6], [10, -10], [-10, -10]], "#dbeeff"); d.l([[-9, -2], [9, -2]], "#9ccbf5", 1); d.l([[-9, 3], [9, 3]], "#9ccbf5", 1); }],
+    // bathroom
+    toilet:     ["тоалетна", "to-a-LET-na", "toilet", d => { d.r(-6, -14, 12, 12, "#eef1f5"); d.r(-5, -12, 10, 3, "#c9ced6"); d.e(0, 4, 11, 7, "#eef1f5"); d.e(0, 3, 11, 7, WHT); d.e(0, 3, 7, 4, "#bde0fe"); d.r(-7, 9, 14, 5, "#eef1f5"); d.c(3, -10, 1.3, "#8a9099"); }],
+    shampoo:    ["шампоан", "sham-po-AN", "shampoo", d => { d.rr(-7, -6, 14, 20, 3, "#9b5de5"); d.r(-3, -12, 6, 6, "#c77dff"); d.r(-2, -15, 4, 3, "#c77dff"); d.rr(-5, -2, 10, 9, 1, WHT); d.c(0, 2, 2, "#ff6fa8"); }],
+    bathrobe:   ["халат", "ha-LAT", "bathrobe", d => { d.p([[-6, -13], [6, -13], [12, -8], [10, 0], [8, -2], [9, 14], [-9, 14], [-8, -2], [-10, 0], [-12, -8]], "#7bdff2"); d.p([[-6, -13], [0, -4], [6, -13]], "#bdeffb"); d.l([[0, -4], [0, 14]], "#4aa8dc", 1); d.r(-8, 2, 16, 2.5, "#4aa8dc"); }],
+    slippers:   ["чехли", "CHEH-li", "slippers", d => { for (const sx of [-1, 1]) { const x = sx * 7; d.e(x, 3, 5, 10, "#ff6fa8"); d.e(x, -2, 5, 3.5, "#e0245e"); d.c(x, -3, 1.5, WHT); } }],
+    hairdryer:  ["сешоар", "se-sho-AR", "hair dryer", d => { d.e(-3, -4, 10, 7, "#e63946"); d.r(6, -7, 8, 6, "#c1121f"); d.p([[-6, 2], [2, 2], [4, 13], [-2, 13]], "#e63946"); d.c(-3, -4, 3, "#333"); d.l([[14, -6], [18, -8]], "#7bdff2", 1); d.l([[14, -3], [18, -3]], "#7bdff2", 1); }],
+    scale:      ["кантар", "kan-TAR", "scale", d => { d.rr(-13, -8, 26, 18, 4, "#eef1f5"); d.rr(-11, -6, 22, 14, 3, "#dfe3e8"); d.rr(-6, -5, 12, 5, 1, "#333"); d.r(-4, -4, 8, 3, "#9be39b"); d.r(-13, 10, 26, 2, "#c9ced6"); }],
+    laundrybasket: ["кош за пране", "KOSH za pra-NE", "laundry basket", d => { d.p([[-11, -6], [11, -6], [9, 13], [-9, 13]], "#e8b06a"); d.l([[-10, 0], [10, 0]], "#c27c3e", 1); d.l([[-10, 6], [10, 6]], "#c27c3e", 1); d.r(-12, -8, 24, 3, "#c27c3e"); d.e(-4, -9, 5, 3, "#4f8fe0"); d.e(4, -10, 5, 3, "#ff6fa8"); }],
+    rubberduck: ["гумено пате", "GOO-me-no PA-te", "rubber duck", d => { d.e(-2, 3, 10, 7, "#ffd23f"); d.c(6, -5, 6, "#ffd23f"); d.p([[11, -5], [17, -3], [11, -2]], "#ff9f1c"); d.c(8, -6, 1.2, "#222"); d.e(-5, 2, 5, 3, "#f5c000", -0.3); d.l([[-13, 10], [13, 10]], "#4aa8dc", 1.5); }],
+    // living room
+    armchair:   ["фотьойл", "fo-TYOYL", "armchair", d => { d.r(-12, -6, 24, 14, "#9b5de5"); d.r(-10, -11, 20, 7, "#c77dff"); d.r(-13, -7, 4, 16, "#7b3fd5"); d.r(9, -7, 4, 16, "#7b3fd5"); d.r(-10, 8, 2, 3, "#5a2e14"); d.r(8, 8, 2, 3, "#5a2e14"); }],
+    fireplace:  ["камина", "ka-MEE-na", "fireplace", d => { d.r(-14, -13, 28, 26, "#b8b0a5"); d.r(-14, -13, 28, 3, "#8a9099"); d.r(-9, -7, 18, 20, "#333"); d.p([[-5, 13], [-6, 2], [-2, 6], [0, -2], [2, 6], [6, 2], [5, 13]], "#ff9f1c"); d.p([[-3, 13], [-2, 6], [0, 3], [2, 6], [3, 13]], "#ffd23f"); d.r(-8, 11, 16, 2, "#7a4a24"); }],
+    bookshelf:  ["библиотека", "bib-li-o-TE-ka", "bookshelf", d => { d.r(-13, -14, 26, 28, "#c27c3e"); for (let y = -11; y < 12; y += 8) { d.r(-11, y, 22, 1.5, "#9c6b3d"); ["#e63946", "#3a86ff", "#2a9d48", "#ffd23f", "#9b5de5"].forEach((c, i) => d.r(-10 + i * 4.2, y - 6 + (i % 2), 3.2, 6 - (i % 2), c)); } }],
+    picture:    ["картина", "kar-TEE-na", "picture", d => { d.r(-13, -10, 26, 20, "#ffd23f"); d.r(-11, -8, 22, 16, "#bde0fe"); d.p([[-11, 8], [-4, -2], [2, 4], [6, 0], [11, 8]], "#3fae4a"); d.c(6, -4, 2.5, "#ffd23f"); }],
+    coffeetable:["масичка", "MA-sich-ka", "coffee table", d => { d.e(0, -2, 14, 6, "#d9934f"); d.e(0, -3, 14, 6, "#c27c3e"); d.e(0, -4, 12, 4.5, "#d9934f"); d.r(-10, 0, 3, 8, "#9c6b3d"); d.r(7, 0, 3, 8, "#9c6b3d"); d.r(-2, 1, 3, 9, "#9c6b3d"); }],
+    vase:       ["ваза", "VA-za", "vase", d => { d.p([[-5, -8], [5, -8], [8, 0], [6, 13], [-6, 13], [-8, 0]], "#4f8fe0"); d.r(-6, -11, 12, 3, "#3a6fc0"); d.l([[-2, -11], [-4, -18]], "#4a8f3a", 1.5); d.l([[2, -11], [4, -17]], "#4a8f3a", 1.5); d.c(-5, -19, 3, "#ff6fa8"); d.c(5, -18, 3, "#ffd23f"); d.e(-3, 2, 2, 5, "rgba(255,255,255,.3)"); }],
+    plant:      ["растение", "ras-TE-ni-e", "plant", d => { d.p([[-8, 4], [8, 4], [6, 14], [-6, 14]], "#d9934f"); d.r(-9, 2, 18, 3, "#c27c3e"); d.e(-6, -4, 4, 9, "#3fae4a", 0.5); d.e(6, -4, 4, 9, "#3fae4a", -0.5); d.e(0, -7, 4, 10, "#4fbf55"); d.e(-3, 0, 3, 6, "#2a9d48", 0.9); d.e(3, 0, 3, 6, "#2a9d48", -0.9); }],
+    cushion:    ["възглавничка", "vaz-GLAV-nich-ka", "cushion", d => { d.p([[-12, -11], [12, -11], [10, 11], [-10, 11]], "#ffd23f"); d.p([[-9, -8], [9, -8], [7, 8], [-7, 8]], "#ffe66d"); d.c(0, 0, 2, "#ff9f1c"); }],
+    // hallway
+    doormat:    ["изтривалка", "iz-tri-VAL-ka", "doormat", d => { d.p([[-14, -4], [14, -4], [12, 8], [-12, 8]], "#c27c3e"); d.p([[-11, -2], [11, -2], [9, 6], [-9, 6]], "#d9934f"); d.l([[-8, 1], [8, 1]], "#9c6b3d", 1); d.heart(0, 2, 3, "#e63946"); }],
+    mailbox:    ["пощенска кутия", "POSHT-en-ska KOO-ti-ya", "mailbox", d => { d.r(-1, 0, 2, 14, "#8a9099"); d.rr(-10, -12, 20, 13, 3, "#3a86ff"); d.r(-7, -6, 10, 4, WHT); d.r(8, -11, 2, 6, "#e63946"); d.c(9, -12, 1.5, "#e63946"); }],
+    lock:       ["ключалка", "klyu-CHAL-ka", "lock", d => { d.arc(0, -5, 7, Math.PI, Math.PI * 2, "#8a9099", 3); d.rr(-10, -4, 20, 16, 3, "#ffd23f"); d.c(0, 3, 2.5, "#333"); d.r(-1, 3, 2, 5, "#333"); }],
   };
   const WORD_KEYS = Object.keys(WORDS);
 
@@ -795,6 +863,103 @@
   const PET_KEYS = Object.keys(PETS);
   const WORDS_PER_GAME = 26;
   const PETS_PER_GAME = 8;
+
+  // ---------- Where each word lives ----------
+  // Loose objects that can be picked up, per room. Everything not listed here lives in the park.
+  const ROOM_LOOSE = {
+    kitchen: ["spoon", "fork", "knife", "plate", "bowl", "pot", "pan", "kettle", "bottle", "jar", "glass", "cup", "jug", "napkin", "apron", "board", "coffee",
+      "bread", "cheese", "egg", "milk", "butter", "jam", "honey", "sugar", "salt", "tea", "soup", "pizza", "pasta", "rice", "salad", "yogurt",
+      "tomato", "cucumber", "carrot", "pepper", "potato", "onion", "garlic", "corn", "peas", "beans", "cabbage", "broccoli", "pumpkin",
+      "cake", "banitsa", "pancake", "chocolate", "bun"],
+    bedroom: ["pillow", "blanket", "sheet", "pyjamas", "dress", "shirt", "tshirt", "trousers", "socks", "jacket", "skirt", "button", "hat", "shoes", "boots",
+      "scarf", "gloves", "teddy", "doll", "blocks", "puzzle", "toytrain", "paints", "crayons", "book", "notebook", "pencil", "scissors", "eraser",
+      "glue", "paper", "ruler", "backpack", "clock", "alarm", "bow", "hairclip"],
+    bathroom: ["soap", "toothbrush", "toothpaste", "towel", "comb", "sponge", "toiletpaper", "medicine", "bandage", "iron", "shampoo", "bathrobe",
+      "slippers", "hairdryer", "rubberduck"],
+    living: ["remote", "radio", "guitar", "computer", "phone", "headphones", "candle", "glasses", "wallet", "bag", "letter", "violin", "drum",
+      "vase", "plant", "cushion"],
+    hall: ["key", "umbrella", "lock"],
+  };
+  const LOOSE_PER_ROOM = { kitchen: 6, bedroom: 6, bathroom: 5, living: 5, hall: 2 };
+
+  // Fixed things that get a name sticker when the princess walks up to them.
+  // x, y = centre; w, h = solid footprint; sc = drawing scale; keys = words labelled in turn; flat = can be walked over
+  const ROOM_FIXTURES = {
+    kitchen: [
+      { keys: ["fridge"], x: 110, y: 185, w: 80, h: 70, sc: 3.4 },
+      { keys: ["stove"], x: 250, y: 190, w: 90, h: 60, sc: 3.4 },
+      { keys: ["oven"], x: 380, y: 185, w: 80, h: 70, sc: 3.2 },
+      { keys: ["sink"], x: 520, y: 190, w: 90, h: 50, sc: 3.4 },
+      { keys: ["cupboard"], x: 660, y: 185, w: 80, h: 70, sc: 3.2 },
+      { keys: ["table"], x: 500, y: 420, w: 100, h: 50, sc: 3.6 },
+      { keys: ["chair"], x: 395, y: 420, w: 50, h: 60, sc: 3.2 },
+      { keys: ["chair"], x: 605, y: 420, w: 50, h: 60, sc: 3.2, mirror: true, silent: true },
+      { keys: ["trashbin"], x: 900, y: 560, w: 50, h: 60, sc: 2.8 },
+    ],
+    bedroom: [
+      { keys: ["bed"], x: 190, y: 230, w: 120, h: 100, sc: 4 },
+      { keys: ["nightstand"], x: 320, y: 200, w: 60, h: 60, sc: 2.8 },
+      { keys: ["wardrobe"], x: 760, y: 185, w: 80, h: 80, sc: 3.4 },
+      { keys: ["lamp"], x: 900, y: 190, w: 50, h: 60, sc: 3 },
+      { keys: ["window", "curtain"], x: 500, y: 60, w: 90, h: 80, sc: 3, wall: true },
+      { keys: ["shelf"], x: 640, y: 60, w: 80, h: 70, sc: 2.8, wall: true },
+      { keys: ["rug"], x: 520, y: 430, w: 140, h: 70, sc: 4.5, flat: true },
+    ],
+    bathroom: [
+      { keys: ["bathtub"], x: 200, y: 215, w: 120, h: 60, sc: 4 },
+      { keys: ["shower"], x: 380, y: 175, w: 60, h: 80, sc: 3.2 },
+      { keys: ["mirror"], x: 560, y: 55, w: 60, h: 80, sc: 2.8, wall: true },
+      { keys: ["washer"], x: 720, y: 190, w: 80, h: 80, sc: 3 },
+      { keys: ["toilet"], x: 900, y: 200, w: 60, h: 80, sc: 3 },
+      { keys: ["laundrybasket"], x: 880, y: 540, w: 60, h: 60, sc: 2.8 },
+      { keys: ["scale"], x: 140, y: 560, w: 70, h: 50, sc: 2.6, flat: true },
+    ],
+    living: [
+      { keys: ["fireplace"], x: 120, y: 185, w: 90, h: 80, sc: 3.2 },
+      { keys: ["sofa"], x: 330, y: 215, w: 130, h: 60, sc: 4.2 },
+      { keys: ["armchair"], x: 560, y: 215, w: 80, h: 70, sc: 3.4 },
+      { keys: ["bookshelf"], x: 720, y: 185, w: 80, h: 80, sc: 3.2 },
+      { keys: ["television"], x: 880, y: 190, w: 90, h: 60, sc: 3.2 },
+      { keys: ["picture"], x: 440, y: 55, w: 80, h: 60, sc: 2.8, wall: true },
+      { keys: ["coffeetable"], x: 430, y: 420, w: 90, h: 50, sc: 3.4 },
+      { keys: ["piano"], x: 860, y: 470, w: 90, h: 70, sc: 3.2 },
+    ],
+    hall: [
+      { keys: ["stairs"], x: 110, y: 330, w: 90, h: 90, sc: 3.6 },
+      { keys: ["hanger"], x: 900, y: 175, w: 70, h: 50, sc: 2.6 },
+      { keys: ["doormat"], x: 500, y: 560, w: 90, h: 40, sc: 3, flat: true },
+      { keys: ["door"], x: 500, y: 640, w: 80, h: 30, sc: 3, wall: true },
+    ],
+  };
+  // Park fixtures: label zones on the park's own structures (drawn by the park code, not by drawItem)
+  const PARK_FIXTURES = [
+    { keys: ["house", "roof", "chimney"], x: house.x, y: house.y - 70, w: 270, h: 160 },
+    { keys: ["fence"], x: house.x + 120, y: house.y + 66, w: 60, h: 30 },
+    { keys: ["garden"], x: house.x - 175, y: house.y + 35, w: 80, h: 60 },
+    { keys: ["mailbox"], x: house.x + 170, y: house.y + 40, w: 30, h: 40 },
+    { keys: ["doorbell"], x: house.x + 40, y: house.y - 10, w: 24, h: 30 },
+    { keys: ["flowerpot"], x: house.x - 45, y: house.y, w: 30, h: 30 },
+    { keys: ["fountain"], x: 1200, y: 820, w: 240, h: 150 },
+    { keys: ["pond"], x: 520, y: 1250, w: 560, h: 320 },
+    { keys: ["bench"], x: 1330, y: 640, w: 70, h: 40 },
+    { keys: ["path"], x: 1200, y: 600, w: 90, h: 60 },
+    { keys: ["swing"], x: playground.x - 170, y: playground.y - 40, w: 70, h: 50 },
+    { keys: ["slide"], x: playground.x + 5, y: playground.y - 40, w: 100, h: 60 },
+    { keys: ["sandbox"], x: playground.x + 155, y: playground.y + 15, w: 120, h: 80 },
+    { keys: ["carousel"], x: playground.x - 15, y: playground.y + 105, w: 100, h: 60 },
+    { keys: ["bush"], x: 0, y: 0, w: 0, h: 0, bush: true },
+    { keys: ["tree"], x: 0, y: 0, w: 0, h: 0, tree: true },
+    { keys: ["bridge"], x: 520 + 260 + 10, y: 1250, w: 60, h: 90 },
+  ];
+  const HOUSE_KEYS = new Set();
+  for (const r in ROOM_LOOSE) ROOM_LOOSE[r].forEach(k => HOUSE_KEYS.add(k));
+  for (const r in ROOM_FIXTURES) ROOM_FIXTURES[r].forEach(f => f.keys.forEach(k => HOUSE_KEYS.add(k)));
+  PARK_FIXTURES.forEach(f => f.keys.forEach(k => HOUSE_KEYS.add(k)));
+  const PARK_LOOSE = WORD_KEYS.filter(k => !HOUSE_KEYS.has(k));
+  const ROOM_NAMES = {
+    hall: ["коридор", "ko-ri-DOR", "hallway"], kitchen: ["кухня", "KOOH-nya", "kitchen"], bedroom: ["спалня", "SPAL-nya", "bedroom"],
+    bathroom: ["баня", "BA-nya", "bathroom"], living: ["хол", "HOL", "living room"],
+  };
   // Her favourites: animals and jewellery. Every adventure includes at least FAVE_PER_GAME of them.
   const FAVE_KEYS = [
     "butterfly", "ladybug", "bee", "snail", "fish", "bird", "cow", "horse", "sheep", "hen", "frog", "bear", "wolf", "mouse", "spider",
@@ -828,13 +993,13 @@
   let savedGame = null;
   try {
     const d = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
-    if (d && Array.isArray(d.items) && Array.isArray(d.pets) && d.items.every(k => WORDS[k]) && d.pets.every(k => PETS[k])) savedGame = d;
+    if (d && Array.isArray(d.items) && Array.isArray(d.pets) && d.items.every(k => WORDS[k]) && d.pets.every(k => PETS[k]) && d.rooms) savedGame = d;
   } catch (e) { /* ignore */ }
 
   const gameNo = savedGame ? savedGame.g : memory.games + 1;
   function pickWords() {
-    const faves = pickLeastSeen(FAVE_KEYS, memory.seen, FAVE_PER_GAME);
-    const rest = pickLeastSeen(WORD_KEYS.filter(k => !faves.includes(k)), memory.seen, WORDS_PER_GAME - faves.length);
+    const faves = pickLeastSeen(FAVE_KEYS.filter(k => PARK_LOOSE.includes(k)), memory.seen, FAVE_PER_GAME);
+    const rest = pickLeastSeen(PARK_LOOSE.filter(k => !faves.includes(k)), memory.seen, WORDS_PER_GAME - faves.length);
     // shuffle so the favourites are spread around the park rather than grouped
     return faves.concat(rest).map(k => ({ k, r: Math.random() })).sort((a, b) => a.r - b.r).map(o => o.k);
   }
@@ -889,6 +1054,63 @@
       peek: rand() * 6.28,
     };
   });
+
+  // ---------- The house: rooms, fixtures and loose objects ----------
+  const ROOM_W = 1000, ROOM_H = 660, WALL_TOP = 120;
+  const ROOM_STYLE = {
+    hall: { floor: "#e8c99a", floor2: "#dcb98a", wall: "#fde9c4", trim: "#c27c3e" },
+    kitchen: { floor: "#f3f0e6", floor2: "#dcd8cc", wall: "#dff3f8", trim: "#4aa8dc" },
+    bedroom: { floor: "#e6cfa8", floor2: "#d9bd92", wall: "#ffe3ec", trim: "#ff8fab" },
+    bathroom: { floor: "#dff3f8", floor2: "#c6e8f2", wall: "#eafaf1", trim: "#2ec4b6" },
+    living: { floor: "#e3c59a", floor2: "#d3b386", wall: "#fff2cc", trim: "#e09f1f" },
+  };
+  // doors from the hallway (on its top wall) to each room
+  const HALL_DOORS = { kitchen: 280, living: 460, bedroom: 640, bathroom: 820 };
+  const rooms = {};
+  function roomRect(f) { return { x: f.x - f.w / 2, y: f.y - f.h / 2, w: f.w, h: f.h }; }
+  Object.keys(ROOM_FIXTURES).forEach((name, ri) => {
+    const fixtures = ROOM_FIXTURES[name].map(f => ({ ...f, labelled: 0 }));
+    const rects = fixtures.filter(f => !f.flat && !f.wall).map(roomRect);
+    const exits = [];
+    if (name === "hall") {
+      for (const r in HALL_DOORS) exits.push({ x: HALL_DOORS[r] - 28, y: WALL_TOP - 10, w: 56, h: 36, to: r, spawn: { x: ROOM_W / 2, y: ROOM_H - 90 } });
+      exits.push({ x: ROOM_W / 2 - 45, y: ROOM_H - 36, w: 90, h: 40, to: "park", spawn: { x: house.x, y: house.y + 40 } });
+    } else {
+      exits.push({ x: ROOM_W / 2 - 45, y: ROOM_H - 36, w: 90, h: 40, to: "hall", spawn: { x: HALL_DOORS[name], y: WALL_TOP + 50 } });
+    }
+    // loose objects for this adventure
+    const saved = savedGame && savedGame.rooms && savedGame.rooms[name];
+    const keys = saved && saved.items && saved.items.every(k => WORDS[k]) ? saved.items : pickLeastSeen(ROOM_LOOSE[name], memory.seen, LOOSE_PER_ROOM[name]);
+    seed = 9001 + gameNo * 311 + ri * 97;
+    const items = [];
+    let tries2 = 0;
+    while (items.length < keys.length && tries2 < 4000) {
+      tries2++;
+      const x = rr(70, ROOM_W - 70), y = rr(WALL_TOP + 60, ROOM_H - 70);
+      let ok = true;
+      for (const r of rects) if (inRect(x, y, r, 40)) { ok = false; break; }
+      for (const f of fixtures) if (f.flat && inRect(x, y, roomRect(f), 10)) { ok = false; break; }
+      for (const e of exits) if (inRect(x, y, e, 60)) { ok = false; break; }
+      for (const it of items) if (Math.hypot(it.x - x, it.y - y) < 110) { ok = false; break; }
+      if (Math.hypot(x - ROOM_W / 2, y - (ROOM_H - 90)) < 90) ok = false; // spawn spot
+      if (!ok) continue;
+      items.push({ x, y, key: keys[items.length], ph: rand() * 6.28, collected: false, pop: 0 });
+    }
+    rooms[name] = { name, w: ROOM_W, h: ROOM_H, fixtures, rects, exits, items, keys, style: ROOM_STYLE[name] };
+  });
+  const parkFixtures = PARK_FIXTURES.map(f => ({ ...f, labelled: 0 }));
+  // the park scene
+  const parkScene = {
+    name: "park", w: WORLD_W, h: WORLD_H, fixtures: parkFixtures, rects: rectObstacles, items: null, // items = treasures
+    exits: [{ x: house.x - 22, y: house.y - 14, w: 44, h: 26, to: "hall", spawn: { x: ROOM_W / 2, y: ROOM_H - 90 } }],
+  };
+  let scene = parkScene;
+  let exitCooldown = 0;
+  function sceneItems() { return scene === parkScene ? treasures : scene.items; }
+  function allFixtureKeys() { let n = 0; for (const f of parkFixtures) n += f.keys.length; for (const r in rooms) for (const f of rooms[r].fixtures) if (!f.silent) n += f.keys.length; return n; }
+  function labelledCount() { let n = 0; for (const f of parkFixtures) n += f.labelled; for (const r in rooms) for (const f of rooms[r].fixtures) if (!f.silent) n += f.labelled; return n; }
+  function roomItemsTotal() { let n = 0; for (const r in rooms) n += rooms[r].items.length; return n; }
+  function roomItemsCollected() { let n = 0; for (const r in rooms) n += rooms[r].items.filter(t => t.collected).length; return n; }
 
   // ---------- Characters ----------
   const princess = { x: 1200, y: 1000, dir: 1, walk: 0, moving: false, speed: 3.2 };
@@ -950,10 +1172,16 @@
   // ---------- Save / load (the current adventure) ----------
   function saveGame() {
     try {
+      const rs = {};
+      for (const r in rooms) rs[r] = { items: rooms[r].keys, t: rooms[r].items.map(t => t.collected ? 1 : 0), f: rooms[r].fixtures.map(f => f.labelled) };
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         g: gameNo, items: itemKeys, pets: petKeys,
         t: treasures.map(t => t.collected ? 1 : 0),
         p: pets.map(p => p.found ? 1 : 0),
+        pf: parkFixtures.map(f => f.labelled),
+        pfat: parkFixtures.map(f => f.at || null),
+        rooms: rs,
+        scene: scene.name,
         x: Math.round(princess.x), y: Math.round(princess.y),
       }));
     } catch (e) { /* storage unavailable: fine */ }
@@ -963,10 +1191,18 @@
     if (!d || !d.t || !d.p) return false;
     d.t.forEach((v, i) => { if (treasures[i] && v) { treasures[i].collected = true; treasures[i].pop = 1; } });
     d.p.forEach((v, i) => { if (pets[i] && v) { pets[i].found = true; followers.push(pets[i]); } });
+    if (d.pf) d.pf.forEach((v, i) => { if (parkFixtures[i]) { parkFixtures[i].labelled = Math.min(v || 0, parkFixtures[i].keys.length); if (d.pfat && d.pfat[i]) parkFixtures[i].at = d.pfat[i]; } });
+    for (const r in rooms) {
+      const rs = d.rooms[r];
+      if (!rs) continue;
+      (rs.t || []).forEach((v, i) => { if (rooms[r].items[i] && v) { rooms[r].items[i].collected = true; rooms[r].items[i].pop = 1; } });
+      (rs.f || []).forEach((v, i) => { if (rooms[r].fixtures[i]) rooms[r].fixtures[i].labelled = Math.min(v || 0, rooms[r].fixtures[i].keys.length); });
+    }
+    if (d.scene && rooms[d.scene]) scene = rooms[d.scene];
     if (typeof d.x === "number" && !blocked(d.x, d.y)) {
-      princess.x = d.x; princess.y = d.y; mom.x = d.x - 50; mom.y = d.y;
-      for (const f of followers) { f.x = d.x - 70; f.y = d.y; }
-      for (const tr of trail) { tr.x = d.x; tr.y = d.y; }
+      placeParty(d.x, d.y);
+    } else if (scene !== parkScene) {
+      placeParty(ROOM_W / 2, ROOM_H - 90);
     }
     return true;
   }
@@ -1095,8 +1331,9 @@
     speak(bg);
   }
   function updateHud() {
-    const got = treasures.filter(t => t.collected).length;
-    treasureEl.textContent = `🎁 Words: ${got} / ${treasures.length}`;
+    const got = treasures.filter(t => t.collected).length + roomItemsCollected() + labelledCount();
+    const total = treasures.length + roomItemsTotal() + allFixtureKeys();
+    treasureEl.textContent = `🎁 Words: ${got} / ${total}`;
     petEl.textContent = `🐾 Pets: ${followers.length} / ${pets.length}`;
   }
   updateHud();
@@ -1111,19 +1348,86 @@
   } else {
     const learned = WORD_KEYS.filter(k => memory.seen[k]).length;
     noteEl.textContent = gameNo === 1
-      ? "Your first adventure: 26 new words and 8 pet friends are hiding in the park!"
-      : `Adventure ${gameNo}: new words and pets are hiding in the park. Words learned so far: ${learned} / ${WORD_KEYS.length}.`;
+      ? "Your first adventure: new words and 8 pet friends are hiding in the park, and the little house is waiting to be explored!"
+      : `Adventure ${gameNo}: new words in the park and in every room of the house. Words learned so far: ${learned} / ${WORD_KEYS.length}.`;
   }
 
   // ---------- Movement ----------
   function blocked(x, y) {
     const r = 12;
-    if (x < 20 || y < 30 || x > WORLD_W - 20 || y > WORLD_H - 10) return true;
-    if (inPond(x, y, r)) return true;
-    for (const o of obstacles) {
-      if (Math.hypot(x - o.x, y - o.y) < o.r + r) return true;
+    if (scene === parkScene) {
+      if (x < 20 || y < 30 || x > WORLD_W - 20 || y > WORLD_H - 10) return true;
+      if (inPond(x, y, r)) return true;
+      for (const o of obstacles) {
+        if (Math.hypot(x - o.x, y - o.y) < o.r + r) return true;
+      }
+    } else {
+      if (x < 40 || x > scene.w - 40 || y < WALL_TOP + 14 || y > scene.h - 24) return true;
     }
+    for (const rc of scene.rects) if (inRect(x, y, rc, r - 4)) return true;
     return false;
+  }
+
+  function placeParty(x, y) {
+    princess.x = x; princess.y = y;
+    mom.x = x - 40; mom.y = y;
+    followers.forEach((f, i) => { f.x = x - 60 - i * 10; f.y = y; });
+    for (const tr of trail) { tr.x = x; tr.y = y; }
+    trail.length = 0;
+    for (let i = 0; i < 200; i++) trail.push({ x: x - 2.5 * i, y });
+  }
+
+  function changeScene(to, spawn) {
+    scene = to === "park" ? parkScene : rooms[to];
+    placeParty(spawn.x, spawn.y);
+    camSnap = true;
+    exitCooldown = 40;
+    if (scene === parkScene) showMessage("🌳 Обратно в парка · Back to the park");
+    else { const n = ROOM_NAMES[scene.name]; showWord(n[0], n[1], n[2]); }
+    saveGame();
+  }
+
+  // Put a name sticker on a fixed thing the princess walks up to
+  function labelFixture(f) {
+    const key = f.keys[f.labelled];
+    f.labelled++;
+    const w = WORDS[key];
+    burst(princess.x, princess.y - 40, ["#ffd23f", "#ffffff", "#ff6fa8"], 12);
+    showWord(w[0], w[1], w[2]);
+    if (!f.silent) { memory.seen[key] = (memory.seen[key] || 0) + 1; saveMemory(); }
+    updateHud();
+    saveGame();
+    checkRoomDone();
+    checkWin();
+  }
+  function fixtureZone(f) {
+    if (f.bush || f.tree) return null;
+    const pad = f.wall ? 72 : 22;
+    return { x: f.x - f.w / 2 - pad, y: f.y - f.h / 2 - pad, w: f.w + pad * 2, h: f.h + pad * 2 };
+  }
+  let nearFixture = null; // the fixture the princess is currently touching (so one touch = one sticker)
+  function checkFixtures() {
+    let touching = null;
+    for (const f of scene.fixtures) {
+      if (f.labelled >= f.keys.length) continue;
+      if (f.bush) { const b = bushes.find(b => Math.hypot(b.x - princess.x, b.y - princess.y) < 48); if (b) { touching = f; f.at = { x: b.x, y: b.y - b.size * 1.4 }; } continue; }
+      if (f.tree) { const t = trees.find(t => Math.hypot(t.x - princess.x, t.y - princess.y) < 44); if (t) { touching = f; f.at = { x: t.x, y: t.y - t.size * 1.9 }; } continue; }
+      const z = fixtureZone(f);
+      if (inRect(princess.x, princess.y, z)) { touching = f; break; }
+    }
+    if (touching && touching !== nearFixture) labelFixture(touching);
+    nearFixture = touching;
+  }
+  function checkRoomDone() {
+    if (scene === parkScene) return;
+    const r = scene;
+    if (r.done) return;
+    if (r.items.every(t => t.collected) && r.fixtures.every(f => f.silent || f.labelled >= f.keys.length)) {
+      r.done = true;
+      const n = ROOM_NAMES[r.name];
+      setTimeout(() => showMessage(`🎉 Браво! ${n[0]} is complete!`), 2500);
+      for (let i = 0; i < 4; i++) setTimeout(() => burst(princess.x + rr(-60, 60), princess.y - 50 + rr(-30, 30), ["#d62828", "#ffffff", "#2a9d48", "#ffd23f"], 20), i * 200);
+    }
   }
 
   let time = 0;
@@ -1158,8 +1462,17 @@
     moveFollower(mom, 20);
     followers.forEach((p, i) => moveFollower(p, 36 + i * 16));
 
-    // Treasures
-    for (const t of treasures) {
+    // Doors
+    if (exitCooldown > 0) exitCooldown -= dt;
+    else if (started) {
+      for (const e of scene.exits) {
+        if (inRect(princess.x, princess.y, e)) { changeScene(e.to, e.spawn); break; }
+      }
+    }
+    if (started) checkFixtures();
+
+    // Treasures (in the park) or loose objects (in a room)
+    for (const t of sceneItems()) {
       if (t.collected) {
         if (t.pop < 1) t.pop += 0.04 * dt;
         continue;
@@ -1173,13 +1486,14 @@
         saveMemory();
         updateHud();
         saveGame();
+        checkRoomDone();
         checkWin();
       }
     }
 
-    // Pets
+    // Pets (they hide in the park)
     for (const p of pets) {
-      if (p.found) continue;
+      if (p.found || scene !== parkScene) continue;
       if (Math.hypot(p.x - princess.x, p.y - princess.y) < 60) {
         p.found = true;
         p.hop = 1;
@@ -1205,7 +1519,7 @@
     }
 
     // Butterflies
-    for (const b of butterflies) {
+    if (scene === parkScene) for (const b of butterflies) {
       b.t += 0.02 * dt * b.sp;
       b.x += Math.cos(b.t * 1.3) * 0.8 * dt;
       b.y += Math.sin(b.t * 0.9) * 0.6 * dt;
@@ -1235,7 +1549,7 @@
 
   function checkWin() {
     if (won) return;
-    if (treasures.every(t => t.collected) && followers.length === pets.length) {
+    if (treasures.every(t => t.collected) && followers.length === pets.length && roomItemsCollected() === roomItemsTotal() && labelledCount() === allFixtureKeys()) {
       won = true;
       const learned = WORD_KEYS.filter(k => memory.seen[k]).length;
       const met = PET_KEYS.filter(k => memory.pets[k]).length;
@@ -2167,6 +2481,7 @@
 
   // Guide arrow at the screen edge toward the nearest treasure when only a few remain
   function drawGuide(cam) {
+    if (scene !== parkScene) return;
     const left = treasures.filter(t => !t.collected);
     if (!started || left.length === 0 || left.length > 5) return;
     let best = null, bd = Infinity;
@@ -2193,15 +2508,187 @@
     star(ax - Math.cos(a) * 18, ay - Math.sin(a) * 18, 4, "#ffffff");
   }
 
+  // ---------- Park structures: the cottage and the playground ----------
+  function drawHouse() {
+    const b = houseBody, hx = house.x;
+    shadow(hx, b.y + b.h + 4, b.w / 2 + 10, 12);
+    // fence
+    ctx.fillStyle = "#fff7e6";
+    for (let x = b.x - 90; x <= b.x + b.w + 90; x += 20) {
+      if (x > hx - 50 && x < hx + 30) continue; // gate opening
+      ctx.fillRect(x - 3, house.y + 52, 6, 30);
+      ctx.beginPath(); ctx.moveTo(x - 3, house.y + 52); ctx.lineTo(x, house.y + 46); ctx.lineTo(x + 3, house.y + 52); ctx.fill();
+    }
+    ctx.fillStyle = "#f1e4cc";
+    ctx.fillRect(b.x - 90, house.y + 60, hx - 50 - (b.x - 90), 4); ctx.fillRect(hx + 30, house.y + 60, b.x + b.w + 90 - (hx + 30), 4);
+    ctx.fillRect(b.x - 90, house.y + 72, hx - 50 - (b.x - 90), 4); ctx.fillRect(hx + 30, house.y + 72, b.x + b.w + 90 - (hx + 30), 4);
+    // walls
+    ctx.fillStyle = "#fff3e0";
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+    ctx.fillStyle = "#f1dcb0";
+    ctx.fillRect(b.x, b.y + b.h - 10, b.w, 10);
+    // roof
+    ctx.fillStyle = "#d62828";
+    ctx.beginPath(); ctx.moveTo(b.x - 20, b.y + 10); ctx.lineTo(hx, b.y - 110); ctx.lineTo(b.x + b.w + 20, b.y + 10); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#b91c1c";
+    for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(b.x - 20 + i * 28 + 10, b.y + 10); ctx.lineTo(hx, b.y - 110); ctx.lineTo(hx, b.y - 80 + i * 5); ctx.closePath(); ctx.globalAlpha = 0.1; ctx.fill(); ctx.globalAlpha = 1; }
+    ctx.fillStyle = "#fff3e0"; ctx.fillRect(b.x, b.y + 4, b.w, 8);
+    // chimney
+    ctx.fillStyle = "#8a9099"; ctx.fillRect(hx + 60, b.y - 70, 26, 50);
+    ctx.fillStyle = "#6b7280"; ctx.fillRect(hx + 57, b.y - 74, 32, 8);
+    for (let i = 0; i < 3; i++) circle(hx + 73 + Math.sin(time * 0.03 + i) * 6, b.y - 90 - i * 16 - ((time * 0.3 + i * 20) % 40), 7 + i * 2, "rgba(255,255,255,0.45)");
+    // windows
+    for (const wx of [hx - 80, hx + 80]) {
+      ctx.fillStyle = "#9c6b3d"; ctx.fillRect(wx - 24, b.y + 40, 48, 44);
+      ctx.fillStyle = "#bde0fe"; ctx.fillRect(wx - 20, b.y + 44, 40, 36);
+      ctx.fillStyle = "#9c6b3d"; ctx.fillRect(wx - 2, b.y + 44, 4, 36); ctx.fillRect(wx - 20, b.y + 60, 40, 3);
+      ctx.fillStyle = "#ff8fab"; ctx.fillRect(wx - 26, b.y + 84, 52, 6);
+      circle(wx - 14, b.y + 82, 4, "#ff4d6d"); circle(wx, b.y + 82, 4, "#ffd23f"); circle(wx + 14, b.y + 82, 4, "#ff4d6d");
+    }
+    // door
+    ctx.fillStyle = "#7a4a24"; ctx.fillRect(hx - 24, b.y + b.h - 70, 48, 70);
+    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(hx - 19, b.y + b.h - 64, 38, 60);
+    ctx.fillStyle = "#7a4a24"; ctx.fillRect(hx - 15, b.y + b.h - 58, 12, 20); ctx.fillRect(hx + 3, b.y + b.h - 58, 12, 20);
+    circle(hx + 10, b.y + b.h - 30, 3, "#ffd23f");
+    // doorbell
+    ctx.fillStyle = "#c9ced6"; ctx.fillRect(hx + 32, b.y + b.h - 56, 10, 14); circle(hx + 37, b.y + b.h - 49, 3, "#ffd23f");
+    // flower pot by the door
+    ctx.fillStyle = "#d9934f"; ctx.beginPath(); ctx.moveTo(hx - 54, b.y + b.h - 2); ctx.lineTo(hx - 36, b.y + b.h - 2); ctx.lineTo(hx - 39, b.y + b.h + 18); ctx.lineTo(hx - 51, b.y + b.h + 18); ctx.fill();
+    circle(hx - 45, b.y + b.h - 12, 8, "#3fae4a"); circle(hx - 49, b.y + b.h - 16, 4, "#ff6fa8"); circle(hx - 40, b.y + b.h - 14, 4, "#ffd23f");
+    // doormat & step
+    ctx.fillStyle = "#e8d39a"; ctx.fillRect(hx - 30, b.y + b.h, 60, 12);
+    // mailbox on the right of the gate
+    ctx.fillStyle = "#8a9099"; ctx.fillRect(hx + 168, house.y + 25, 4, 40);
+    ctx.fillStyle = "#3a86ff"; ctx.fillRect(hx + 156, house.y + 10, 28, 20);
+    ctx.fillStyle = "#fff"; ctx.fillRect(hx + 162, house.y + 17, 14, 6);
+    ctx.fillStyle = "#e63946"; ctx.fillRect(hx + 184, house.y + 8, 3, 10);
+    // flower bed (garden) on the left
+    ctx.fillStyle = "#7a4a24"; ctx.fillRect(b.x - 80, house.y + 10, 70, 50);
+    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(b.x - 80, house.y + 10, 70, 4);
+    for (let i = 0; i < 8; i++) {
+      const fx = b.x - 72 + (i % 4) * 18, fy = house.y + 24 + Math.floor(i / 4) * 22;
+      ctx.strokeStyle = "#3f9a3a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(fx, fy + 8); ctx.lineTo(fx, fy); ctx.stroke();
+      circle(fx, fy - 2, 5, petalColors[(i * 3) % petalColors.length]); circle(fx, fy - 2, 2, "#ffd23f");
+    }
+  }
+  function drawPlayground() {
+    const px = playground.x, py = playground.y;
+    // swing
+    ctx.strokeStyle = "#9c6b3d"; ctx.lineWidth = 6; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(px - 200, py - 10); ctx.lineTo(px - 180, py - 90); ctx.lineTo(px - 160, py - 90); ctx.lineTo(px - 140, py - 10); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px - 180, py - 90); ctx.lineTo(px - 160, py - 90); ctx.stroke();
+    const sw = Math.sin(time * 0.04) * 8;
+    ctx.strokeStyle = "#555"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(px - 176, py - 88); ctx.lineTo(px - 176 + sw, py - 30); ctx.moveTo(px - 164, py - 88); ctx.lineTo(px - 164 + sw, py - 30); ctx.stroke();
+    ctx.fillStyle = "#e63946"; ctx.fillRect(px - 182 + sw, py - 30, 24, 6);
+    // slide
+    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(px - 36, py - 95, 8, 75);
+    for (let i = 0; i < 5; i++) { ctx.fillStyle = "#c27c3e"; ctx.fillRect(px - 44, py - 90 + i * 14, 24, 4); }
+    ctx.strokeStyle = "#ffd23f"; ctx.lineWidth = 16; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(px - 30, py - 95); ctx.lineTo(px - 10, py - 95); ctx.lineTo(px + 50, py - 20); ctx.stroke();
+    ctx.strokeStyle = "#e0b000"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(px - 30, py - 103); ctx.lineTo(px - 10, py - 103); ctx.lineTo(px + 50, py - 28); ctx.stroke();
+    // sandbox
+    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(px + 100, py - 20, 110, 70);
+    ctx.fillStyle = "#f3dca2"; ctx.fillRect(px + 108, py - 12, 94, 54);
+    ctx.fillStyle = "#e63946"; ctx.beginPath(); ctx.moveTo(px + 130, py + 20); ctx.lineTo(px + 150, py + 20); ctx.lineTo(px + 145, py + 6); ctx.lineTo(px + 135, py + 6); ctx.fill();
+    circle(px + 175, py + 25, 7, "#3a86ff"); circle(px + 165, py, 5, "#ffd23f");
+    // merry-go-round
+    ellipse(px - 15, py + 118, 48, 16, "#c9ced6");
+    ellipse(px - 15, py + 112, 44, 14, "#e63946");
+    ctx.fillStyle = "#8a9099"; ctx.fillRect(px - 18, py + 70, 6, 42);
+    ellipse(px - 15, py + 70, 40, 12, "#ffd23f");
+    for (let i = 0; i < 4; i++) { const a = time * 0.02 + i * Math.PI / 2; const bx = px - 15 + Math.cos(a) * 32, by = py + 90 + Math.sin(a) * 9; ctx.fillStyle = "#8a9099"; ctx.fillRect(bx - 1.5, by - 18, 3, 22); circle(bx, by - 20, 5, i % 2 ? "#3a86ff" : "#ff6fa8"); }
+    // little bridge at the pond's edge
+    const bx = pond.x + pond.rx + 10, by = pond.y;
+    ctx.strokeStyle = "#9c6b3d"; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(bx - 30, by + 40); ctx.quadraticCurveTo(bx, by - 30, bx + 30, by + 40); ctx.stroke();
+    ctx.strokeStyle = "#c27c3e"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(bx - 30, by + 28); ctx.quadraticCurveTo(bx, by - 42, bx + 30, by + 28); ctx.stroke();
+    for (let i = -2; i <= 2; i++) { const t = (i + 2) / 4; const x = bx - 30 + t * 60; const yTop = (1 - t) * (1 - t) * (by + 28) + 2 * (1 - t) * t * (by - 42) + t * t * (by + 28); const yBot = (1 - t) * (1 - t) * (by + 40) + 2 * (1 - t) * t * (by - 30) + t * t * (by + 40); ctx.beginPath(); ctx.moveTo(x, yTop); ctx.lineTo(x, yBot); ctx.stroke(); }
+  }
+
+  // Name sticker on a labelled fixture
+  function drawSticker(text, x, y, wobble = 0) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(-0.06 + Math.sin(wobble) * 0.02);
+    ctx.font = "bold 15px 'Trebuchet MS', Verdana, sans-serif";
+    const tw = ctx.measureText(text).width + 18;
+    ctx.fillStyle = "rgba(0,0,0,0.15)"; ctx.fillRect(-tw / 2 + 2, -11 + 2, tw, 24);
+    ctx.fillStyle = "#fffbe6"; ctx.fillRect(-tw / 2, -11, tw, 24);
+    ctx.strokeStyle = "#d62828"; ctx.lineWidth = 2; ctx.strokeRect(-tw / 2, -11, tw, 24);
+    ctx.fillStyle = "#c1121f"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(text, 0, 1);
+    ctx.restore();
+  }
+  function fixtureStickers(f) {
+    const out = [];
+    for (let i = 0; i < f.labelled; i++) {
+      const base = f.at ? f.at : { x: f.x, y: f.y - f.h / 2 - 10 };
+      out.push({ text: WORDS[f.keys[i]][0], x: base.x + (i - (f.labelled - 1) / 2) * 0, y: base.y - i * 26 });
+    }
+    return out;
+  }
+
+  function drawRoom(r) {
+    const st = r.style;
+    // outside the room
+    ctx.fillStyle = "#3b2a20";
+    ctx.fillRect(cam.x - 50, cam.y - 50, W + 100, H + 100);
+    // floor
+    ctx.fillStyle = st.floor; ctx.fillRect(0, WALL_TOP, r.w, r.h - WALL_TOP);
+    ctx.fillStyle = st.floor2;
+    if (r.name === "kitchen" || r.name === "bathroom") {
+      for (let x = 0; x < r.w; x += 50) for (let y = WALL_TOP; y < r.h; y += 50) if (((x / 50) + ((y - WALL_TOP) / 50)) % 2 === 0) ctx.fillRect(x, y, 50, 50);
+    } else {
+      for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(0, y, r.w, 2);
+      for (let x = 0; x < r.w; x += 160) for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(x + ((y / 28) % 2) * 80, y, 2, 28);
+    }
+    // wall
+    ctx.fillStyle = st.wall; ctx.fillRect(0, 0, r.w, WALL_TOP);
+    ctx.fillStyle = "rgba(255,255,255,0.35)";
+    for (let x = 20; x < r.w; x += 60) for (let y = 15; y < WALL_TOP - 10; y += 40) circle(x + ((y / 40) % 2) * 30, y, 4, "rgba(255,255,255,0.35)");
+    ctx.fillStyle = st.trim; ctx.fillRect(0, WALL_TOP - 8, r.w, 8);
+    ctx.fillStyle = "rgba(0,0,0,0.08)"; ctx.fillRect(0, WALL_TOP, r.w, 10);
+    // side & bottom walls
+    ctx.fillStyle = st.trim; ctx.fillRect(0, 0, 30, r.h); ctx.fillRect(r.w - 30, 0, 30, r.h); ctx.fillRect(0, r.h - 20, r.w, 20);
+    // doors
+    for (const e of r.exits) {
+      if (e.y < WALL_TOP) {
+        ctx.fillStyle = "#7a4a24"; ctx.fillRect(e.x - 6, 10, e.w + 12, WALL_TOP - 10);
+        ctx.fillStyle = "#9c6b3d"; ctx.fillRect(e.x, 16, e.w, WALL_TOP - 16);
+        ctx.fillStyle = "#7a4a24"; ctx.fillRect(e.x + 6, 24, e.w - 12, 30);
+        circle(e.x + e.w - 10, 70, 3, "#ffd23f");
+        drawSticker(ROOM_NAMES[e.to][0], e.x + e.w / 2, WALL_TOP - 22);
+      } else {
+        ctx.fillStyle = "#7a4a24"; ctx.fillRect(e.x - 6, r.h - 30, e.w + 12, 30);
+        ctx.fillStyle = "#e8d39a"; ctx.fillRect(e.x, r.h - 26, e.w, 26);
+        ctx.fillStyle = "#c27c3e"; ctx.font = "bold 13px 'Trebuchet MS', Verdana, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText(e.to === "park" ? "▼ парк" : "▼ коридор", e.x + e.w / 2, r.h - 13);
+      }
+    }
+    // fixtures on walls, flat ones first
+    for (const f of r.fixtures) if (f.wall || f.flat) drawFixture(f);
+  }
+  function drawFixture(f) {
+    if (!f.wall && !f.flat) shadow(f.x, f.y + f.h / 2, f.w / 2, f.h / 5);
+    ctx.save();
+    if (f.mirror) { ctx.translate(f.x, f.y); ctx.scale(-1, 1); ctx.translate(-f.x, -f.y); }
+    drawItem(f.keys[0], f.x, f.y, f.sc);
+    ctx.restore();
+  }
+
   // ---------- Render ----------
   const cam = { x: 0, y: 0 };
   let camSnap = true;
   function render() {
+    const SW = scene.w, SH = scene.h;
     // smooth camera
-    const tx = Math.max(0, Math.min(WORLD_W - W, princess.x - W / 2));
-    const ty = Math.max(0, Math.min(WORLD_H - H, princess.y - H / 2 - 20));
-    const cx = WORLD_W < W ? (WORLD_W - W) / 2 : tx;
-    const cy = WORLD_H < H ? (WORLD_H - H) / 2 : ty;
+    const tx = Math.max(0, Math.min(SW - W, princess.x - W / 2));
+    const ty = Math.max(0, Math.min(SH - H, princess.y - H / 2 - 20));
+    const cx = SW < W ? (SW - W) / 2 : tx;
+    const cy = SH < H ? (SH - H) / 2 : ty;
     if (camSnap) { cam.x = cx; cam.y = cy; camSnap = false; }
     cam.x += (cx - cam.x) * 0.12;
     cam.y += (cy - cam.y) * 0.12;
@@ -2211,7 +2698,10 @@
     ctx.save();
     ctx.translate(-Math.round(cam.x), -Math.round(cam.y));
 
+    if (scene !== parkScene) { renderRoom(scene); ctx.restore(); return; }
+
     drawGround(cam);
+    drawPlayground();
 
     // y-sorted drawables
     const list = [];
@@ -2225,6 +2715,7 @@
       list.push({ y: p.found ? p.y : p.bush.y - 0.5, d: () => drawPet(p) });
     }
     list.push({ y: fountain.y + 20, d: drawFountain });
+    list.push({ y: house.y + 2, d: drawHouse });
     list.push({ y: mom.y, d: () => drawMom(mom) });
     list.push({ y: princess.y + 0.1, d: () => drawPrincess(princess) });
     list.sort((a, b) => a.y - b.y);
@@ -2233,11 +2724,33 @@
     for (const t of treasures) if (onScreen(t.x, t.y, cam, 80)) drawSparkles(t);
     for (const b of butterflies) if (onScreen(b.x, b.y, cam, 20)) drawButterfly(b);
     drawHints(cam);
+    for (const f of parkFixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
     drawParticles();
     ctx.restore();
 
     drawSun();
     drawGuide(cam);
+  }
+
+  function renderRoom(r) {
+    drawRoom(r);
+    const list = [];
+    for (const f of r.fixtures) if (!f.wall && !f.flat) list.push({ y: f.y + f.h / 2, d: () => drawFixture(f) });
+    for (const t of r.items) list.push({ y: t.y, d: () => drawTreasure(t) });
+    list.push({ y: mom.y, d: () => drawMom(mom) });
+    for (const p of followers) list.push({ y: p.y, d: () => drawPet(p) });
+    list.push({ y: princess.y + 0.1, d: () => drawPrincess(princess) });
+    list.sort((a, b) => a.y - b.y);
+    for (const it of list) it.d();
+    for (const t of r.items) drawSparkles(t);
+    for (const f of r.fixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
+    // hint hearts on things still to label
+    for (const f of r.fixtures) {
+      if (f.labelled >= f.keys.length || f.silent) continue;
+      const tw = (Math.sin(time * 0.1 + f.x) + 1) / 2;
+      star(f.x + 10, f.y - f.h / 2 - 6 - tw * 4, 4 + tw * 3, "rgba(255,255,255," + (0.5 + tw * 0.5) + ")");
+    }
+    drawParticles();
   }
 
   // ---------- Loop ----------
