@@ -2918,13 +2918,36 @@
       // soft play mat with cheerful polka dots
       const dots = ["#ffd6e7", "#d6f0ff", "#fff3c4", "#dff5dd"];
       for (let x = 50; x < r.w - 30; x += 60) for (let y = WALL_TOP + 30; y < r.h - 30; y += 60) circle(x + ((y / 60) % 2) * 30, y, 9, dots[((x / 60) + (y / 60)) % 4 | 0]);
-    } else {
+    } else if (r.name === "bedroom") {
       for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(0, y, r.w, 2);
       for (let x = 0; x < r.w; x += 160) for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(x + ((y / 28) % 2) * 80, y, 2, 28);
+    } else {
+      // smooth warm floor: long soft boards, no joints
+      const g = ctx.createLinearGradient(0, WALL_TOP, 0, r.h);
+      g.addColorStop(0, st.floor2); g.addColorStop(1, st.floor);
+      ctx.fillStyle = g; ctx.fillRect(0, WALL_TOP, r.w, r.h - WALL_TOP);
+      ctx.fillStyle = "rgba(255,255,255,0.18)";
+      for (let y = WALL_TOP + 20; y < r.h; y += 44) ctx.fillRect(0, y, r.w, 18);
       if (r.name === "kitchen") {
         // a round braided rug under the table
         const rings = ["#e63946", "#ffd23f", "#2a9d48", "#ffffff", "#e63946", "#ffd23f"];
         rings.forEach((c, i) => { ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(500, 470, 150 - i * 22, 70 - i * 10, 0, 0, Math.PI * 2); ctx.fill(); });
+      } else if (r.name === "living") {
+        // a big patterned area rug
+        ctx.fillStyle = "#c1121f"; ctx.fillRect(230, 330, 540, 260);
+        ctx.fillStyle = "#ffd23f"; ctx.fillRect(246, 346, 508, 228);
+        ctx.fillStyle = "#e63946"; ctx.fillRect(262, 362, 476, 196);
+        ctx.fillStyle = "#ffe066";
+        for (let x = 300; x < 720; x += 60) for (let y = 390; y < 540; y += 60) { ctx.beginPath(); ctx.moveTo(x, y - 12); ctx.lineTo(x + 12, y); ctx.lineTo(x, y + 12); ctx.lineTo(x - 12, y); ctx.closePath(); ctx.fill(); }
+        ctx.strokeStyle = "#ffd23f"; ctx.lineWidth = 2; ctx.strokeRect(280, 380, 440, 160);
+      } else if (r.name === "hall") {
+        // a long striped runner down the middle
+        ctx.fillStyle = "#2a9d48"; ctx.fillRect(400, WALL_TOP + 20, 200, r.h - WALL_TOP - 60);
+        ctx.fillStyle = "#e63946"; ctx.fillRect(416, WALL_TOP + 36, 168, r.h - WALL_TOP - 92);
+        ctx.fillStyle = "#fff3e0";
+        for (let y = WALL_TOP + 60; y < r.h - 80; y += 48) ctx.fillRect(432, y, 136, 12);
+        ctx.fillStyle = "#ffd23f";
+        for (let x = 404; x < 600; x += 16) { ctx.fillRect(x, WALL_TOP + 8, 6, 12); ctx.fillRect(x, r.h - 40, 6, 12); }
       }
     }
     // wall
