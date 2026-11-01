@@ -2817,20 +2817,6 @@
         if (e.to === "park") { const [a, b] = areaProgress(parkScene); drawBadge(e.x + e.w + 4, r.h - 24, a >= b ? "✓" : String(b - a), a >= b); }
       }
     }
-    // finished-room banner
-    {
-      const [a, b] = areaProgress(r);
-      if (a >= b) {
-        ctx.save();
-        ctx.translate(r.w / 2, WALL_TOP + 40);
-        ctx.font = "bold 20px 'Trebuchet MS', Verdana, sans-serif";
-        const txt = "✓ всичко е намерено · all found";
-        const tw = ctx.measureText(txt).width + 30;
-        ctx.fillStyle = "#2a9d48"; ctx.fillRect(-tw / 2, -16, tw, 32);
-        ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(txt, 0, 1);
-        ctx.restore();
-      }
-    }
     // fixtures on walls, flat ones first
     for (const f of r.fixtures) if (f.wall || f.flat) drawFixture(f);
   }
@@ -2967,6 +2953,19 @@
     drawStickerPops(r.fixtures);
     drawHaloSparkles(r.fixtures);
     drawParticles();
+    // finished-room banner: drawn last, in the clear strip above the door, so nothing covers it
+    const [a, b] = areaProgress(r);
+    if (a >= b) {
+      ctx.save();
+      ctx.translate(r.w / 2, r.h - 62);
+      ctx.font = "bold 20px 'Trebuchet MS', Verdana, sans-serif";
+      const txt = "✓ всичко е намерено · all found";
+      const tw = ctx.measureText(txt).width + 30;
+      ctx.fillStyle = "rgba(0,0,0,0.15)"; ctx.fillRect(-tw / 2 + 3, -16 + 3, tw, 32);
+      ctx.fillStyle = "#2a9d48"; ctx.fillRect(-tw / 2, -16, tw, 32);
+      ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(txt, 0, 1);
+      ctx.restore();
+    }
   }
 
   // ---------- Loop ----------
