@@ -8,7 +8,8 @@ Raya's first game
 - Each adventure has 26 treasures and 8 pets. The game remembers (in the browser) which words have been learned and picks the least-seen ones next time, so every adventure teaches new words.
 - 📖 opens a dictionary of everything learned so far; 🔊 toggles saying the words aloud (uses the device's Bulgarian voice when one is installed).
 
-- Play: open `index.html` in a browser (or the GitHub Pages link: https://markralab-ui.github.io/Princesa-/)
+- Play version 1: https://markralab-ui.github.io/Princesa-/ (`index.html`)
+- Play version 2 (work in progress, iterated separately): https://markralab-ui.github.io/Princesa-/v2/ (`v2/index.html`)
 - Controls: arrow keys (on-screen arrows on touch devices)
 
 ## Planned: native-quality Bulgarian voice
