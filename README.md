@@ -6,19 +6,15 @@ Raya's first game
 - 281 everyday words in the bank (kitchen, bathroom, bedroom, clothes, school things, toys, food and drink, body parts, transport, around the house, nature, lots of animals and jewellery) and 12 pets, all drawn with code.
 - Animals and jewellery are the favourites: at least 7 of the 26 treasures in every adventure come from those two groups.
 - Each adventure has 26 treasures and 8 pets. The game remembers (in the browser) which words have been learned and picks the least-seen ones next time, so every adventure teaches new words.
-- 📖 opens a dictionary of everything learned so far; 🔊 toggles saying the words aloud (uses the device's Bulgarian voice when one is installed).
+- 📖 opens a dictionary of everything learned so far; 🔊 toggles saying the words aloud (recorded with the Bulgarian voice Kalina; works on every device).
 
 - Play: https://markralab-ui.github.io/Princesa-/ (`index.html`)
 - The original, simpler version is kept at https://markralab-ui.github.io/Princesa-/v1/ (`v1/index.html`)
   - The main game adds a cottage in the park with a hallway, kitchen, bedroom, bathroom, living room and playroom. Furniture gets a Bulgarian name sticker when the princess walks up to it; loose household objects are collected like treasures and rotate each adventure. Words are allocated by theme: park (nature, play, picnic, jewellery), kitchen, bedroom, bathroom, living room, hallway. Every animal (88 in all) is a pet friend that hides behind a bush and joins the princess; 11 appear per adventure. An adventure: 14 treasures, 11 pets, 4–7 objects per room and a few fixed things to name (about 40 minutes, usually over a few sittings). Every section covers its word bank in about 8 adventures. Every section rotates by least-seen with a one-adventure cooldown: treasures, pets, room objects, a few fixed things to name, and a set of "visiting" park objects (statue, picnic table, lamppost, well…).
 - Controls: arrow keys (on-screen arrows on touch devices)
 
-## Planned: native-quality Bulgarian voice
+## Voice: Kalina (Azure neural)
 
-Today the game uses the device's own Bulgarian voice (e.g. Apple's "Daria"), and stays silent when none is installed.
-The plan is to record every word once with Microsoft Azure's Bulgarian neural voice **Kalina** (bg-BG-KalinaNeural) and ship the clips in an `audio/` folder, so it sounds the same on every device with nothing to install.
+Every spoken word — all 568 words in the bank (including the 76 animal pets), the 12 baby pets, the 6 room names and the "Здравей!" greeting, 587 clips in all — is recorded once with Microsoft Azure's Bulgarian neural voice **Kalina** (bg-BG-KalinaNeural, 10% slower than normal) and shipped as MP3s in `audio/`. The game plays these, so it sounds the same on every device with nothing to install; it never contacts Azure. The device's own Bulgarian voice is only a fallback for any text without a clip.
 
-Steps when ready:
-1. Azure portal → create a **Speech** resource (region East US, pricing tier **Free F0**). Copy Key 1 and the region.
-2. In the Claude cloud environment settings: allow the domain `eastus.tts.speech.microsoft.com` (use the chosen region's name), and add secrets `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION`.
-3. Start a new session and ask Claude to record the words. The service is only used for that one recording; playing the game never contacts it.
+To re-record (e.g. after adding words): with `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION` set and the region's `*.tts.speech.microsoft.com` host allowed, ask Claude to record the new words with Kalina; each clip is named after the word's key (`apple.mp3`, `pet-bunny.mp3`, `room-kitchen.mp3`) and listed in the `CLIPS` table in `index.html`.
