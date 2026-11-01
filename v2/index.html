@@ -1128,9 +1128,9 @@
   const ROOM_W = 1000, ROOM_H = 700, WALL_TOP = 170;
   const ROOM_STYLE = {
     hall: { floor: "#e8c99a", floor2: "#dcb98a", wall: "#fde9c4", trim: "#c27c3e" },
-    kitchen: { floor: "#f6d9b8", floor2: "#eac29c", wall: "#dff3f8", trim: "#4aa8dc" },
+    kitchen: { floor: "#ecc993", floor2: "#dcb67c", wall: "#dff3f8", trim: "#4aa8dc" },
     bedroom: { floor: "#e6cfa8", floor2: "#d9bd92", wall: "#ffe3ec", trim: "#ff8fab" },
-    bathroom: { floor: "#e6f6fb", floor2: "#bfe6f2", wall: "#eafaf1", trim: "#2ec4b6" },
+    bathroom: { floor: "#dceef7", floor2: "#c4e0ee", wall: "#eafaf1", trim: "#2ec4b6" },
     living: { floor: "#e3c59a", floor2: "#d3b386", wall: "#fff2cc", trim: "#e09f1f" },
     playroom: { floor: "#efe4ff", floor2: "#dccbf7", wall: "#fff6d6", trim: "#9b5de5" },
   };
@@ -2904,22 +2904,16 @@
     // floor
     ctx.fillStyle = st.floor; ctx.fillRect(0, WALL_TOP, r.w, r.h - WALL_TOP);
     ctx.fillStyle = st.floor2;
-    if (r.name === "kitchen") {
-      // warm terracotta tiles with a little diamond where the corners meet
-      ctx.fillStyle = "rgba(255,255,255,0.55)";
-      for (let x = 0; x <= r.w; x += 80) ctx.fillRect(x - 1.5, WALL_TOP, 3, r.h - WALL_TOP);
-      for (let y = WALL_TOP; y <= r.h; y += 80) ctx.fillRect(0, y - 1.5, r.w, 3);
-      for (let x = 0; x <= r.w; x += 80) for (let y = WALL_TOP; y <= r.h; y += 80) {
-        ctx.fillStyle = st.floor2; ctx.beginPath(); ctx.moveTo(x, y - 7); ctx.lineTo(x + 7, y); ctx.lineTo(x, y + 7); ctx.lineTo(x - 7, y); ctx.closePath(); ctx.fill();
-      }
-    } else if (r.name === "bathroom") {
-      // pale aqua tiles with a mosaic stripe
-      ctx.fillStyle = "rgba(255,255,255,0.6)";
-      for (let x = 0; x <= r.w; x += 56) ctx.fillRect(x - 1, WALL_TOP, 2, r.h - WALL_TOP);
-      for (let y = WALL_TOP; y <= r.h; y += 56) ctx.fillRect(0, y - 1, r.w, 2);
-      const cols = ["#7bdff2", "#2ec4b6", "#bde0fe", "#ffffff"];
-      for (let x = 42; x < r.w - 42; x += 14) { ctx.fillStyle = cols[(x / 14) % 4]; ctx.fillRect(x + 1, WALL_TOP + 14, 12, 12); }
-      for (let x = 42; x < r.w - 42; x += 14) { ctx.fillStyle = cols[(x / 14 + 2) % 4]; ctx.fillRect(x + 1, r.h - 46, 12, 12); }
+    if (r.name === "bathroom") {
+      // smooth soft floor with a fluffy bath mat by the tub
+      const g = ctx.createLinearGradient(0, WALL_TOP, 0, r.h);
+      g.addColorStop(0, st.floor2); g.addColorStop(1, st.floor);
+      ctx.fillStyle = g; ctx.fillRect(0, WALL_TOP, r.w, r.h - WALL_TOP);
+      ctx.fillStyle = "rgba(255,255,255,0.25)";
+      for (let y = WALL_TOP + 40; y < r.h; y += 90) ctx.fillRect(0, y, r.w, 30);
+      ctx.fillStyle = "#ffd6e7"; ctx.beginPath(); ctx.ellipse(200, 310, 80, 28, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#ffc2d9"; ctx.beginPath(); ctx.ellipse(200, 310, 66, 20, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.6)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(200, 310, 74, 24, 0, 0, Math.PI * 2); ctx.stroke();
     } else if (r.name === "playroom") {
       // soft play mat with cheerful polka dots
       const dots = ["#ffd6e7", "#d6f0ff", "#fff3c4", "#dff5dd"];
@@ -2927,6 +2921,11 @@
     } else {
       for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(0, y, r.w, 2);
       for (let x = 0; x < r.w; x += 160) for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(x + ((y / 28) % 2) * 80, y, 2, 28);
+      if (r.name === "kitchen") {
+        // a round braided rug under the table
+        const rings = ["#e63946", "#ffd23f", "#2a9d48", "#ffffff", "#e63946", "#ffd23f"];
+        rings.forEach((c, i) => { ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(500, 470, 150 - i * 22, 70 - i * 10, 0, 0, Math.PI * 2); ctx.fill(); });
+      }
     }
     // wall
     ctx.fillStyle = st.wall; ctx.fillRect(0, 0, r.w, WALL_TOP);
