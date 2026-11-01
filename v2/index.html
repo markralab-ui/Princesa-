@@ -3073,12 +3073,10 @@
       if (!sp) continue;
       ctx.save();
       ctx.translate(sp.x, sp.y);
-      ctx.scale(1, 0.45);
-      ctx.fillStyle = `rgba(255, 230, 120, ${0.3 + pulse * 0.2})`;
-      ctx.beginPath(); ctx.arc(0, 0, 22 + pulse * 6, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = `rgba(214, 40, 40, ${0.7 + pulse * 0.3})`; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(0, 0, 26 + pulse * 6, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = "#d62828"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.scale(1, 0.6);
+      ctx.fillStyle = "rgba(0,0,0,0.12)"; ctx.beginPath(); ctx.arc(1, 2, 9 + pulse * 2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#d62828"; ctx.beginPath(); ctx.arc(0, 0, 9 + pulse * 2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,0.5)"; ctx.beginPath(); ctx.arc(-3, -3, 3, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     }
   }
@@ -3167,7 +3165,6 @@
     for (const b of butterflies) if (onScreen(b.x, b.y, cam, 20)) drawButterfly(b);
     drawHints(cam);
     drawHaloSparkles(parkFixtures);
-    drawSpotIcons(parkFixtures);
     for (const f of parkFixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
     drawStickerPops(parkFixtures);
     drawParticles();
