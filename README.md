@@ -20,4 +20,26 @@ Every spoken word — all 568 words in the bank (including the 76 animal pets), 
 To re-record (e.g. after adding words): with `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION` set and the region's `*.tts.speech.microsoft.com` host allowed, ask Claude to record the new words with Kalina; each clip is named after the word's key (`apple.mp3`, `pet-bunny.mp3`, `room-kitchen.mp3`) and listed in the `CLIPS` table in `index.html`.
 
 Stress fixes: Kalina sometimes guesses the stress wrong, because Bulgarian spelling doesn't mark it. These words are re-recorded with the stress spelled out in SSML (`<phoneme alphabet="ipa" ph="...">`); keep them when re-recording:
-- панделка (`bow.mp3`): `ˈpandɛlkɐ` (ПА́НДЕЛКА)
+- барабан (`drum.mp3`): `bɐrɐˈban`
+- бисквита (`cookie.mp3`): `bisˈkvitɐ`
+- боички (`paints.mp3`): `boˈitʃki`
+- бонбон (`candy.mp3`): `bonˈbɔn`
+- комин (`chimney.mp3`): `koˈmin`
+- краставица (`cucumber.mp3`): `ˈkrastɐvitsɐ`
+- лале (`tulip.mp3`): `lɐˈlɛ`
+- легло (`bed.mp3`): `lɛˈɡlɔ`
+- листо (`leaf.mp3`): `lisˈtɔ`
+- лъжица (`spoon.mp3`): `lɐˈʒitsɐ`
+- мартеница (`martenitsa.mp3`): `ˈmartɛnitsɐ`
+- метла (`broom.mp3`): `mɛˈtla`
+- огледало (`mirror.mp3`): `oɡlɛˈdalo`
+- панделка (`bow.mp3`): `ˈpandɛlkɐ`
+- пастели (`crayons.mp3`): `pɐˈstɛli`
+- перо (`feather.mp3`): `pɛˈrɔ`
+- пижама (`pyjamas.mp3`): `piˈʒamɐ`
+- писмо (`letter.mp3`): `pisˈmɔ`
+- пола (`skirt.mp3`): `poˈla`
+- пчела (`bee.mp3`): `ptʃɛˈla`
+- сърце (`heart.mp3`): `sɐrˈtsɛ`
+- хвърчило (`kite.mp3`): `xvɐrˈtʃilo`
+- яйце (`egg.mp3`): `jajˈtsɛ`
