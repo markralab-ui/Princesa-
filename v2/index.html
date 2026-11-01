@@ -1392,7 +1392,9 @@
     const key = f.keys[f.labelled];
     f.labelled++;
     const w = WORDS[key];
-    burst(princess.x, princess.y - 40, ["#ffd23f", "#ffffff", "#ff6fa8"], 12);
+    const at = stickerBase(f);
+    burst(at.x, at.y, ["#ffd23f", "#ffffff", "#ff6fa8", "#7bdff2"], 22);
+    f.pop = { text: w[0], x: at.x, y: at.y, t: 0 }; // the sticker pops up and flies into her collection
     showWord(w[0], w[1], w[2]);
     if (!f.silent) { memory.seen[key] = (memory.seen[key] || 0) + 1; saveMemory(); }
     updateHud();
@@ -1416,6 +1418,22 @@
       if (inRect(princess.x, princess.y, z)) { touching = f; break; }
     }
     if (touching && touching !== nearFixture) labelFixture(touching);
+    // walking up to something already labelled says its name again
+    if (!touching) {
+      for (const f of scene.fixtures) {
+        if (f.labelled === 0 || f.labelled < f.keys.length) continue;
+        let near = false;
+        if (f.bush || f.tree) near = f.at && Math.hypot(f.at.x - princess.x, f.at.y + 50 - princess.y) < 60;
+        else near = inRect(princess.x, princess.y, fixtureZone(f));
+        if (near) { touching = f; break; }
+      }
+      if (touching && touching !== nearFixture) {
+        const key = touching.keys[touching.keys.length - 1];
+        const w = WORDS[key];
+        showWord(w[0], w[1], w[2]);
+        burst(princess.x, princess.y - 40, ["#ffd23f", "#ffffff"], 6);
+      }
+    }
     nearFixture = touching;
   }
   function checkRoomDone() {
@@ -2622,13 +2640,27 @@
     ctx.fillText(text, 0, 1);
     ctx.restore();
   }
+  function stickerBase(f) { return f.at ? f.at : { x: f.x, y: f.y - f.h / 2 - 10 }; }
   function fixtureStickers(f) {
     const out = [];
-    for (let i = 0; i < f.labelled; i++) {
-      const base = f.at ? f.at : { x: f.x, y: f.y - f.h / 2 - 10 };
-      out.push({ text: WORDS[f.keys[i]][0], x: base.x + (i - (f.labelled - 1) / 2) * 0, y: base.y - i * 26 });
-    }
+    const base = stickerBase(f);
+    for (let i = 0; i < f.labelled; i++) out.push({ text: WORDS[f.keys[i]][0], x: base.x, y: base.y - i * 26 });
     return out;
+  }
+  function drawStickerPops(fixtures) {
+    for (const f of fixtures) {
+      if (!f.pop) continue;
+      f.pop.t += 0.025;
+      if (f.pop.t >= 1) { f.pop = null; continue; }
+      const t = f.pop.t;
+      ctx.save();
+      ctx.globalAlpha = 1 - t * t;
+      ctx.translate(f.pop.x, f.pop.y - 20 - t * 90);
+      ctx.scale(1 + t * 0.9, 1 + t * 0.9);
+      drawSticker(f.pop.text, 0, 0, 0);
+      star(-30, -6, 5 + t * 4, "#ffd23f"); star(30, -10, 4 + t * 4, "#ffd23f");
+      ctx.restore();
+    }
   }
 
   function drawRoom(r) {
@@ -2725,6 +2757,7 @@
     for (const b of butterflies) if (onScreen(b.x, b.y, cam, 20)) drawButterfly(b);
     drawHints(cam);
     for (const f of parkFixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
+    drawStickerPops(parkFixtures);
     drawParticles();
     ctx.restore();
 
@@ -2744,6 +2777,7 @@
     for (const it of list) it.d();
     for (const t of r.items) drawSparkles(t);
     for (const f of r.fixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
+    drawStickerPops(r.fixtures);
     // hint hearts on things still to label
     for (const f of r.fixtures) {
       if (f.labelled >= f.keys.length || f.silent) continue;
