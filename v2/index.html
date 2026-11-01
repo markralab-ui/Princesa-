@@ -2831,7 +2831,6 @@
         ctx.restore();
       }
     }
-    drawHalos(r.fixtures);
     // fixtures on walls, flat ones first
     for (const f of r.fixtures) if (f.wall || f.flat) drawFixture(f);
   }
@@ -2919,7 +2918,6 @@
     if (scene !== parkScene) { renderRoom(scene); ctx.restore(); return; }
 
     drawGround(cam);
-    drawHalos(parkFixtures);
     drawPlayground();
     drawGrassPatch();
 
@@ -2944,7 +2942,6 @@
     for (const t of treasures) if (onScreen(t.x, t.y, cam, 80)) drawSparkles(t);
     for (const b of butterflies) if (onScreen(b.x, b.y, cam, 20)) drawButterfly(b);
     drawHints(cam);
-    drawHalos(parkFixtures, true);
     drawHaloSparkles(parkFixtures);
     for (const f of parkFixtures) for (const s of fixtureStickers(f)) drawSticker(s.text, s.x, s.y, time * 0.05);
     drawStickerPops(parkFixtures);
