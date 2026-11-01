@@ -252,7 +252,7 @@
 <div id="start">
   <div class="card">
     <h1>Princess Raya's Park Adventure 2</h1>
-    <p class="note build">build 38</p>
+    <p class="note build">build 39</p>
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find the sparkly <b>treasures</b> to learn their <b>Bulgarian names</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <p class="note" id="startNote"></p>
@@ -813,7 +813,7 @@
     // bedroom
     alarm:      ["будилник", "bu-DIL-nik", "alarm clock", d => { d.c(-8, -9, 4, "#e63946"); d.c(8, -9, 4, "#e63946"); d.c(0, 1, 11, "#e63946"); d.c(0, 1, 9, WHT); d.l([[0, 1], [0, -5]], "#333", 1.5); d.l([[0, 1], [4, 3]], "#333", 1.5); d.c(0, 1, 1.2, "#333"); d.l([[-5, 11], [-7, 14]], "#333", 1.5); d.l([[5, 11], [7, 14]], "#333", 1.5); }],
     nightstand: ["нощно шкафче", "NOSHT-no SHKAF-che", "nightstand", d => { d.r(-11, -8, 22, 20, "#c27c3e"); d.r(-12, -10, 24, 3, "#d9934f"); d.r(-9, -5, 18, 7, "#9c6b3d"); d.c(0, -1.5, 1.3, "#ffd23f"); d.r(-9, 4, 18, 6, "#9c6b3d"); }],
-    curtain:    ["завеса", "za-VE-sa", "curtain", d => { d.r(-14, -13, 28, 3, "#9c6b3d"); for (const sx of [-1, 1]) { d.p([[sx * 13, -10], [sx * 3, -10], [sx * 4, 2], [sx * 8, 12], [sx * 13, 12]], "#ff6fa8"); d.l([[sx * 11, -10], [sx * 9, 2]], "#e0245e", 1); d.l([[sx * 8, -10], [sx * 6, 2]], "#e0245e", 1); d.e(sx * 7, 3, 4, 1.5, "#ffd23f"); } }],
+    curtain:    ["завеса", "za-VE-sa", "curtain", d => { d.r(-14, -13, 28, 3, "#6b4ca3"); d.c(-14, -11.5, 2, "#ffd23f"); d.c(14, -11.5, 2, "#ffd23f"); for (const sx of [-1, 1]) { d.p([[sx * 13, -10], [sx * 3, -10], [sx * 4, 2], [sx * 8, 12], [sx * 13, 12]], "#9b5de5"); d.l([[sx * 11, -10], [sx * 9, 2]], "#7b3fd5", 1); d.l([[sx * 8, -10], [sx * 6, 2]], "#7b3fd5", 1); d.e(sx * 7, 3, 4, 1.5, "#ffd23f"); } }],
     shelf:      ["рафт", "RAFT", "shelf", d => { d.r(-14, 4, 28, 3, "#c27c3e"); d.r(-14, -8, 28, 3, "#c27c3e"); d.r(-10, -5, 4, 9, "#e63946"); d.r(-5, -5, 3, 9, "#3a86ff"); d.r(-1, -5, 4, 9, "#2a9d48"); d.c(8, 0, 3.5, "#ffd23f"); d.r(-9, 7, 3, 6, "#9b5de5"); d.c(6, 10, 3, "#ff6fa8"); }],
     sheet:      ["чаршаф", "char-SHAF", "sheet", d => { d.p([[-13, -6], [13, -6], [13, 10], [-13, 10]], "#bde0fe"); d.p([[-13, -6], [13, -6], [10, -10], [-10, -10]], "#dbeeff"); d.l([[-9, -2], [9, -2]], "#9ccbf5", 1); d.l([[-9, 3], [9, 3]], "#9ccbf5", 1); }],
     // bathroom
@@ -1229,7 +1229,7 @@
       { keys: ["nightstand"], x: 320, y: 250, w: 60, h: 60, sc: 2.8 },
       { keys: ["wardrobe"], x: 760, y: 235, w: 80, h: 80, sc: 3.4 },
       { keys: ["lamp"], x: 900, y: 240, w: 50, h: 60, sc: 3 },
-      { keys: ["window", "curtain"], x: 300, y: 108, w: 90, h: 80, sc: 3, wall: true },
+      { keys: ["window", "curtain"], x: 330, y: 108, w: 90, h: 80, sc: 3, wall: true },
       { keys: ["shelf"], x: 760, y: 112, w: 80, h: 70, sc: 2.8, wall: true },
       { keys: ["rug"], x: 520, y: 460, w: 140, h: 70, sc: 4.5, flat: true },
     ],
@@ -3440,10 +3440,25 @@
     }
   }
 
+  // Purple curtains on either side of a window, with a rod above and gold tiebacks
+  function drawCurtains(x, y, w, h, sc) {
+    const cw = 22 * sc, top = y - h / 2 - 8, bottom = y + h / 2 + 14;
+    ctx.fillStyle = "#6b4ca3"; ctx.fillRect(x - w / 2 - cw - 10, top - 8, w + 2 * cw + 20, 6);
+    circle(x - w / 2 - cw - 10, top - 5, 5, "#ffd23f"); circle(x + w / 2 + cw + 10, top - 5, 5, "#ffd23f");
+    for (const sx of [-1, 1]) {
+      const inner = x + sx * (w / 2 - 4), outer = x + sx * (w / 2 + cw);
+      ctx.fillStyle = "#9b5de5";
+      ctx.beginPath(); ctx.moveTo(outer, top); ctx.lineTo(inner, top); ctx.lineTo(inner + sx * 6, (top + bottom) / 2); ctx.lineTo(inner + sx * 14, bottom); ctx.lineTo(outer, bottom); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "#7b3fd5"; ctx.lineWidth = 2;
+      for (let i = 1; i <= 3; i++) { const t = i / 4; ctx.beginPath(); ctx.moveTo(outer + (inner - outer) * t, top); ctx.quadraticCurveTo(outer + (inner - outer) * t + sx * 4, (top + bottom) / 2, outer + (inner + sx * 14 - outer) * t, bottom); ctx.stroke(); }
+      ctx.fillStyle = "#ffd23f"; ctx.beginPath(); ctx.ellipse(inner + sx * 4, (top + bottom) / 2 + 6, 10, 5, 0, 0, Math.PI * 2); ctx.fill();
+    }
+  }
   function drawFixture(f) {
     if (!f.wall && !f.flat) shadow(f.x, f.y + f.h / 2, f.w / 2, f.h / 5);
     ctx.save();
     if (f.mirror) { ctx.translate(f.x, f.y); ctx.scale(-1, 1); ctx.translate(-f.x, -f.y); }
+    if (f.keys.includes("curtain")) { const p = pulseOf(f); withPulse(f.x, f.y, p, () => drawCurtains(f.x, f.y, 26 * f.sc, 26 * f.sc, f.sc)); }
     drawItem(f.keys[0], f.x, f.y, f.sc * pulseOf(f));
     ctx.restore();
   }
