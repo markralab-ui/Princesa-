@@ -332,22 +332,28 @@
   // The cottage (bottom right) and the playground (top left): reserved so no trees grow there
   const house = { x: 1930, y: 1330 }; // door position (front, bottom centre)
   const houseBody = { x: house.x - 180, y: house.y - 210, w: 360, h: 210 };
-  const FENCE_L = house.x - 320, FENCE_R = house.x + 320, GATE_L = house.x - 55, GATE_R = house.x + 35; // front fence
-  const GARDEN = { x: house.x - 300, y: house.y + 8, w: 90, h: 56 };
-  const MAILBOX = { x: house.x + 230, y: house.y + 118 }; // out by the path, right of the gate
-  const BELLPOST = { x: house.x + 44, y: house.y + 52 };  // gate post with the doorbell
+  // A little fenced flower garden of its own, well away from the house (top right, past the end of the diagonal path)
+  const GARDEN = { x: 1800, y: 540, w: 140, h: 80 };
+  const PLOT = { x: GARDEN.x - 30, y: GARDEN.y - 30, w: GARDEN.w + 60, h: GARDEN.h + 50 }; // the fence around it
+  // A mailbox on its own beside the main path, north of the fountain
+  const MAILBOX = { x: 1275, y: 330 };
   const playground = { x: 420, y: 420 };
   const reserved = [
-    { x: FENCE_L - 60, y: houseBody.y - 190, w: FENCE_R - FENCE_L + 120, h: houseBody.h + 190 + 150 },
+    { x: houseBody.x - 120, y: houseBody.y - 190, w: houseBody.w + 240, h: houseBody.h + 190 + 200 },
     { x: playground.x - 300, y: playground.y - 170, w: 620, h: 360 },
     { x: 1330, y: 980, w: 180, h: 120 }, // the grassy patch
+    { x: PLOT.x - 80, y: PLOT.y - 120, w: PLOT.w + 160, h: PLOT.h + 200 }, // the flower garden
+    { x: MAILBOX.x - 80, y: MAILBOX.y - 120, w: 160, h: 220 }, // the mailbox
   ];
   function inRect(x, y, r, pad = 0) { return x > r.x - pad && x < r.x + r.w + pad && y > r.y - pad && y < r.y + r.h + pad; }
   // solid parts of the park structures
   rectObstacles.push(houseBody);
-  rectObstacles.push({ x: FENCE_L, y: house.y + 52, w: GATE_L - FENCE_L, h: 30 }); // fence left of the gate
-  rectObstacles.push({ x: GATE_R, y: house.y + 52, w: FENCE_R - GATE_R, h: 30 });  // fence right of the gate
-  rectObstacles.push(GARDEN);                                                       // flower bed (garden)
+  rectObstacles.push({ x: PLOT.x, y: PLOT.y, w: PLOT.w, h: 12 });                   // garden fence: back
+  rectObstacles.push({ x: PLOT.x, y: PLOT.y, w: 12, h: PLOT.h });                   // left
+  rectObstacles.push({ x: PLOT.x + PLOT.w - 12, y: PLOT.y, w: 12, h: PLOT.h });     // right
+  rectObstacles.push({ x: PLOT.x, y: PLOT.y + PLOT.h - 12, w: PLOT.w / 2 - 30, h: 12 });                  // front, left of the little gate
+  rectObstacles.push({ x: PLOT.x + PLOT.w / 2 + 30, y: PLOT.y + PLOT.h - 12, w: PLOT.w / 2 - 30, h: 12 }); // front, right of the gate
+  rectObstacles.push(GARDEN);                                                       // flower bed
   rectObstacles.push({ x: MAILBOX.x - 10, y: MAILBOX.y + 10, w: 20, h: 40 });        // mailbox post
   rectObstacles.push({ x: playground.x - 260, y: playground.y - 40, w: 60, h: 30 });     // swing frame
   rectObstacles.push({ x: playground.x - 60, y: playground.y - 60, w: 90, h: 40 });      // slide
@@ -865,7 +871,7 @@
     "whale", "octopus", "crab", "lizard", "snake", "owl", "parrot", "pigeon", "stork", "swan", "rooster", "donkey", "ant"].filter(k => WORDS[k]);
   const ANIMAL_SET = new Set(ANIMAL_KEYS);
   // Body parts are parked (nowhere in a park to find them); they can come back with a mirror feature
-  const PARKED = new Set(["eye", "nose", "mouth", "ear", "hand", "foot", "hair", "tooth"]);
+  const PARKED = new Set(["eye", "nose", "mouth", "ear", "hand", "foot", "hair", "tooth", "doorbell"]);
   const WORD_KEYS = Object.keys(WORDS).filter(k => !ANIMAL_SET.has(k) && !PARKED.has(k));
 
   // Item drawing helpers; `ctx` is the current canvas context (swappable for the dictionary icons)
@@ -1007,13 +1013,12 @@
   };
   // Park fixtures: label zones on the park's own structures (drawn by the park code, not by drawItem)
   const PARK_FIXTURES = [
-    { keys: ["house"], x: house.x, y: house.y - 105, w: 360, h: 210, spot: { x: house.x - 60, y: house.y + 30 }, at: { x: house.x, y: house.y - 150 } },
-    { keys: ["roof"], x: house.x, y: house.y - 290, w: 420, h: 150, high: true, spot: { x: house.x - 236, y: house.y - 190 } },
-    { keys: ["chimney"], x: house.x + 110, y: house.y - 295, w: 50, h: 80, high: true, spot: { x: house.x + 236, y: house.y - 190 } },
-    { keys: ["fence"], x: house.x - 170, y: house.y + 66, w: 60, h: 30, spot: { x: house.x - 170, y: house.y + 118 } },
-    { keys: ["garden", "flower"], x: GARDEN.x + GARDEN.w / 2, y: GARDEN.y + GARDEN.h / 2, w: GARDEN.w, h: GARDEN.h, spot: { x: GARDEN.x - 34, y: GARDEN.y + 24 } },
+    { keys: ["house"], x: house.x, y: house.y - 105, w: 360, h: 210, spot: { x: house.x - 220, y: house.y - 60 }, at: { x: house.x, y: house.y - 150 } },
+    { keys: ["roof"], x: house.x, y: house.y - 290, w: 420, h: 150, high: true, spot: { x: house.x - 236, y: house.y - 200 } },
+    { keys: ["chimney"], x: house.x + 110, y: house.y - 295, w: 50, h: 80, high: true, spot: { x: house.x + 236, y: house.y - 200 } },
+    { keys: ["fence"], x: PLOT.x + 6, y: PLOT.y + PLOT.h / 2, w: 12, h: PLOT.h, spot: { x: PLOT.x - 40, y: PLOT.y + PLOT.h / 2 } },
+    { keys: ["garden", "flower"], x: GARDEN.x + GARDEN.w / 2, y: GARDEN.y + GARDEN.h / 2, w: GARDEN.w, h: GARDEN.h, spot: { x: PLOT.x + PLOT.w / 2, y: PLOT.y + PLOT.h + 30 } },
     { keys: ["mailbox"], x: MAILBOX.x, y: MAILBOX.y + 25, w: 34, h: 50, spot: { x: MAILBOX.x + 50, y: MAILBOX.y + 40 } },
-    { keys: ["doorbell"], x: BELLPOST.x, y: BELLPOST.y + 14, w: 20, h: 34, spot: { x: BELLPOST.x + 30, y: house.y + 118 } },
     { keys: ["fountain"], x: 1200, y: 820, w: 240, h: 150, spot: { x: 1075, y: 950 } },
     { keys: ["pond"], x: 520, y: 1250, w: 560, h: 320, spot: { x: 520, y: 1250 + 150 + 44 } },
     { keys: ["grass"], x: 1420, y: 1040, w: 90, h: 60, spot: { x: 1420, y: 1095 } },
@@ -2754,17 +2759,6 @@
   function drawHouse() {
     const b = houseBody, hx = house.x;
     shadow(hx, b.y + b.h + 4, b.w / 2 + 10, 14);
-    // fence
-    withPulse(hx + 150, house.y + 82, pp("fence"), () => {
-      ctx.fillStyle = "#fff7e6";
-      for (let x = FENCE_L; x <= FENCE_R; x += 22) {
-        if (x > GATE_L && x < GATE_R) continue; // gate opening
-        ctx.fillRect(x - 3, house.y + 52, 6, 30);
-        ctx.beginPath(); ctx.moveTo(x - 3, house.y + 52); ctx.lineTo(x, house.y + 46); ctx.lineTo(x + 3, house.y + 52); ctx.fill();
-      }
-      ctx.fillStyle = "#f1e4cc";
-      for (const yy of [house.y + 60, house.y + 72]) { ctx.fillRect(FENCE_L, yy, GATE_L - FENCE_L, 4); ctx.fillRect(GATE_R, yy, FENCE_R - GATE_R, 4); }
-    });
     const hp = pulseOf(parkFixture("house")), rp = pulseOf(parkFixture("roof")), cp = pulseOf(parkFixture("chimney"));
     // walls
     withPulse(hx, b.y + b.h, hp, () => {
@@ -2801,16 +2795,13 @@
     ctx.fillStyle = "#9c6b3d"; ctx.fillRect(hx - 26, b.y + b.h - 86, 52, 82);
     ctx.fillStyle = "#7a4a24"; ctx.fillRect(hx - 20, b.y + b.h - 78, 16, 26); ctx.fillRect(hx + 4, b.y + b.h - 78, 16, 26);
     circle(hx + 14, b.y + b.h - 40, 4, "#ffd23f");
-    // doorbell on the gate post
-    withPulse(BELLPOST.x, BELLPOST.y + 30, 1 + (pp("doorbell") - 1) * 3, () => {
-      ctx.fillStyle = "#f1e4cc"; ctx.fillRect(BELLPOST.x - 5, BELLPOST.y - 10, 10, 42);
-      ctx.fillStyle = "#c9ced6"; ctx.fillRect(BELLPOST.x - 7, BELLPOST.y - 2, 14, 18); circle(BELLPOST.x, BELLPOST.y + 7, 4.5, "#ffd23f");
-    });
     // doormat & step
     ctx.fillStyle = "#e8d39a"; ctx.fillRect(hx - 40, b.y + b.h, 80, 14);
     // what's left to find inside the house
     { let a = 0, t = 0; for (const rn in rooms) { const [x, y] = areaProgress(rooms[rn]); a += x; t += y; } drawBadge(hx + 46, b.y + b.h - 100, a >= t ? "✓" : String(t - a), a >= t); }
-    // mailbox out by the path
+  }
+  // The mailbox, on its own beside the main path
+  function drawMailbox() {
     withPulse(MAILBOX.x, MAILBOX.y + 56, 1 + (pp("mailbox") - 1) * 2, () => {
       shadow(MAILBOX.x, MAILBOX.y + 58, 14, 4);
       ctx.fillStyle = "#8a9099"; ctx.fillRect(MAILBOX.x - 2, MAILBOX.y + 10, 5, 46);
@@ -2818,12 +2809,24 @@
       ctx.fillStyle = "#fff"; ctx.fillRect(MAILBOX.x - 9, MAILBOX.y - 2, 18, 7);
       ctx.fillStyle = "#e63946"; ctx.fillRect(MAILBOX.x + 18, MAILBOX.y - 13, 4, 12);
     });
-    // flower bed (garden) on the left
+  }
+  // The little fenced flower garden
+  function drawGardenPlot() {
+    // fence (pulses for "ограда")
+    withPulse(PLOT.x + PLOT.w / 2, PLOT.y + PLOT.h, pp("fence"), () => {
+      ctx.fillStyle = "#fff7e6";
+      const post = (x, y) => { ctx.fillRect(x - 3, y, 6, 26); ctx.beginPath(); ctx.moveTo(x - 3, y); ctx.lineTo(x, y - 6); ctx.lineTo(x + 3, y); ctx.fill(); };
+      for (let x = PLOT.x; x <= PLOT.x + PLOT.w; x += 18) { post(x, PLOT.y - 14); if (x < PLOT.x + PLOT.w / 2 - 30 || x > PLOT.x + PLOT.w / 2 + 30) post(x, PLOT.y + PLOT.h - 26); }
+      for (let y = PLOT.y; y <= PLOT.y + PLOT.h - 20; y += 18) { post(PLOT.x, y); post(PLOT.x + PLOT.w, y); }
+      ctx.fillStyle = "#f1e4cc";
+      ctx.fillRect(PLOT.x, PLOT.y - 6, PLOT.w, 3); ctx.fillRect(PLOT.x, PLOT.y + PLOT.h - 18, PLOT.w / 2 - 30, 3); ctx.fillRect(PLOT.x + PLOT.w / 2 + 30, PLOT.y + PLOT.h - 18, PLOT.w / 2 - 30, 3);
+    });
+    // flower bed (pulses for "градина")
     withPulse(GARDEN.x + GARDEN.w / 2, GARDEN.y + GARDEN.h, 1 + (pp("garden") - 1) * 2, () => {
       ctx.fillStyle = "#7a4a24"; ctx.fillRect(GARDEN.x, GARDEN.y, GARDEN.w, GARDEN.h);
       ctx.fillStyle = "#9c6b3d"; ctx.fillRect(GARDEN.x, GARDEN.y, GARDEN.w, 5);
-      for (let i = 0; i < 10; i++) {
-        const fx = GARDEN.x + 12 + (i % 5) * 17, fy = GARDEN.y + 18 + Math.floor(i / 5) * 24;
+      for (let i = 0; i < 21; i++) {
+        const fx = GARDEN.x + 12 + (i % 7) * 19, fy = GARDEN.y + 20 + Math.floor(i / 7) * 24;
         ctx.strokeStyle = "#3f9a3a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(fx, fy + 8); ctx.lineTo(fx, fy); ctx.stroke();
         circle(fx, fy - 2, 5, petalColors[(i * 3) % petalColors.length]); circle(fx, fy - 2, 2, "#ffd23f");
       }
@@ -3161,6 +3164,8 @@
     }
     list.push({ y: fountain.y + 20, d: drawFountain });
     list.push({ y: house.y + 2, d: drawHouse });
+    list.push({ y: MAILBOX.y + 56, d: drawMailbox });
+    list.push({ y: PLOT.y + PLOT.h, d: drawGardenPlot });
     list.push({ y: mom.y, d: () => drawMom(mom) });
     list.push({ y: princess.y + 0.1, d: () => drawPrincess(princess) });
     list.sort((a, b) => a.y - b.y);
