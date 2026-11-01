@@ -2882,8 +2882,8 @@
       for (let x = 0; x <= r.w; x += 56) ctx.fillRect(x - 1, WALL_TOP, 2, r.h - WALL_TOP);
       for (let y = WALL_TOP; y <= r.h; y += 56) ctx.fillRect(0, y - 1, r.w, 2);
       const cols = ["#7bdff2", "#2ec4b6", "#bde0fe", "#ffffff"];
-      for (let x = 0; x < r.w; x += 14) { ctx.fillStyle = cols[(x / 14) % 4]; ctx.fillRect(x + 1, WALL_TOP + 14, 12, 12); }
-      for (let x = 0; x < r.w; x += 14) { ctx.fillStyle = cols[(x / 14 + 2) % 4]; ctx.fillRect(x + 1, r.h - 46, 12, 12); }
+      for (let x = 42; x < r.w - 42; x += 14) { ctx.fillStyle = cols[(x / 14) % 4]; ctx.fillRect(x + 1, WALL_TOP + 14, 12, 12); }
+      for (let x = 42; x < r.w - 42; x += 14) { ctx.fillStyle = cols[(x / 14 + 2) % 4]; ctx.fillRect(x + 1, r.h - 46, 12, 12); }
     } else {
       for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(0, y, r.w, 2);
       for (let x = 0; x < r.w; x += 160) for (let y = WALL_TOP; y < r.h; y += 28) ctx.fillRect(x + ((y / 28) % 2) * 80, y, 2, 28);
