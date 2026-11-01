@@ -1006,9 +1006,9 @@
   };
   // Park fixtures: label zones on the park's own structures (drawn by the park code, not by drawItem)
   const PARK_FIXTURES = [
-    { keys: ["house"], x: house.x, y: house.y - 105, w: 360, h: 210, spot: { x: house.x - 60, y: house.y + 30 } },
-    { keys: ["roof"], x: house.x, y: house.y - 290, w: 420, h: 150, high: true, spot: { x: house.x + 110, y: house.y + 30 } },
-    { keys: ["chimney"], x: house.x + 110, y: house.y - 295, w: 50, h: 80, high: true, spot: { x: house.x + 190, y: house.y + 30 } },
+    { keys: ["house"], x: house.x, y: house.y - 105, w: 360, h: 210, spot: { x: house.x - 60, y: house.y + 30 }, at: { x: house.x, y: house.y - 150 } },
+    { keys: ["roof"], x: house.x, y: house.y - 290, w: 420, h: 150, high: true, spot: { x: house.x - 236, y: house.y - 190 } },
+    { keys: ["chimney"], x: house.x + 110, y: house.y - 295, w: 50, h: 80, high: true, spot: { x: house.x + 236, y: house.y - 190 } },
     { keys: ["fence"], x: house.x + 150, y: house.y + 66, w: 60, h: 30, spot: { x: house.x + 150, y: house.y + 118 } },
     { keys: ["garden", "flower"], x: GARDEN.x + GARDEN.w / 2, y: GARDEN.y + GARDEN.h / 2, w: GARDEN.w, h: GARDEN.h, spot: { x: GARDEN.x - 34, y: GARDEN.y + 24 } },
     { keys: ["mailbox"], x: MAILBOX.x, y: MAILBOX.y + 15, w: 34, h: 50, spot: { x: MAILBOX.x + 46, y: MAILBOX.y + 12 } },
