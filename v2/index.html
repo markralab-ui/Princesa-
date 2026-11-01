@@ -252,7 +252,7 @@
 <div id="start">
   <div class="card">
     <h1>Princess Raya's Park Adventure 2</h1>
-    <p class="note build">build 36</p>
+    <p class="note build">build 37</p>
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find the sparkly <b>treasures</b> to learn their <b>Bulgarian names</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <p class="note" id="startNote"></p>
@@ -882,6 +882,7 @@
     signpost:   ["табела", "ta-BE-la", "signpost", d => { d.r(-1, -4, 2, 18, "#9c6b3d"); d.p([[-12, -12], [8, -12], [12, -8], [8, -4], [-12, -4]], "#e63946"); d.l([[-9, -8], [4, -8]], WHT, 2); d.p([[-8, -2], [6, -2], [10, 1], [6, 4], [-8, 4]], "#2a9d48"); d.l([[-5, 1], [3, 1]], WHT, 2); }],
     icecreamstand: ["будка за сладолед", "BOOD-ka za sla-do-LED", "ice-cream stand", d => { d.r(-12, -4, 24, 16, "#fff3e0"); d.r(-12, 2, 24, 3, "#4aa8dc"); for (let i = -14; i < 14; i += 7) d.p([[i, -4], [i + 7, -4], [i + 3.5, -13]], (i / 7) % 2 ? "#e63946" : WHT); d.r(-14, -4, 28, 2, "#c1121f"); d.p([[-3, 5], [3, 5], [0, 11]], "#e8b06a"); d.c(0, 3, 3, "#ffb3cf"); }],
     litterbin:  ["кошче", "KOSH-che", "litter bin", d => { d.p([[-9, -8], [9, -8], [7, 12], [-7, 12]], "#2a9d48"); d.r(-10, -10, 20, 3, "#1c6b31"); d.l([[-4, -4], [-3, 9]], "#1c6b31", 1.5); d.l([[4, -4], [3, 9]], "#1c6b31", 1.5); d.r(-3, -14, 6, 4, "#1c6b31"); }],
+    wreath:     ["венец", "ve-NETS", "flower wreath", d => { d.ring(0, 0, 11, 8, "#4a8f3a", 4); for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; const x = Math.cos(a) * 11, y = Math.sin(a) * 8; d.c(x, y, 3.2, ["#ff6fa8", "#ffd23f", WHT, "#ff4d6d"][i % 4]); d.c(x, y, 1.2, "#ff8c42"); } }],
     flagpole:   ["знаме", "ZNA-me", "flag", d => { d.r(-1, -14, 2, 28, "#c9ced6"); d.c(0, -15, 2, "#ffd23f"); d.r(1, -13, 14, 4, WHT); d.r(1, -9, 14, 4, "#00966e"); d.r(1, -5, 14, 4, "#d62612"); d.e(0, 14, 6, 2, "#8a9099"); }],
     scarecrow:  ["плашило", "pla-SHEE-lo", "scarecrow", d => { d.r(-1, -4, 2, 18, "#9c6b3d"); d.r(-12, -6, 24, 2, "#9c6b3d"); d.r(-6, -5, 12, 10, "#e63946"); d.r(-6, -2, 12, 2, "#ffd23f"); d.c(0, -10, 5, "#e8b06a"); d.p([[-8, -13], [8, -13], [0, -19]], "#c27c3e"); d.r(-8, -13, 16, 2, "#c27c3e"); d.c(-2, -10, 1, "#333"); d.c(2, -10, 1, "#333"); }],
     gazebo:     ["беседка", "be-SED-ka", "gazebo", d => { d.p([[-14, -4], [0, -14], [14, -4]], "#e63946"); d.r(-11, -4, 3, 16, WHT); d.r(8, -4, 3, 16, WHT); d.r(-2, -4, 3, 16, WHT); d.r(-11, 6, 22, 2, WHT); d.e(0, 13, 14, 3, "#b8b0a5"); }],
