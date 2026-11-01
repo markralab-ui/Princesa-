@@ -22,3 +22,10 @@ Steps when ready:
 1. Azure portal → create a **Speech** resource (region East US, pricing tier **Free F0**). Copy Key 1 and the region.
 2. In the Claude cloud environment settings: allow the domain `eastus.tts.speech.microsoft.com` (use the chosen region's name), and add secrets `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION`.
 3. Start a new session and ask Claude to record the words. The service is only used for that one recording; playing the game never contacts it.
+
+## After the voice recordings are done: remove the Azure key
+
+The key was only needed to record the clips once. Afterwards:
+1. claude.ai/code → gear next to the **Princesa** environment → **Environment variables** → delete the `AZURE_SPEECH_KEY=` line (and the region line) → Save changes.
+2. Optional: portal.azure.com → your Speech resource → Keys and Endpoint → **Regenerate Key 1**.
+The recordings in the game keep working; they are plain audio files.
