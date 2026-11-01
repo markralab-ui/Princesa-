@@ -1757,6 +1757,8 @@
     // plaza around fountain
     circle(fountain.x, fountain.y + 10, fountain.r + 70, C.pathEdge);
     circle(fountain.x, fountain.y + 10, fountain.r + 62, C.path);
+    // the labelled spot on the path: a brighter patch that pulses until named
+    { const pf = parkFixture("path"); if (pf && pf.labelled < pf.keys.length) { const k = (Math.sin(time * 0.12) + 1) / 2; ellipse(pf.x, pf.y, 44 + k * 10, 26 + k * 6, `rgba(255,255,255,${0.35 + k * 0.35})`); for (let i = 0; i < 6; i++) { const a = i * 1.05 + time * 0.02; circle(pf.x + Math.cos(a) * 30, pf.y + Math.sin(a) * 18, 3, "#fff3c4"); } } }
     // pebbles on path
     ctx.fillStyle = "#e6c98c";
     for (let i = 0; i < 40; i++) {
@@ -1794,6 +1796,9 @@
   }
 
   function drawPond() {
+    withPulse(pond.x, pond.y, 1 + (pp("pond") - 1) * 0.8, drawPondBody);
+  }
+  function drawPondBody() {
     // sand edge
     ellipse(pond.x, pond.y, pond.rx + 16, pond.ry + 12, "#e8d39a");
     ellipse(pond.x, pond.y, pond.rx, pond.ry, C.waterDeep);
@@ -1864,6 +1869,9 @@
 
   // ---------- Fountain ----------
   function drawFountain() {
+    if (scene === parkScene) withPulse(fountain.x, fountain.y + 60, 1 + (pp("fountain") - 1) * 1.5, drawFountainBody); else drawFountainBody();
+  }
+  function drawFountainBody() {
     const { x, y, r } = fountain;
     shadow(x, y + 30, r + 6, 30);
     // outer basin
@@ -2000,6 +2008,10 @@
   function petForBush(b) { return pets.find(p => p.bush === b); }
 
   function drawBench(b) {
+    const bf = parkFixture("bench");
+    withPulse(b.x, b.y + 4, bf && Math.abs(b.x - bf.x) < 5 && Math.abs(b.y - bf.y) < 5 ? 1 + (pulseOf(bf) - 1) * 2 : 1, () => drawBenchBody(b));
+  }
+  function drawBenchBody(b) {
     shadow(b.x, b.y + 4, 34, 8);
     ctx.fillStyle = "#7a4a24";
     ctx.fillRect(b.x - 26, b.y - 14, 4, 18);
@@ -2624,14 +2636,16 @@
     const b = houseBody, hx = house.x;
     shadow(hx, b.y + b.h + 4, b.w / 2 + 10, 14);
     // fence
-    ctx.fillStyle = "#fff7e6";
-    for (let x = FENCE_L; x <= FENCE_R; x += 22) {
-      if (x > GATE_L && x < GATE_R) continue; // gate opening
-      ctx.fillRect(x - 3, house.y + 52, 6, 30);
-      ctx.beginPath(); ctx.moveTo(x - 3, house.y + 52); ctx.lineTo(x, house.y + 46); ctx.lineTo(x + 3, house.y + 52); ctx.fill();
-    }
-    ctx.fillStyle = "#f1e4cc";
-    for (const yy of [house.y + 60, house.y + 72]) { ctx.fillRect(FENCE_L, yy, GATE_L - FENCE_L, 4); ctx.fillRect(GATE_R, yy, FENCE_R - GATE_R, 4); }
+    withPulse(hx + 150, house.y + 82, pp("fence"), () => {
+      ctx.fillStyle = "#fff7e6";
+      for (let x = FENCE_L; x <= FENCE_R; x += 22) {
+        if (x > GATE_L && x < GATE_R) continue; // gate opening
+        ctx.fillRect(x - 3, house.y + 52, 6, 30);
+        ctx.beginPath(); ctx.moveTo(x - 3, house.y + 52); ctx.lineTo(x, house.y + 46); ctx.lineTo(x + 3, house.y + 52); ctx.fill();
+      }
+      ctx.fillStyle = "#f1e4cc";
+      for (const yy of [house.y + 60, house.y + 72]) { ctx.fillRect(FENCE_L, yy, GATE_L - FENCE_L, 4); ctx.fillRect(GATE_R, yy, FENCE_R - GATE_R, 4); }
+    });
     const hp = pulseOf(parkFixture("house")), rp = pulseOf(parkFixture("roof")), cp = pulseOf(parkFixture("chimney"));
     // walls
     withPulse(hx, b.y + b.h, hp, () => {
@@ -2669,29 +2683,41 @@
     ctx.fillStyle = "#7a4a24"; ctx.fillRect(hx - 20, b.y + b.h - 78, 16, 26); ctx.fillRect(hx + 4, b.y + b.h - 78, 16, 26);
     circle(hx + 14, b.y + b.h - 40, 4, "#ffd23f");
     // doorbell
-    ctx.fillStyle = "#c9ced6"; ctx.fillRect(hx + 44, b.y + b.h - 72, 14, 18); circle(hx + 51, b.y + b.h - 63, 4, "#ffd23f");
+    withPulse(hx + 51, b.y + b.h - 63, 1 + (pp("doorbell") - 1) * 3, () => {
+      ctx.fillStyle = "#c9ced6"; ctx.fillRect(hx + 44, b.y + b.h - 72, 14, 18); circle(hx + 51, b.y + b.h - 63, 4, "#ffd23f");
+    });
     // flower pot by the door
-    ctx.fillStyle = "#d9934f"; ctx.beginPath(); ctx.moveTo(hx - 82, b.y + b.h - 4); ctx.lineTo(hx - 58, b.y + b.h - 4); ctx.lineTo(hx - 62, b.y + b.h + 22); ctx.lineTo(hx - 78, b.y + b.h + 22); ctx.fill();
-    circle(hx - 70, b.y + b.h - 16, 10, "#3fae4a"); circle(hx - 76, b.y + b.h - 22, 5, "#ff6fa8"); circle(hx - 63, b.y + b.h - 19, 5, "#ffd23f");
+    withPulse(hx - 70, b.y + b.h + 10, 1 + (pp("flowerpot") - 1) * 2, () => {
+      ctx.fillStyle = "#d9934f"; ctx.beginPath(); ctx.moveTo(hx - 82, b.y + b.h - 4); ctx.lineTo(hx - 58, b.y + b.h - 4); ctx.lineTo(hx - 62, b.y + b.h + 22); ctx.lineTo(hx - 78, b.y + b.h + 22); ctx.fill();
+      circle(hx - 70, b.y + b.h - 16, 10, "#3fae4a"); circle(hx - 76, b.y + b.h - 22, 5, "#ff6fa8"); circle(hx - 63, b.y + b.h - 19, 5, "#ffd23f");
+    });
     // doormat & step
     ctx.fillStyle = "#e8d39a"; ctx.fillRect(hx - 40, b.y + b.h, 80, 14);
     // what's left to find inside the house
     { let a = 0, t = 0; for (const rn in rooms) { const [x, y] = areaProgress(rooms[rn]); a += x; t += y; } drawBadge(hx + 46, b.y + b.h - 100, a >= t ? "✓" : String(t - a), a >= t); }
     // mailbox on the right of the gate
-    ctx.fillStyle = "#8a9099"; ctx.fillRect(MAILBOX.x - 2, MAILBOX.y + 10, 5, 46);
-    ctx.fillStyle = "#3a86ff"; ctx.fillRect(MAILBOX.x - 16, MAILBOX.y - 10, 34, 24);
-    ctx.fillStyle = "#fff"; ctx.fillRect(MAILBOX.x - 9, MAILBOX.y - 2, 18, 7);
-    ctx.fillStyle = "#e63946"; ctx.fillRect(MAILBOX.x + 18, MAILBOX.y - 13, 4, 12);
+    withPulse(MAILBOX.x, MAILBOX.y + 56, 1 + (pp("mailbox") - 1) * 2, () => {
+      ctx.fillStyle = "#8a9099"; ctx.fillRect(MAILBOX.x - 2, MAILBOX.y + 10, 5, 46);
+      ctx.fillStyle = "#3a86ff"; ctx.fillRect(MAILBOX.x - 16, MAILBOX.y - 10, 34, 24);
+      ctx.fillStyle = "#fff"; ctx.fillRect(MAILBOX.x - 9, MAILBOX.y - 2, 18, 7);
+      ctx.fillStyle = "#e63946"; ctx.fillRect(MAILBOX.x + 18, MAILBOX.y - 13, 4, 12);
+    });
     // flower bed (garden) on the left
-    ctx.fillStyle = "#7a4a24"; ctx.fillRect(GARDEN.x, GARDEN.y, GARDEN.w, GARDEN.h);
-    ctx.fillStyle = "#9c6b3d"; ctx.fillRect(GARDEN.x, GARDEN.y, GARDEN.w, 5);
-    for (let i = 0; i < 10; i++) {
-      const fx = GARDEN.x + 12 + (i % 5) * 17, fy = GARDEN.y + 18 + Math.floor(i / 5) * 24;
-      ctx.strokeStyle = "#3f9a3a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(fx, fy + 8); ctx.lineTo(fx, fy); ctx.stroke();
-      circle(fx, fy - 2, 5, petalColors[(i * 3) % petalColors.length]); circle(fx, fy - 2, 2, "#ffd23f");
-    }
+    withPulse(GARDEN.x + GARDEN.w / 2, GARDEN.y + GARDEN.h, 1 + (pp("garden") - 1) * 2, () => {
+      ctx.fillStyle = "#7a4a24"; ctx.fillRect(GARDEN.x, GARDEN.y, GARDEN.w, GARDEN.h);
+      ctx.fillStyle = "#9c6b3d"; ctx.fillRect(GARDEN.x, GARDEN.y, GARDEN.w, 5);
+      for (let i = 0; i < 10; i++) {
+        const fx = GARDEN.x + 12 + (i % 5) * 17, fy = GARDEN.y + 18 + Math.floor(i / 5) * 24;
+        ctx.strokeStyle = "#3f9a3a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(fx, fy + 8); ctx.lineTo(fx, fy); ctx.stroke();
+        circle(fx, fy - 2, 5, petalColors[(i * 3) % petalColors.length]); circle(fx, fy - 2, 2, "#ffd23f");
+      }
+    });
   }
   function drawGrassPatch() {
+    const gx = 1420, gy = 1040;
+    withPulse(gx, gy + 10, 1 + (pp("grass") - 1) * 2, drawGrassPatchBody);
+  }
+  function drawGrassPatchBody() {
     const gx = 1420, gy = 1040;
     ellipse(gx, gy + 10, 55, 30, "#7cc35a");
     ctx.strokeStyle = "#4f9f3a"; ctx.lineWidth = 2.5; ctx.lineCap = "round";
@@ -2704,6 +2730,14 @@
   }
   function drawPlayground() {
     const px = playground.x, py = playground.y;
+    withPulse(px - 230, py - 10, 1 + (pp("swing") - 1) * 2, drawSwing);
+    withPulse(px - 15, py - 20, 1 + (pp("slide") - 1) * 2, drawSlide);
+    withPulse(px + 205, py + 50, 1 + (pp("sandbox") - 1) * 2, drawSandbox);
+    withPulse(px - 35, py + 148, 1 + (pp("carousel") - 1) * 2, drawCarousel);
+    withPulse(pond.x + pond.rx + 10, pond.y + 40, 1 + (pp("bridge") - 1) * 2, drawBridge);
+  }
+  function drawSwing() {
+    const px = playground.x, py = playground.y;
     // swing
     ctx.strokeStyle = "#9c6b3d"; ctx.lineWidth = 6; ctx.lineCap = "round";
     ctx.beginPath(); ctx.moveTo(px - 260, py - 10); ctx.lineTo(px - 240, py - 90); ctx.lineTo(px - 220, py - 90); ctx.lineTo(px - 200, py - 10); ctx.stroke();
@@ -2712,25 +2746,32 @@
     ctx.strokeStyle = "#555"; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(px - 236, py - 88); ctx.lineTo(px - 236 + sw, py - 30); ctx.moveTo(px - 224, py - 88); ctx.lineTo(px - 224 + sw, py - 30); ctx.stroke();
     ctx.fillStyle = "#e63946"; ctx.fillRect(px - 242 + sw, py - 30, 24, 6);
-    // slide
+  }
+  function drawSlide() {
+    const px = playground.x, py = playground.y;
     ctx.fillStyle = "#9c6b3d"; ctx.fillRect(px - 56, py - 95, 8, 75);
     for (let i = 0; i < 5; i++) { ctx.fillStyle = "#c27c3e"; ctx.fillRect(px - 64, py - 90 + i * 14, 24, 4); }
     ctx.strokeStyle = "#ffd23f"; ctx.lineWidth = 16; ctx.lineCap = "round";
     ctx.beginPath(); ctx.moveTo(px - 50, py - 95); ctx.lineTo(px - 30, py - 95); ctx.lineTo(px + 30, py - 20); ctx.stroke();
     ctx.strokeStyle = "#e0b000"; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(px - 50, py - 103); ctx.lineTo(px - 30, py - 103); ctx.lineTo(px + 30, py - 28); ctx.stroke();
-    // sandbox
+  }
+  function drawSandbox() {
+    const px = playground.x, py = playground.y;
     ctx.fillStyle = "#9c6b3d"; ctx.fillRect(px + 150, py - 20, 110, 70);
     ctx.fillStyle = "#f3dca2"; ctx.fillRect(px + 158, py - 12, 94, 54);
     ctx.fillStyle = "#e63946"; ctx.beginPath(); ctx.moveTo(px + 180, py + 20); ctx.lineTo(px + 200, py + 20); ctx.lineTo(px + 195, py + 6); ctx.lineTo(px + 185, py + 6); ctx.fill();
     circle(px + 225, py + 25, 7, "#3a86ff"); circle(px + 215, py, 5, "#ffd23f");
-    // merry-go-round
+  }
+  function drawCarousel() {
+    const px = playground.x, py = playground.y;
     ellipse(px - 35, py + 148, 48, 16, "#c9ced6");
     ellipse(px - 35, py + 142, 44, 14, "#e63946");
     ctx.fillStyle = "#8a9099"; ctx.fillRect(px - 38, py + 100, 6, 42);
     ellipse(px - 35, py + 100, 40, 12, "#ffd23f");
     for (let i = 0; i < 4; i++) { const a = time * 0.02 + i * Math.PI / 2; const bx = px - 35 + Math.cos(a) * 32, by = py + 120 + Math.sin(a) * 9; ctx.fillStyle = "#8a9099"; ctx.fillRect(bx - 1.5, by - 18, 3, 22); circle(bx, by - 20, 5, i % 2 ? "#3a86ff" : "#ff6fa8"); }
-    // little bridge at the pond's edge
+  }
+  function drawBridge() {
     const bx = pond.x + pond.rx + 10, by = pond.y;
     ctx.strokeStyle = "#9c6b3d"; ctx.lineWidth = 8;
     ctx.beginPath(); ctx.moveTo(bx - 30, by + 40); ctx.quadraticCurveTo(bx, by - 30, bx + 30, by + 40); ctx.stroke();
@@ -2844,6 +2885,7 @@
     ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); ctx.translate(-x, -y); fn(); ctx.restore();
   }
   const parkFixture = key => parkFixtures.find(f => f.keys[0] === key);
+  const pp = key => pulseOf(parkFixture(key));
   function haloSpot(f) {
     if (f.bush) { const b = nearestOf(freeBushes()); return b ? { x: b.x, y: b.y + 4, rx: b.size * 1.4, ry: b.size * 0.6 } : null; }
     if (f.tree) { const t = nearestOf(trees); return t ? { x: t.x, y: t.y + 2, rx: t.size * 0.9, ry: t.size * 0.35 } : null; }
