@@ -1435,10 +1435,16 @@
 
   // Put a name sticker on a fixed thing the princess walks up to
   let roofHintShown = false;
+  // Two of the same thing (the kitchen chairs) are one word: label the main one, and its twins follow
+  function canonical(f) { return f.silent ? (scene.fixtures.find(g => !g.silent && g.keys.join() === f.keys.join()) || f) : f; }
+  function syncTwins(f) { for (const g of scene.fixtures) if (g !== f && g.keys.join() === f.keys.join()) g.labelled = f.labelled; }
   function labelFixture(f) {
+    f = canonical(f);
+    if (f.labelled >= f.keys.length) return;
     const key = f.keys[f.labelled];
     if (key === "house" && !roofHintShown) { roofHintShown = true; setTimeout(() => showMessage("👆 Tap the glowing roof and chimney too!"), 4500); }
     f.labelled++;
+    syncTwins(f);
     const w = WORDS[key];
     const at = stickerBase(f);
     burst(at.x, at.y, ["#ffd23f", "#ffffff", "#ff6fa8", "#7bdff2"], 22);
@@ -2757,6 +2763,7 @@
   function stickerBase(f) { return f.at ? f.at : { x: f.x, y: f.y - f.h / 2 - 10 }; }
   function fixtureStickers(f) {
     const out = [];
+    if (f.silent) return out;
     const base = stickerBase(f);
     for (let i = 0; i < f.labelled; i++) out.push({ text: WORDS[f.keys[i]][0], x: base.x, y: base.y - i * 26 });
     return out;
