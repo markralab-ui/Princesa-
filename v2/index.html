@@ -252,7 +252,7 @@
 <div id="start">
   <div class="card">
     <h1>Princess Raya's Park Adventure 2</h1>
-    <p class="note build">build 32</p>
+    <p class="note build">build 33</p>
     <p>It's a sunny day! The little Bulgarian princess and her mama are going for a walk in the park.</p>
     <p>Use the <b>arrow keys</b> to walk. Find the sparkly <b>treasures</b> to learn their <b>Bulgarian names</b>, and look behind the bushes for shy <b>pets</b> who want to join you!</p>
     <p class="note" id="startNote"></p>
@@ -1677,7 +1677,7 @@
   canvas.addEventListener("pointerdown", e => {
     if (!started) return;
     const rc = canvas.getBoundingClientRect();
-    const wx = e.clientX - rc.left + cam.x, wy = e.clientY - rc.top + cam.y;
+    const wx = (e.clientX - rc.left) / zoom + cam.x, wy = (e.clientY - rc.top) / zoom + cam.y;
     let hit = null, hitAt = null, hitArea = Infinity;
     for (const f of scene.fixtures) {
       if (f.silent || f.sleep) continue;
@@ -3020,7 +3020,7 @@
     const st = r.style;
     // outside the room
     ctx.fillStyle = "#3b2a20";
-    ctx.fillRect(cam.x - 50, cam.y - 50, W + 100, H + 100);
+    ctx.fillRect(cam.x - 50, cam.y - 50, W / zoom + 100, H / zoom + 100);
     // floor
     ctx.fillStyle = st.floor; ctx.fillRect(0, WALL_TOP, r.w, r.h - WALL_TOP);
     ctx.fillStyle = st.floor2;
@@ -3196,13 +3196,18 @@
   // ---------- Render ----------
   const cam = { x: 0, y: 0 };
   let camSnap = true;
+  // Rooms are zoomed so a room fills about three quarters of the screen (never smaller than 1:1)
+  let zoom = 1;
+  function roomZoom() { return scene === parkScene ? 1 : Math.max(1, Math.min(0.75 * W / ROOM_W, 0.9 * H / ROOM_H, 2.2)); }
   function render() {
+    zoom = roomZoom();
+    const VW = W / zoom, VH = H / zoom; // the visible world area
     const SW = scene.w, SH = scene.h;
     // smooth camera
-    const tx = Math.max(0, Math.min(SW - W, princess.x - W / 2));
-    const ty = Math.max(0, Math.min(SH - H, princess.y - H / 2 - 20));
-    const cx = SW < W ? (SW - W) / 2 : tx;
-    const cy = SH < H ? (SH - H) / 2 : ty;
+    const tx = Math.max(0, Math.min(SW - VW, princess.x - VW / 2));
+    const ty = Math.max(0, Math.min(SH - VH, princess.y - VH / 2 - 20));
+    const cx = SW < VW ? (SW - VW) / 2 : tx;
+    const cy = SH < VH ? (SH - VH) / 2 : ty;
     if (camSnap) { cam.x = cx; cam.y = cy; camSnap = false; }
     cam.x += (cx - cam.x) * 0.12;
     cam.y += (cy - cam.y) * 0.12;
@@ -3210,6 +3215,7 @@
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, W, H);
     ctx.save();
+    ctx.scale(zoom, zoom);
     ctx.translate(-Math.round(cam.x), -Math.round(cam.y));
 
     if (scene !== parkScene) { renderRoom(scene); ctx.restore(); return; }
