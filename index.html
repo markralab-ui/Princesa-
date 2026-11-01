@@ -211,6 +211,7 @@
 <div id="hud">
   <div class="pill" id="treasureCount">🎁 Words: 0 / 26</div>
   <div class="pill green" id="petCount">🐾 Pets: 0 / 11</div>
+  <div class="pill" id="timeHud" title="Play time this adventure">⏱ 0:00</div>
   <div class="pill" id="roomCount">🌳 Park: 0 / 0</div>
   <div class="pill btn" id="dictBtn" title="Dictionary">📖</div>
   <div class="pill btn" id="soundBtn" title="Say the words out loud">🔊</div>
@@ -3602,7 +3603,8 @@
 
   // ---------- Loop ----------
   let last = performance.now();
-  let saveTick = 0;
+  let saveTick = 0, shownSecs = -1;
+  const timeHud = document.getElementById("timeHud");
   function frame(now) {
     const dt = Math.min(3, (now - last) / (1000 / 60));
     const ms = Math.min(250, now - last);
@@ -3613,6 +3615,8 @@
       advMs += ms; memory.playMs += ms; saveTick += ms;
       if (saveTick > 15000) { saveTick = 0; saveGame(); saveMemory(); }
     }
+    const secs = Math.floor(advMs / 1000);
+    if (secs !== shownSecs) { shownSecs = secs; timeHud.textContent = "⏱ " + Math.floor(secs / 60) + ":" + String(secs % 60).padStart(2, "0"); }
     update(dt);
     render();
     requestAnimationFrame(frame);
