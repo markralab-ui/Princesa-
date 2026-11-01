@@ -15,6 +15,8 @@ Raya's first game
 
 ## Voice: Kalina (Azure neural)
 
+Every word was checked by a native speaker. 524 words use Kalina (a few with the stress corrected); the 64 she could not say right are recorded by a native Bulgarian speaker instead (cut from voice memos and levelled to the same loudness). Six words that sounded unnatural were replaced: пластир → химикалка, чаша за зъби → чашка, плед → одеялце, ключ за лампата → крушка, масичка за рисуване → бюро, аплик → полилей.
+
 Every spoken word — all 568 words in the bank (including the 76 animal pets), the 12 baby pets, the 6 room names and the "Здравей!" greeting, 587 clips in all — is recorded once with Microsoft Azure's Bulgarian neural voice **Kalina** (bg-BG-KalinaNeural, 10% slower than normal) and shipped as MP3s in `audio/`. The game plays these, so it sounds the same on every device with nothing to install; it never contacts Azure. The device's own Bulgarian voice is only a fallback for any text without a clip.
 
 To re-record (e.g. after adding words): with `AZURE_SPEECH_KEY` and `AZURE_SPEECH_REGION` set and the region's `*.tts.speech.microsoft.com` host allowed, ask Claude to record the new words with Kalina; each clip is named after the word's key (`apple.mp3`, `pet-bunny.mp3`, `room-kitchen.mp3`) and listed in the `CLIPS` table in `index.html`.
