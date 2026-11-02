@@ -1942,7 +1942,41 @@
     if (f.bush) { const b = bushes.find(b => !b.hasPet && Math.hypot(b.x - princess.x, b.y - princess.y) < 48); return b ? { at: { x: b.x, y: b.y - b.size * 1.4 }, area: 1e9 } : null; }
     if (f.tree) { const t = trees.find(t => Math.hypot(t.x - princess.x, t.y - princess.y) < 44); return t ? { at: { x: t.x, y: t.y - t.size * 1.9 }, area: 1e9 } : null; }
     const z = fixtureZone(f);
-    return inRect(princess.x, princess.y, z) ? { area: z.w * z.h } : null;
+    if (inRect(princess.x, princess.y, z)) return { area: z.w * z.h };
+    // pressed against the thing itself (round fountain, pond, furniture...): counts from any side
+    return touchingBody(f) ? { area: z.w * z.h } : null;
+  }
+  // distance from a point to the thing's rectangle (0 when inside)
+  function rectDist(f, x, y) {
+    const dx = Math.max(f.x - f.w / 2 - x, 0, x - (f.x + f.w / 2));
+    const dy = Math.max(f.y - f.h / 2 - y, 0, y - (f.y + f.h / 2));
+    return Math.hypot(dx, dy);
+  }
+  // the solid shapes that make up a thing: obstacles that overlap its rectangle
+  function bodyOf(f) {
+    if (f._body && f._body.scene === scene) return f._body;
+    const fr = { x: f.x - f.w / 2, y: f.y - f.h / 2, w: f.w, h: f.h };
+    // a solid rectangle belongs to this thing when most of it lies inside the thing's own rectangle
+    const overlap = rc => {
+      const ix = Math.min(rc.x + rc.w, fr.x + fr.w) - Math.max(rc.x, fr.x), iy = Math.min(rc.y + rc.h, fr.y + fr.h) - Math.max(rc.y, fr.y);
+      return ix > 0 && iy > 0 && ix * iy >= 0.5 * rc.w * rc.h;
+    };
+    f._body = {
+      scene,
+      circles: scene === parkScene ? obstacles.filter(o => rectDist(f, o.x, o.y) === 0) : [],
+      rects: scene.rects.filter(overlap),
+      pond: scene === parkScene && f.keys[0] === "pond",
+    };
+    return f._body;
+  }
+  const TOUCH = 16; // how close (beyond bumping into it) still counts as touching
+  function touchingBody(f) {
+    if (f.flat) return false;
+    const b = bodyOf(f), x = princess.x, y = princess.y;
+    if (b.pond && inPond(x, y, 12 + TOUCH)) return true;
+    for (const c of b.circles) if (Math.hypot(x - c.x, y - c.y) < c.r + 12 + TOUCH) return true;
+    for (const rc of b.rects) if (inRect(x, y, rc, 8 + TOUCH)) return true;
+    return false;
   }
   function checkFixtures() {
     let touching = null, touchArea = Infinity, again = null, againArea = Infinity, inZone = false;
@@ -1976,8 +2010,8 @@
       showWord(w[0], w[1], w[2]);
       return;
     }
-    const d = hit.high ? Math.hypot(house.x - princess.x, house.y + 20 - princess.y) : Math.hypot(hitAt.x - princess.x, hitAt.y - princess.y);
-    const reach = hit.high ? 240 : hit.bush || hit.tree ? 90 : Math.max(hit.w, hit.h) / 2 + 90;
+    const d = hit.high ? Math.hypot(house.x - princess.x, house.y + 20 - princess.y) : hit.bush || hit.tree ? Math.hypot(hitAt.x - princess.x, hitAt.y - princess.y) : rectDist(hit, princess.x, princess.y);
+    const reach = hit.high ? 240 : hit.bush || hit.tree ? 90 : 110;
     if (d <= reach) {
       if (hitAt.sx !== undefined) hit.at = { x: hitAt.sx, y: hitAt.sy };
       labelFixture(hit);
