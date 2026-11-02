@@ -49,6 +49,9 @@
   .pill.done { border-color: #2a9d48; background: #e4f3d8; color: #1c6b31; }
   .pill.btn { pointer-events: auto; cursor: pointer; font-size: 16px; padding: 6px 12px; border-color: #e09f1f; }
   #hud { pointer-events: none; }
+  /* timer + pause sit on their own at the left, under the top bar */
+  #timeBox { position: fixed; left: 10px; top: calc(var(--hudH, 52px) + 8px); display: flex; gap: 6px; align-items: center; pointer-events: none; z-index: 5; }
+  #timeBox .pill { font-size: 14px; padding: 4px 10px; }
   #card {
     position: fixed;
     bottom: 96px;
@@ -210,11 +213,13 @@
 <div id="hud">
   <div class="pill" id="treasureCount">🎁 Words: 0 / 26</div>
   <div class="pill green" id="petCount">🐾 Pets: 0 / 11</div>
-  <div class="pill" id="timeHud" title="Total play time">⏱ 0:00</div>
-  <div class="pill btn" id="pauseBtn" title="Pause (P)">⏸</div>
   <div class="pill" id="roomCount">🌳 Park: 0 / 0</div>
   <div class="pill btn" id="dictBtn" title="Dictionary">📖</div>
   <div class="pill btn" id="soundBtn" title="Say the words out loud">🔊</div>
+</div>
+<div id="timeBox">
+  <div class="pill" id="timeHud" title="Total play time">⏱ 0:00</div>
+  <div class="pill btn" id="pauseBtn" title="Pause (P)">⏸</div>
 </div>
 <div id="message"></div>
 <div id="card">
@@ -3622,6 +3627,9 @@
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+  const hudBar = document.getElementById("hud");
+  const placeTimeBox = () => document.documentElement.style.setProperty("--hudH", hudBar.offsetHeight + "px");
+  placeTimeBox(); window.addEventListener("resize", placeTimeBox);
   // pause: freezes the game and the timer
   const pausedEl = document.getElementById("paused");
   function setPaused(v) {
