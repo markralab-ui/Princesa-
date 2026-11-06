@@ -630,8 +630,11 @@ const CONT = Object.fromEntries(CONTINENTS.map(c => [c.id, c]));
 
 // ---------------------------------------------------------------- save
 const SAVE_KEY = 'mythMonsterFreeze.v1';
-let save = { counts: {}, seen: {}, sound: true };
+let save = { counts: {}, seen: {}, cleared: {}, sound: true };
 try { const s = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); if (s) save = Object.assign(save, s); } catch (e) {}
+if (!save.cleared) save.cleared = {};
+// each continent keeps its monsters (and any treasure left lying) while you visit other places
+const areaMemory = {};
 function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} }
 
 // ---------------------------------------------------------------- audio
@@ -732,12 +735,17 @@ function enterArea(id, fromCont) {
     decor.push({ kind: 'signpost', x: home.x - 230, y: home.y + 20, v: 0, s: 1, text: c.name });
     player.x = home.x; player.y = home.y - 190; portalLock = home;
     const defs = MONSTERS.filter(m => m.cont === id);
-    defs.forEach((d, i) => {
-      let x, y, tries = 0;
-      do { x = 150 + Math.random() * (world.w - 300); y = 150 + Math.random() * (world.h - 450); tries++; } while (tries < 50 && (Math.hypot(x - player.x, y - player.y) < 500 || monsters.some(m => Math.hypot(m.x - x, m.y - y) < 220)));
-      monsters.push(newMonster(d, x, y));
-    });
-    showBanner(c.name, defs.length + ' myth monsters live here');
+    if (areaMemory[id]) { monsters = areaMemory[id].monsters; drops = areaMemory[id].drops; }
+    else {
+      defs.forEach((d, i) => {
+        let x, y, tries = 0;
+        do { x = 150 + Math.random() * (world.w - 300); y = 150 + Math.random() * (world.h - 450); tries++; } while (tries < 50 && (Math.hypot(x - player.x, y - player.y) < 500 || monsters.some(m => Math.hypot(m.x - x, m.y - y) < 220)));
+        const m = newMonster(d, x, y); if (save.cleared[id]) m.frozen = 1e9; monsters.push(m);
+      });
+      areaMemory[id] = { monsters, drops };
+    }
+    if (save.cleared[id]) showBanner(c.name + ' ⭐', 'Cleared! Every monster here stays frozen');
+    else showBanner(c.name, defs.length + ' myth monsters live here');
   }
   updateHud();
 }
@@ -781,7 +789,7 @@ function updateHud() {
   $('where').textContent = area === 'meadow' ? '🌼 Meadow' : '🌍 ' + CONT[area].name;
   const total = Object.values(save.counts).reduce((a, b) => a + b, 0);
   const seen = MONSTERS.filter(m => save.seen[m.id]).length;
-  if (area === 'meadow') $('count').textContent = `❄ ${seen}/${MONSTERS.length} monsters met`;
+  if (area === 'meadow') $('count').textContent = `❄ ${seen}/${MONSTERS.length} met · ⭐ ${CONTINENTS.filter(c => save.cleared[c.id]).length}/6`;
   else $('count').textContent = `❄ Frozen ${monsters.filter(m => m.frozen > 0).length}/${monsters.length}`;
   $('bookBtn').textContent = `🎒 Treasures ${total}`;
   $('soundBtn').textContent = save.sound ? '🔊' : '🔇';
@@ -884,7 +892,11 @@ function freeze(m) {
   drops.push({ def: d, x: clamp(m.x + Math.cos(a) * 55, 40, world.w - 40), y: clamp(m.y + 30 + Math.sin(a) * 20, 60, world.h - 40), t: 0 });
   sfx.freeze(); showCard(d, isNew); speak(`${d.name}! From ${d.place.replace(/\(.*\)/, '')}.`);
   updateHud();
-  if (monsters.every(o => o.frozen > 0)) setTimeout(() => { if (area === d.cont) showBanner('All frozen!', `You froze every monster in ${CONT[d.cont].name}`); }, 2500);
+  if (!save.cleared[d.cont] && monsters.every(o => o.frozen > 0)) {
+    save.cleared[d.cont] = true; persist();
+    for (const o of monsters) o.frozen = 1e9;
+    setTimeout(() => { sfx.freeze(); showBanner(CONT[d.cont].name + ' cleared! ⭐', 'These monsters stay frozen for good'); }, isTouch() ? 3600 : 2500);
+  }
   const seen = MONSTERS.filter(x => save.seen[x.id]).length;
   if (isNew && seen === MONSTERS.length) setTimeout(() => showBanner('World champion!', 'You met every myth monster on Earth'), 4000);
 }
@@ -934,7 +946,7 @@ function update(dt) {
   for (const m of monsters) {
     m.hit = Math.max(0, m.hit - dt);
     if (m.frozen > 0) {
-      m.frozen -= dt;
+      if (!save.cleared[area]) m.frozen -= dt;
       if (m.frozen <= 0) { m.frozen = 0; m.stun = 1; sfx.thaw(); for (let i = 0; i < 14; i++) { const a = Math.random() * TAU; parts.push({ kind: 'drop', x: m.x, y: m.y - 30, vx: Math.cos(a) * 60, vy: -Math.random() * 80, life: 0.7, max: 0.7, r: 2.5 }); } updateHud(); }
       continue;
     }
@@ -1025,11 +1037,11 @@ function drawPortal(p) {
 function drawPortalLabel(p) {
   const c = ctx; c.save(); c.font = 'bold 17px "Trebuchet MS", sans-serif'; c.textAlign = 'center';
   let text = p.label, sub = '';
-  if (area === 'meadow') { const ms = MONSTERS.filter(m => m.cont === p.to); sub = `❄ ${ms.filter(m => save.seen[m.id]).length}/${ms.length} met`; }
+  if (area === 'meadow') { const ms = MONSTERS.filter(m => m.cont === p.to); sub = save.cleared[p.to] ? '⭐ Cleared!' : `❄ ${ms.filter(m => save.seen[m.id]).length}/${ms.length} met`; }
   const w = Math.max(c.measureText(text).width, 70) + 20;
   R(c, p.x - w / 2, p.y - 140, w, sub ? 40 : 26, 10, 'rgba(255,255,255,.88)');
   c.fillStyle = '#13406b'; c.fillText(text, p.x, p.y - 121);
-  if (sub) { c.font = 'bold 13px "Trebuchet MS", sans-serif'; c.fillStyle = '#2f8fd0'; c.fillText(sub, p.x, p.y - 106); }
+  if (sub) { c.font = 'bold 13px "Trebuchet MS", sans-serif'; c.fillStyle = save.cleared[p.to] ? '#c98a00' : '#2f8fd0'; c.fillText(sub, p.x, p.y - 106); }
   c.restore();
 }
 function drawPlayer() {
