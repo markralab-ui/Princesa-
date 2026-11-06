@@ -13,6 +13,17 @@ A Bulgarian word game for kids
   - The main game adds a cottage in the park with a hallway, kitchen, bedroom, bathroom, living room and playroom. Furniture gets a Bulgarian name sticker when the princess walks up to it; loose household objects are collected like treasures and rotate each adventure. Words are allocated by theme: park (nature, play, picnic, jewellery), kitchen, bedroom, bathroom, living room, hallway. Every animal (88 in all) is a pet friend that hides behind a bush and joins the princess; 11 appear per adventure. An adventure: 14 treasures, 11 pets, 4–7 objects per room and a few fixed things to name (about 40 minutes, usually over a few sittings). Every section covers its word bank in about 8 adventures. Every section rotates by least-seen with a one-adventure cooldown: treasures, pets, room objects, a few fixed things to name, and a set of "visiting" park objects (statue, picnic table, lamppost, well…).
 - Controls: arrow keys (on-screen arrows on touch devices)
 
+## Myth Monster Freeze (`monsters/index.html`)
+
+A second game: https://markralab-ui.github.io/Princesa-/monsters/
+
+- You start in a sunny meadow with six magic portals: Europe, Asia, Africa, North America, South America and Oceania.
+- Each continent has 5 monsters from real myths and folklore. Swing the frost sword to freeze one: its name and country pop up (on a card, and as a tag over the ice block) and it drops its treasure to collect. For example the **Kuker** from **Bulgaria** drops **Kuker bells**.
+- The 30 monsters and treasures: Kuker (Bulgaria, bells), Troll (Norway, gold), Krampus (Austria, birch twigs), Baba Yaga (Russia, mortar and pestle), Loch Ness Monster (Scotland, scale); Kappa (Japan, cucumber), Tengu (Japan, feather fan), Nian (China, red lantern), Kumiho (Korea, fox bead), Yeti (Nepal, snow crystal); Grootslang (South Africa, diamond), Ammit (Egypt, Feather of Truth), Tokoloshe (South Africa, invisibility pebble), Ninki Nanka (The Gambia, swamp emerald), Mokele-mbembe (Republic of the Congo, molombo fruit); Sasquatch (Canada & USA, pine cone), Jersey Devil (USA, old lantern), Chupacabra (Puerto Rico, prickly pear), Alux (Mexico, golden corn), Ogopogo (Canada, lake pearl); Saci (Brazil, red cap), Curupira (Brazil, golden seed), Pombero (Paraguay, honey pot), Chonchón (Chile, magic feather), Tunche (Peru, silver whistle); Bunyip (Australia, water lily), Yowie (Australia, opal), Drop Bear (Australia, gum leaf), Patupaiarehe (New Zealand, wooden flute), Adaro (Solomon Islands, flying fish).
+- Monsters chase you gently; a bump costs a heart. Lose them all and you go home to the meadow, where hearts refill. Frozen monsters thaw after 30 seconds, so you can freeze them again for more treasure.
+- 🎒 opens the Treasure Book (every monster met, where it is from, and how many treasures you have). Progress is saved in the browser. 🔊 toggles sound effects and the spoken "Kuker! From Bulgaria."
+- Controls: arrow keys / WASD to move, Space (or click) to swing. On a phone: drag on the left side to move, tap ⚔️ to swing.
+
 ## Voice: Kalina (Azure neural)
 
 Every word was checked by a native speaker. 524 words use Kalina (a few with the stress corrected); the 64 she could not say right are recorded by a native Bulgarian speaker instead (cut from voice memos and levelled to the same loudness). Six words that sounded unnatural were replaced: пластир → химикалка, чаша за зъби → чашка, плед → одеялце, ключ за лампата → крушка, масичка за рисуване → бюро, аплик → полилей.
