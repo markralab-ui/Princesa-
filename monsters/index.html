@@ -600,12 +600,12 @@ const DRAW = {
 // ---------------------------------------------------------------- the myth list
 // box = [width, height] of the ice block; fly = floats above ground; s = size; sp = speed
 const CONTINENTS = [
-  { id: 'europe', name: 'Europe', ground: '#7cbf5a', g2: '#6aad4b', portal: '#4f8fe8', decor: { pine: 14, rock: 8, mushroom: 6, tree: 6, flower: 18 } },
-  { id: 'asia', name: 'Asia', ground: '#9ccf74', g2: '#8cbf63', portal: '#e8566e', decor: { bamboo: 12, cherry: 8, stonelantern: 5, rock: 4, flower: 10 } },
-  { id: 'africa', name: 'Africa', ground: '#e2c26b', g2: '#d3b05a', portal: '#f2a33a', decor: { acacia: 9, baobab: 4, tuft: 30, rock: 5 } },
-  { id: 'namerica', name: 'North America', ground: '#6faa58', g2: '#5f9a4b', portal: '#3fb8a0', decor: { pine: 18, rock: 8, cactus: 5, flower: 8, tuft: 6 } },
-  { id: 'samerica', name: 'South America', ground: '#4f9e48', g2: '#43913d', portal: '#2fbf5b', decor: { palm: 10, fern: 14, tree: 8, flower: 16 } },
-  { id: 'oceania', name: 'Oceania', ground: '#d9874a', g2: '#c9773c', portal: '#a65fd8', decor: { gum: 9, redrock: 5, tuft: 26, rock: 5 } },
+  { id: 'europe', name: 'Europe', ground: '#7cbf5a', g2: '#6aad4b', portal: '#4f8fe8', decor: { pine: 9, birch: 6, tree: 5, sunflower: 7, poppy: 12, lavbush: 6, mushroom: 5, rock: 4, flower: 8 } },
+  { id: 'asia', name: 'Asia', ground: '#9ccf74', g2: '#8cbf63', portal: '#e8566e', decor: { bamboo: 10, cherry: 7, banyan: 3, stonelantern: 4, rock: 3, flower: 8 } },
+  { id: 'africa', name: 'Africa', ground: '#e2c26b', g2: '#d3b05a', portal: '#f2a33a', decor: { acacia: 7, baobab: 2, aloe: 6, protea: 6, datepalm: 4, tuft: 24, rock: 4 } },
+  { id: 'namerica', name: 'North America', ground: '#6faa58', g2: '#5f9a4b', portal: '#3fb8a0', decor: { pine: 9, redwood: 4, maple: 6, saguaro: 5, pricklypear: 5, rock: 5, flower: 6 } },
+  { id: 'samerica', name: 'South America', ground: '#4f9e48', g2: '#43913d', portal: '#2fbf5b', decor: { palm: 8, fern: 10, heliconia: 7, bromeliad: 7, monkeypuzzle: 3, tree: 5, flower: 8 } },
+  { id: 'oceania', name: 'Oceania', ground: '#d9874a', g2: '#c9773c', portal: '#a65fd8', decor: { gum: 8, treefern: 5, banksia: 5, kangaroopaw: 7, palm: 3, tuft: 20, rock: 4 } },
 ];
 const MONSTERS = [
   // Europe
@@ -1775,6 +1775,1597 @@ const MONSTERS3 = [
   { id: 'r3minmin', cont: 'oceania', name: 'Min Min Light', place: 'Australia (Queensland)', map: 'Australia', fact: 'A mysterious floating light that follows travellers across the outback near Boulia, then vanishes when they get close.', tr: 'r3lamington', trName: 'Lamington cake', box: [50, 54], sp: 80, fly: true },
 ].map(m => Object.assign(m, { round: 3 }));
 MONSTERS.push(...MONSTERS3);
+// ---------------------------------------------------------------- round 4
+// ---------------------------------------------------------------- round 4 treasures
+Object.assign(TREASURE, {
+  r4skis(c) { c.save(); c.rotate(-0.5); R(c, -12, -16, 5, 32, 2.5, '#d62828'); R(c, 4, -16, 5, 32, 2.5, '#d62828'); E(c, -9.5, -15, 2.5, 3, '#fff'); E(c, 6.5, -15, 2.5, 3, '#fff'); R(c, -13, 2, 7, 4, 1, '#222'); R(c, 3, 2, 7, 4, 1, '#222'); c.restore(); L(c, [14, -14, 10, 14], '#8e9296', 2); Ci(c, 10, 11, 2.5, '#444'); },
+  r4cravat(c) { P(c, [-7, -14, 7, -14, 3, -8, -3, -8], '#c0392b'); P(c, [-3, -8, 3, -8, 8, 10, 0, 16, -8, 10], '#d62828'); for (let y = -4; y < 12; y += 5) L(c, [-5, y, 5, y + 3], '#f4c430', 1.5); },
+  r4pie(c) { E(c, 0, 0, 15, 9, '#d9a441'); E(c, 0, -1, 10, 5.5, '#fff3b0'); for (let x = -13; x <= 13; x += 4) P(c, [x - 2, 7, x, 2, x + 2, 7], '#b07a2a'); Ci(c, -3, -2, 1.6, '#f4c430'); Ci(c, 3, 0, 1.4, '#f4c430'); },
+  r4charcoal(c) { for (const [x, y, r] of [[-6, 2, 7], [6, 4, 6], [0, -6, 6]]) { P(c, [x - r, y, x - r * 0.4, y - r, x + r * 0.6, y - r * 0.8, x + r, y + r * 0.2, x + r * 0.2, y + r], '#2b2b2b'); } P(c, [1, -9, 4, -6, 1, -3, -2, -6], '#f4c430'); Ci(c, 7, 3, 2, '#f4c430'); Ci(c, -6, 1, 1.4, '#ffe680'); },
+  r4grapes(c) { for (const [x, y] of [[-6, -6], [0, -6], [6, -6], [-3, 0], [3, 0], [9, 0], [0, 6], [6, 6], [3, 12]]) { Ci(c, x - 1, y, 4, '#6b2a8a'); Ci(c, x - 2, y - 1.5, 1.2, '#c9a3e8'); } L(c, [2, -10, 0, -17], '#6b3e1f', 2); E(c, -6, -14, 6, 3.5, '#2a9d48', 0.4); },
+  r4ohrid(c) { c.strokeStyle = '#c9b48a'; c.lineWidth = 1; c.beginPath(); c.arc(0, -4, 13, 0.1, Math.PI - 0.1); c.stroke(); for (let i = 0; i < 9; i++) { const a = 0.25 + i * 0.33; Ci(c, Math.cos(a) * 13 + 0.6, -3.4 + Math.sin(a) * 13, 3.2, '#b8ad9a'); Ci(c, Math.cos(a) * 13, -4 + Math.sin(a) * 13, 3, '#efe6d8'); Ci(c, Math.cos(a) * 13 - 1, -5 + Math.sin(a) * 13, 1, '#fff'); } },
+  r4pysanka(c) { E(c, 0, 0, 11, 15, '#d62828'); R(c, -11, -3, 22, 6, 1, '#1d1d1d'); for (let x = -8; x <= 8; x += 4) P(c, [x - 2, 0, x, -2.5, x + 2, 0, x, 2.5], '#f4c430'); Ci(c, 0, -9, 2.5, '#f4c430'); Ci(c, 0, 9, 2.5, '#f4c430'); Q(c, -6, -8, 0, -14, 6, -8, '#fff', 1); },
+  r4jongbatu(c) { E(c, 0, 10, 17, 4, '#4fa3d9'); P(c, [-14, 8, -10, -2, 12, -2, 15, 8], '#8e9296'); P(c, [-6, -2, -2, -14, 4, -12, 6, -2], '#a0a4a8'); L(c, [-8, 2, 10, 2], '#6d7175', 1.5); E(c, 0, -13, 5, 2, '#2a9d48'); },
+  r4dallah(c) { E(c, 0, 8, 10, 6, '#c9a43e'); P(c, [-7, 6, -4, -6, 4, -6, 7, 6], '#e0b84a'); E(c, 0, -7, 5, 2, '#c9a43e'); P(c, [-2, -9, 0, -16, 2, -9], '#e0b84a'); P(c, [6, 2, 18, -10, 16, -12, 5, -4], '#e0b84a'); c.strokeStyle = '#c9a43e'; c.lineWidth = 2.5; c.beginPath(); c.arc(-9, 2, 5, 1.5, 4.7); c.stroke(); Ci(c, -3, 4, 1.5, '#fff6c9'); },
+  r4parasol(c) { c.fillStyle = '#e8892b'; c.beginPath(); c.moveTo(-16, 0); c.quadraticCurveTo(0, -20, 16, 0); c.closePath(); c.fill(); for (let i = -3; i <= 3; i++) L(c, [0, -10, i * 5, 0], '#a0521b', 1); for (let i = -2; i <= 2; i++) Ci(c, i * 6, -4, 1.6, '#ffd23f'); L(c, [0, -10, 0, 16], '#6b3e1f', 2); Ci(c, 0, -11, 1.8, '#a0521b'); },
+  r4sapphire(c) { gem(c, 0, 0, 13, '#1e4fb3', '#6fa1ff'); Ci(c, -5, -8, 1.5, '#fff'); },
+  r4tais(c) { R(c, -14, -12, 28, 24, 1, '#1d1d1d'); for (let y = -12; y < 12; y += 8) { c.fillStyle = '#d62828'; c.fillRect(-14, y + 1, 28, 2); } for (let x = -10; x <= 10; x += 6.5) P(c, [x, -4, x + 3, 0, x, 4, x - 3, 0], '#f4c430'); for (let x = -14; x <= 14; x += 3) L(c, [x, 12, x, 16], '#d62828', 1); },
+  r4sword(c) { c.save(); c.rotate(0.7); P(c, [-2, -6, 2, -6, 2, 18, 0, 22, -2, 18], '#dfe6ec'); L(c, [0, -4, 0, 18], '#fff', 0.8); R(c, -8, -9, 16, 3.5, 1.5, '#e0a91b'); R(c, -2, -20, 4, 11, 1, '#2a9d48'); Ci(c, 0, -21, 3, '#e0a91b'); c.restore(); },
+  r4pensador(c) { E(c, 0, 14, 10, 2.5, '#5a3418'); E(c, -1, 6, 7, 8, '#7a4a24'); L(c, [-4, 10, -6, 2, -2, -6], '#6b3e1f', 3); L(c, [3, 10, 5, 2, 2, -6], '#6b3e1f', 3); Ci(c, 0, -10, 6, '#7a4a24'); E(c, 0, -15, 6, 2.5, '#5a3418'); Ci(c, -2, -10, 0.9, '#2e1a0b'); Ci(c, 2, -10, 0.9, '#2e1a0b'); },
+  r4ingoma(c) { P(c, [-9, -12, 9, -12, 6, 14, -6, 14], '#8b5a2b'); E(c, 0, -12, 9, 3, '#e8d9b0'); for (let i = -2; i <= 2; i++) L(c, [i * 4, -10, i * 2.5, 12], '#5a3418', 1); L(c, [-8, -2, 8, -2], '#d62828', 2); L(c, [-7, 6, 7, 6], '#2a9d48', 2); L(c, [12, -18, 6, -13], '#c9a05a', 2); L(c, [-12, -18, -6, -13], '#c9a05a', 2); },
+  r4salt(c) { E(c, 0, 10, 15, 4, '#7fb8d6'); for (const [x, y, s] of [[-7, 4, 7], [5, 5, 6], [-1, -4, 8], [9, -3, 4]]) { P(c, [x - s * 0.6, y + s * 0.5, x - s * 0.5, y - s * 0.5, x, y - s, x + s * 0.6, y - s * 0.3, x + s * 0.5, y + s * 0.6], '#e8f6fc'); L(c, [x - s * 0.3, y, x + s * 0.2, y - s * 0.6], '#7fb8d6', 1.2); } },
+  r4coins(c) { for (const [x, y] of [[-7, 6], [6, 6], [0, -2], [-5, -9], [7, -8]]) { Ci(c, x, y, 6, '#c0c6cc'); Ci(c, x, y, 4.2, '#d9dee2'); Ci(c, x - 1.5, y - 1.5, 1.3, '#fff'); } },
+  r4bluepenny(c) { R(c, -11, -14, 22, 28, 1, '#fff'); for (let i = -11; i <= 11; i += 3.7) { Ci(c, i, -14, 1.2, '#fff7d6'); Ci(c, i, 14, 1.2, '#fff7d6'); } R(c, -8, -11, 16, 22, 1, '#2f6db3'); E(c, 0, -2, 5, 6, '#9fc5e8'); Ci(c, 0, -4, 3, '#2f6db3'); R(c, -6, 6, 12, 3, 1, '#9fc5e8'); },
+  r4agaseke(c) { c.fillStyle = '#e8c77a'; c.beginPath(); c.moveTo(-10, 12); c.lineTo(-10, 0); c.quadraticCurveTo(-10, -6, 0, -8); c.quadraticCurveTo(10, -6, 10, 0); c.lineTo(10, 12); c.closePath(); c.fill(); P(c, [-9, -5, 0, -22, 9, -5], '#e8c77a'); for (let y = 2; y <= 10; y += 4) L(c, [-10, y, 10, y], '#1d1d1d', 1.5); P(c, [-5, -8, 0, -18, 5, -8], '#1d1d1d'); P(c, [-3, -8, 0, -14, 3, -8], '#d62828'); },
+  r4groundnut(c) { for (const [x, y, r] of [[-6, 2, -0.6], [6, -2, 0.5], [0, 8, 1.4]]) { c.save(); c.translate(x, y); c.rotate(r); Ci(c, 0, -5, 5, '#d9b07a'); Ci(c, 0, 4, 5.5, '#d9b07a'); E(c, 0, 0, 3.5, 2, '#d9b07a'); for (let k = -1; k <= 1; k++) L(c, [k * 2.5, -8, k * 2.5, 8], '#b8915a', 0.8); c.restore(); } },
+  r4waxprint(c) { R(c, -14, -12, 28, 24, 2, '#f4a261'); for (const [x, y] of [[-7, -5], [7, -5], [0, 5], [-10, 7], [10, 7]]) { Ci(c, x, y, 5, '#2f6db3'); Ci(c, x, y, 3, '#ffd23f'); Ci(c, x, y, 1.3, '#d62828'); } L(c, [-14, 0, 14, 0], '#2a9d48', 1.5); },
+  r4larimar(c) { E(c, 0, 0, 14, 11, '#6fc3e8'); for (let i = 0; i < 4; i++) Q(c, -11, -6 + i * 4, 0, -9 + i * 4, 11, -5 + i * 4, '#e8f7fd', 1.5); E(c, -5, -5, 3, 2, '#fff'); },
+  r4jade(c) { R(c, -10, -13, 20, 26, 6, '#2e8b57'); R(c, -7, -10, 14, 20, 4, '#3fa56b'); R(c, -6, -5, 4, 2.5, 1, '#1d5a38'); R(c, 2, -5, 4, 2.5, 1, '#1d5a38'); P(c, [-1, -2, 1, -2, 1.5, 3, -1.5, 3], '#2e8b57'); R(c, -4, 6, 8, 2, 1, '#1d5a38'); Ci(c, -12, -6, 2.5, '#f4c430'); Ci(c, 12, -6, 2.5, '#f4c430'); },
+  r4panama(c) { E(c, 0, 4, 17, 6, '#efe0b0'); E(c, 0, 4, 12, 3.5, '#e0cf98'); R(c, -9, -10, 18, 14, 5, '#efe0b0'); R(c, -9, -1, 18, 4, 1, '#1d1d1d'); L(c, [-4, -9, 0, -6, 4, -9], '#d9c88a', 1.2); },
+  r4guarana(c) { L(c, [0, -16, 0, -8], '#5a3a1a', 1.5); for (const [x, y] of [[-6, -2], [6, -2], [0, 8]]) { Ci(c, x, y, 6.5, '#d62828'); Ci(c, x, y + 1, 4, '#fff'); Ci(c, x, y + 1, 2.4, '#1d1d1d'); Ci(c, x - 1, y, 0.8, '#fff'); } E(c, 5, -14, 5, 2.5, '#2a9d48', -0.3); },
+  r4stickchart(c) { for (const [a, b, d, e] of [[-14, -12, 14, 12], [-14, 12, 14, -12], [-14, 0, 14, 0], [0, -14, 0, 14], [-10, -14, -10, 14], [10, -14, 10, 14]]) L(c, [a, b, d, e], '#c9a05a', 2); Q(c, -14, -6, 0, -14, 14, -6, '#a07a3a', 1.5); for (const [x, y] of [[-10, -8], [6, 6], [10, -10], [-4, 10]]) Ci(c, x, y, 2.4, '#fff3e0'); },
+  r4fig(c) { for (const [x, y] of [[-6, 3], [6, 3]]) { c.fillStyle = '#7a2a5a'; c.beginPath(); c.moveTo(x, y - 12); c.quadraticCurveTo(x + 9, y + 2, x + 6, y + 9); c.quadraticCurveTo(x, y + 13, x - 6, y + 9); c.quadraticCurveTo(x - 9, y + 2, x, y - 12); c.fill(); L(c, [x, y - 12, x, y - 15], '#4a6b2a', 2); E(c, x - 2, y + 2, 1.5, 3, '#b5568a'); } },
+  r4fujara(c) { c.save(); c.rotate(0.45); R(c, -2.5, -22, 5, 40, 2, '#a0703f'); for (let y = -16; y < 16; y += 6) R(c, -2.5, y, 5, 1.5, 0.5, '#5a3418'); R(c, 2.5, -14, 4, 2, 1, '#a0703f'); R(c, 5, -14, 2, 9, 1, '#a0703f'); for (const y of [8, 12, 16]) Ci(c, 0, y, 1, '#2e1a0b'); c.restore(); },
+  r4semeni(c) { E(c, 0, 8, 13, 6, '#c9822b'); for (let i = 0; i < 11; i++) L(c, [-10 + i * 2, 5, -11 + i * 2.2 + Math.sin(i) * 2, -14 + (i % 3) * 3], '#5fbf3a', 1.8); R(c, -13, 4, 26, 4, 1, '#d62828'); P(c, [11, 4, 17, 0, 16, 8], '#d62828'); },
+  r4khaen(c) { for (let i = 0; i < 7; i++) R(c, -9 + i * 3, -18 + Math.abs(i - 3) * 3, 2.5, 30 - Math.abs(i - 3) * 3, 1, i % 2 ? '#c9a05a' : '#b08a4a'); E(c, 0, 4, 10, 6, '#6b3e1f'); R(c, -2, 8, 4, 8, 1, '#6b3e1f'); E(c, -2, 2, 3, 1.5, '#8b5a2b'); },
+  r4flamingo(c) { feather(c, -4, 14, 30, '#f77fa8', '#ffd0e0', -0.3); feather(c, 5, 14, 24, '#ff5f8f', '#ffd0e0', 0.3); },
+  r4gumarabic(c) { for (const [x, y, r] of [[-6, 4, 6], [5, 5, 5], [0, -5, 5.5], [9, -6, 3.5], [-9, -6, 3]]) { E(c, x, y, r, r * 1.1, '#e08a2b'); E(c, x - r * 0.3, y - r * 0.35, r * 0.35, r * 0.3, '#ffd59a'); } },
+  r4mochila(c) { c.strokeStyle = '#2f6db3'; c.lineWidth = 2.5; c.beginPath(); c.arc(0, -6, 11, Math.PI, 0); c.stroke(); R(c, -11, -6, 22, 20, 4, '#e63946'); for (let y = -3; y < 12; y += 6) for (let x = -8; x <= 8; x += 6) P(c, [x - 3, y + 1.5, x, y - 1.5, x + 3, y + 1.5, x, y + 4.5], ['#ffd23f', '#2a9d48', '#2f6db3'][((x + 8) / 6) | 0]); },
+  r4empanada(c) { c.fillStyle = '#e0a94a'; c.beginPath(); c.moveTo(-15, 6); c.quadraticCurveTo(0, -20, 15, 6); c.closePath(); c.fill(); for (let i = 0; i < 8; i++) Ci(c, -13 + i * 3.7, 6 - Math.sin((i / 7) * Math.PI) * 1.5, 2.2, '#c9822b'); E(c, -3, -3, 4, 2, '#f7d48a'); },
+  r4soapstone(c) { E(c, 0, 13, 9, 3, '#8a7a7a'); R(c, -4, 4, 8, 10, 2, '#b8a0a0'); E(c, 0, -4, 9, 11, '#c9b0b0'); E(c, -3, -6, 2.5, 1.2, '#7a6a6a'); E(c, 3, -6, 2.5, 1.2, '#7a6a6a'); L(c, [0, -5, 0, 0], '#8a7a7a', 1.2); L(c, [-2, 3, 2, 3], '#7a6a6a', 1.2); E(c, 0, -14, 7, 3, '#a89090'); },
+  r4madras(c) { R(c, -14, -12, 28, 24, 2, '#f4c430'); for (let x = -10; x <= 10; x += 7) { c.fillStyle = 'rgba(214,40,40,.75)'; c.fillRect(x - 1.5, -12, 3, 24); } for (let y = -8; y <= 8; y += 7) { c.fillStyle = 'rgba(42,157,72,.7)'; c.fillRect(-14, y - 1.5, 28, 3); } L(c, [-14, 0, 14, 0], '#fff', 0.8); },
+  r4taro(c) { E(c, 0, 6, 10, 10, '#8b6b5a'); for (let y = 0; y < 14; y += 4) L(c, [-8, y, 8, y + 1], '#6b4a3a', 1); E(c, 3, 8, 4, 4, '#c9b0d6'); L(c, [0, -3, -4, -12], '#4f8a3a', 2); L(c, [0, -3, 5, -12], '#4f8a3a', 2); E(c, -8, -15, 8, 5, '#3f8f3a', -0.4); E(c, 9, -15, 8, 5, '#2f7a2e', 0.4); },
+  r4tatreez(c) { R(c, -14, -12, 28, 24, 1, '#1d1d24'); for (let y = -8; y <= 8; y += 8) for (let x = -9; x <= 9; x += 9) { P(c, [x, y - 4, x + 4, y, x, y + 4, x - 4, y], '#d62828'); Ci(c, x, y, 1.3, '#2a9d48'); } R(c, -14, -12, 28, 2, 0, '#d62828'); R(c, -14, 10, 28, 2, 0, '#d62828'); },
+});
+
+// ---------------------------------------------------------------- round 4 monsters
+Object.assign(DRAW, {
+  r4tamarro(c, t, w) {
+    const s = Math.abs(Math.sin(w * 1.5)) * 4;
+    c.save(); c.translate(0, -s);
+    E(c, -7, -2, 6, 3, '#4a3626'); E(c, 7, -2, 6, 3, '#4a3626');
+    furBall(c, 0, -18, 15, 14, '#6b7a3a', 16, 4);
+    E(c, 2, -16, 9, 9, '#a3b36a');
+    E(c, -10, -36, 4, 8, '#6b7a3a', -0.4); E(c, 12, -36, 4, 8, '#6b7a3a', 0.4); E(c, -10, -36, 2, 5, '#c9a0a0', -0.4);
+    eyes(c, 3, -24, 5, 4.2, '#3a2a10'); E(c, 13, -19, 4, 2.5, '#4a3626'); grin(c, 6, -15, 3, '#2b1d14', 1.4);
+    for (let i = 0; i < 3; i++) E(c, -4 + i * 4, -33, 2, 4, '#3f8f3a', (i - 1) * 0.5);
+    c.restore();
+  },
+  r4macic(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    L(c, [-3, -12, -4 + s, -3], '#2b3a55', 3.5); L(c, [3, -12, 4 - s, -3], '#2b3a55', 3.5);
+    E(c, -5 + s, -1, 4, 2.5, '#5a3a1a'); E(c, 5 - s, -1, 4, 2.5, '#5a3a1a');
+    P(c, [-9, -26, 9, -26, 11, -11, -11, -11], '#3f5f8a'); R(c, -10, -16, 20, 2.5, 1, '#f4c430');
+    L(c, [-8, -24, -13, -14 - s], '#5f7aa0', 3); L(c, [8, -24, 14, -16 + s], '#5f7aa0', 3);
+    Ci(c, 0, -33, 9, '#7a9ac0'); E(c, -9, -33, 3, 4, '#7a9ac0'); E(c, 9, -35, 4, 2, '#7a9ac0', -0.4);
+    eyes(c, 2, -34, 3.5, 2.6); E(c, 5, -30, 2, 1.6, '#4a6a90'); grin(c, 2, -27.5, 4, '#1d2a40', 1.5);
+    c.fillStyle = '#d62828'; c.beginPath(); c.moveTo(-10, -38); c.quadraticCurveTo(-4, -64, 10 + Math.sin(t * 3) * 3, -58); c.quadraticCurveTo(4, -50, 10, -38); c.closePath(); c.fill();
+    E(c, 0, -38, 11, 3, '#b01e1e'); Ci(c, 11 + Math.sin(t * 3) * 3, -58, 3, '#fff');
+  },
+  r4nakki(c, t, w) {
+    const b = Math.sin(t * 2) * 2;
+    c.save(); c.translate(0, b);
+    E(c, 0, -24, 14, 18, '#3a7a6a'); E(c, 2, -20, 8, 11, '#6fae8f');
+    for (const sg of [-1, 1]) { L(c, [sg * 12, -30, sg * 22, -40], '#3a7a6a', 4); P(c, [sg * 20, -38, sg * 28, -46, sg * 24, -38, sg * 27, -36], '#2f6a5a'); }
+    E(c, 2, -48, 13, 12, '#3a7a6a');
+    for (let i = 0; i < 7; i++) Q(c, -10 + i * 3.5, -56, -14 + i * 3.5, -42, -12 + i * 3.5 + Math.sin(t * 3 + i) * 2, -28, '#2a4f2a', 2.5);
+    eyes(c, 5, -50, 5, 4.5, '#d6a21b'); E(c, 6, -42, 6, 2.2, '#1d3a30');
+    c.restore();
+    E(c, 0, -2, 28, 6, 'rgba(79,163,217,.85)'); E(c, 0, -3, 20, 3, 'rgba(200,235,255,.6)');
+    for (let i = 0; i < 3; i++) Ci(c, -6 + i * 7, -10 - ((t * 20 + i * 9) % 18), 1.3, '#9fd8f2');
+  },
+  r4wildmannli(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-5, -16, -6 + s, -2], '#5a3a1f', 6); L(c, [5, -16, 6 - s, -2], '#5a3a1f', 6);
+    E(c, -6 + s, -1, 5, 2.5, '#3a2510'); E(c, 6 - s, -1, 5, 2.5, '#3a2510');
+    furBall(c, -16, -30, 8, 9, '#2b2b2b', 8, 3); for (const [x, y] of [[-18, -32], [-14, -27]]) Ci(c, x, y, 1.2, '#f4c430');
+    furBall(c, 0, -32, 15, 18, '#8a5a2f', 18, 4);
+    R(c, -14, -24, 28, 3, 1, '#2f6a2a');
+    L(c, [14, -40, 22, -26 + s], '#8a5a2f', 5); L(c, [24, -56, 22, 0], '#6b4a24', 3);
+    E(c, 3, -54, 10, 10, '#c49a6c');
+    furBall(c, 2, -60, 11, 6, '#6b4423', 12, 4);
+    furBall(c, 4, -46, 8, 6, '#6b4423', 10, 3);
+    eyes(c, 4, -55, 3.5, 2.5); E(c, 9, -51, 2.5, 2, '#a0703f');
+  },
+  r4mavka(c, t, w) {
+    const s = Math.sin(w) * 2, h = Math.sin(t * 2) * 2;
+    Q(c, -10, -62, -22, -40, -16 + h, -20, '#3f8f3a', 7); Q(c, -6, -64, -16, -38, -10 + h, -16, '#2f7a2e', 5);
+    P(c, [-8, -42, 8, -42, 16, -3, -16, -3], '#f3eee0');
+    for (let x = -12; x <= 12; x += 6) P(c, [x - 2, -8, x, -11, x + 2, -8, x, -5], '#d62828');
+    L(c, [-6, -40, -14, -24], '#8fd18a', 3.5); L(c, [6, -40, 14, -26 + s], '#8fd18a', 3.5);
+    Ci(c, 2, -50, 9, '#8fd18a');
+    eyes(c, 3, -51, 3.5, 2.6, '#2a6b2a'); grin(c, 4, -46, 2.5, '#2a5a2a', 1.3); E(c, 9, -48, 2, 1.2, '#f7a1c4');
+    for (let i = 0; i < 6; i++) { const a = Math.PI + 0.3 + i * 0.5; Ci(c, 2 + Math.cos(a) * 10, -54 + Math.sin(a) * 8, 3, ['#e63946', '#ffd23f', '#5fa8e8', '#e63946', '#ffd23f', '#f7a1c4'][i]); }
+    for (let i = 0; i < 4; i++) E(c, -6 + i * 5, -3, 2.5, 3.5, '#3f8f3a', (i - 1.5) * 0.4);
+  },
+  r4bunian(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    c.save(); c.globalAlpha = 0.72 + 0.18 * Math.sin(t * 2);
+    L(c, [-3, -16, -4 + s, -3], '#7ac7a0', 3.5); L(c, [3, -16, 4 - s, -3], '#7ac7a0', 3.5);
+    P(c, [0, -42, 14, -12, -14, -12], '#2f8a5a'); for (let i = -2; i <= 2; i++) P(c, [i * 5 - 3, -14, i * 5, -8, i * 5 + 3, -14], '#2f8a5a');
+    L(c, [-6, -32, -12, -22 + s], '#a8e6c8', 3); L(c, [6, -32, 12, -24 - s], '#a8e6c8', 3);
+    Ci(c, 1, -48, 9, '#a8e6c8');
+    P(c, [-7, -50, -16, -56, -8, -45], '#a8e6c8'); P(c, [9, -50, 18, -56, 10, -45], '#a8e6c8');
+    furBall(c, 1, -55, 9, 4, '#1d5a3a', 10, 3);
+    eyes(c, 2, -48, 3.5, 2.5, '#1d5a3a'); grin(c, 3, -43, 3, '#1d5a3a', 1.3);
+    c.restore();
+    for (let i = 0; i < 4; i++) { const a = t * 2 + i * 1.6; Ci(c, Math.cos(a) * 16, -34 + Math.sin(a) * 18, 1.6, '#fff6a8'); }
+  },
+  r4kinnari(c, t, w) {
+    const s = Math.sin(w) * 2.5, f = Math.sin(t * 5) * 0.3;
+    L(c, [-3, -20, -4 + s, -2], '#e0a91b', 2.5); L(c, [5, -20, 6 - s, -2], '#e0a91b', 2.5);
+    for (const x of [-4 + s, 6 - s]) L(c, [x - 3, -1, x + 4, -1], '#e0a91b', 2);
+    for (let i = 0; i < 4; i++) feather(c, -12, -26, 22, ['#e63946', '#f4a261', '#2a9d48', '#2f6db3'][i], '#fff', -1.2 - i * 0.25);
+    E(c, 0, -26, 14, 10, '#f3eee0');
+    c.save(); c.translate(-2, -40); c.rotate(-0.4 + f); P(c, [0, 0, -22, -14, -26, -4, -16, -2, -12, 6], '#f4c430'); c.restore();
+    P(c, [-7, -36, 7, -36, 5, -54, -5, -54], '#e8b85a'); R(c, -7, -42, 14, 4, 1, '#d62828');
+    L(c, [5, -52, 12, -42], '#e8b85a', 3);
+    Ci(c, 0, -61, 7.5, '#e8b85a');
+    P(c, [-6, -66, 6, -66, 3, -74, 0, -84, -3, -74], '#e0a91b'); Ci(c, 0, -70, 1.8, '#d62828');
+    Ci(c, 0, -62, 1.4, '#222'); Ci(c, 4, -62, 1.4, '#222'); grin(c, 2.5, -58, 2.2, '#7a3a10', 1.2);
+  },
+  r4chinthe(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -22, -24, -34, -32, -30, -46, '#f3eee0', 4); furBall(c, -30, -48, 4, 4, '#e0a91b', 8, 2);
+    for (const [x, d] of [[-16, 1], [-6, -1], [8, 1], [16, -1]]) { R(c, x - 3.5 + s * d * 0.4, -14, 7, 14, 3, '#e8e1d6'); E(c, x + s * d * 0.4 + 1, -1, 5, 2.5, '#e0a91b'); }
+    E(c, -2, -24, 24, 12, '#f3eee0');
+    R(c, -12, -26, 24, 3, 1, '#d62828');
+    for (let i = 0; i < 10; i++) { const a = i / 10 * TAU; Ci(c, 20 + Math.cos(a) * 14, -42 + Math.sin(a) * 14, 5, i % 2 ? '#e0a91b' : '#f4c430'); }
+    Ci(c, 20, -42, 12, '#f3eee0');
+    eyes(c, 22, -46, 5, 4, '#2a6b2a');
+    E(c, 28, -38, 5, 3.5, '#f7a1c4');
+    R(c, 14, -36, 16, 5, 2, '#d62828'); teeth(c, 22, -36, 7, 5);
+  },
+  r4nittaewo(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    L(c, [-4, -12, -5 + s, -3], '#a04a1f', 4); L(c, [4, -12, 5 - s, -3], '#a04a1f', 4);
+    E(c, -6 + s, -1, 5, 2.5, '#5a2a10'); E(c, 6 - s, -1, 5, 2.5, '#5a2a10');
+    furBall(c, 0, -22, 11, 12, '#c8642a', 14, 3);
+    L(c, [-10, -26, -14, -8 + s], '#c8642a', 4); L(c, [10, -26, 15, -8 - s], '#c8642a', 4);
+    for (const x of [-14 + s, 15 - s]) for (let i = -1; i <= 1; i++) L(c, [x, -8, x + i * 2.5, -4], '#f3eee0', 1.3);
+    furBall(c, 1, -40, 10, 9, '#c8642a', 12, 3);
+    E(c, 3, -38, 7, 6, '#e8a070');
+    eyes(c, 3, -40, 3.2, 2.6, '#3a1a0a'); E(c, 4, -35, 2.2, 1.6, '#8b3a10'); grin(c, 4, -33, 2.5, '#5a1a0a', 1.2);
+  },
+  r4lafaek(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -26, -10, -40, -12, -46, -4, '#4f9a3a', 7);
+    for (const [x, d] of [[-20, 1], [-8, -1], [6, 1], [16, -1]]) { L(c, [x, -8, x + s * d, -1], '#3f8a2e', 5); E(c, x + s * d + 2, -1, 4, 2, '#3f8a2e'); }
+    E(c, -4, -12, 26, 8, '#4f9a3a'); E(c, -2, -8, 20, 3.5, '#d9e88a');
+    P(c, [-24, -14, -16, -30, -8, -18, 0, -34, 10, -16, 20, -12], '#2f7a3a'); P(c, [-12, -22, -8, -18, -4, -24], '#4fa64a');
+    L(c, [0, -32, 2, -46], '#8b5a2b', 2.5); for (let i = 0; i < 4; i++) Q(c, 2, -46, 2 + Math.cos(i * 1.6 - 0.5) * 6, -50, 2 + Math.cos(i * 1.6 - 0.5) * 11, -43, '#2a9d48', 2.5);
+    E(c, 28, -10, 16, 5, '#4f9a3a'); E(c, 22, -16, 6, 5, '#4f9a3a');
+    eye(c, 23, -18, 3); grin(c, 32, -8, 8, '#1d3a10', 1.4); P(c, [30, -7, 31, -4, 32, -7], '#fff'); P(c, [36, -7, 37, -4, 38, -7], '#fff');
+  },
+  r4kimquy(c, t, w) {
+    const s = Math.sin(w) * 3;
+    for (const [x, d] of [[-16, 1], [-6, -1], [8, 1], [16, -1]]) E(c, x + s * d * 0.5, -4, 5, 5, '#8fae4a');
+    P(c, [-24, -10, -32, -6, -24, -6], '#8fae4a');
+    E(c, 0, -18, 26, 16, '#e0a91b'); E(c, 0, -10, 27, 4, '#b8860b');
+    for (const [x, y] of [[0, -24], [-12, -18], [12, -18], [-6, -12], [6, -12]]) P(c, [x - 5, y, x - 2.5, y - 4.5, x + 2.5, y - 4.5, x + 5, y, x + 2.5, y + 4.5, x - 2.5, y + 4.5], '#f4d35e');
+    E(c, 30, -16, 8, 7, '#8fae4a', 0.2);
+    eye(c, 32, -19, 2.6); grin(c, 34, -13, 3, '#2b3a10', 1.3);
+    c.save(); c.translate(36, -14); c.rotate(-0.25 + Math.sin(t * 2) * 0.05); R(c, -2, -1, 16, 3, 1, '#dfe6ec'); R(c, -6, -3, 4, 7, 1, '#e0a91b'); c.restore();
+  },
+  r4kishi(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-6, -22, -7 + s, -3], '#3a6a7a', 6); L(c, [6, -22, 7 - s, -3], '#3a6a7a', 6);
+    E(c, -7 + s, -1, 5, 2.5, '#2b2b2b'); E(c, 7 - s, -1, 5, 2.5, '#2b2b2b');
+    P(c, [-14, -54, 14, -54, 16, -18, -16, -18], '#e8892b'); for (let y = -48; y < -20; y += 8) L(c, [-14, y, 14, y], '#7a3e10', 2);
+    L(c, [-13, -50, -20, -30 + s], '#4f8a9a', 5); L(c, [13, -50, 20, -32 - s], '#4f8a9a', 5);
+    Ci(c, 0, -66, 12, '#4f8a9a');
+    furBall(c, -8, -66, 7, 10, '#6b5a3a', 10, 3);
+    E(c, -14, -66, 7, 6, '#a08a5a'); E(c, -21, -64, 4, 3, '#6b5a3a'); Ci(c, -23, -65, 1.4, '#111');
+    E(c, -9, -76, 3, 5, '#a08a5a', -0.4); Ci(c, -12, -69, 1.8, '#ffd23f'); teeth(c, -17, -61, 4, 3);
+    eyes(c, 5, -68, 3.5, 2.6); grin(c, 6, -61, 4, '#1d3a40', 1.6);
+  },
+  r4gustave(c, t, w) {
+    const b = Math.sin(t * 2) * 1.5;
+    c.save(); c.translate(0, b);
+    E(c, -22, -12, 14, 5, '#4a5a2a'); for (let i = 0; i < 4; i++) P(c, [-32 + i * 6, -15, -29 + i * 6, -21, -26 + i * 6, -15], '#3a4a1f');
+    E(c, 10, -14, 22, 8, '#5a6b30'); E(c, 22, -8, 18, 5, '#5a6b30');
+    R(c, 6, -10, 32, 4, 2, '#3a1a0a'); teeth(c, 22, -10, 15, 10);
+    for (const x of [0, 14]) { E(c, x, -22, 6, 6, '#5a6b30'); Ci(c, x, -23, 3.5, '#f4c430'); E(c, x + 0.5, -23, 1, 3, '#111'); }
+    Ci(c, 36, -16, 1.5, '#1d1d10'); Ci(c, 32, -16, 1.5, '#1d1d10');
+    c.restore();
+    E(c, 0, -4, 42, 6, 'rgba(79,140,180,.85)'); for (let i = -3; i <= 3; i++) Q(c, i * 12 - 5, -4, i * 12, -7 + Math.sin(t * 3 + i) * 2, i * 12 + 5, -4, '#c8ebff', 1.5);
+  },
+  r4goubet(c, t) {
+    const f = Math.sin(t * 3) * 6;
+    c.fillStyle = '#1f3a6a'; c.beginPath(); c.moveTo(-40, -30 + f); c.quadraticCurveTo(-14, -34, 0, -46); c.quadraticCurveTo(14, -34, 40, -30 - f); c.quadraticCurveTo(14, -22, 0, -18); c.quadraticCurveTo(-14, -22, -40, -30 + f); c.fill();
+    E(c, 0, -30, 10, 9, '#2a4f8a'); E(c, 0, -26, 6, 5, '#e8f1fb');
+    P(c, [-6, -38, -10, -50, -2, -40], '#1f3a6a'); P(c, [6, -38, 10, -50, 2, -40], '#1f3a6a');
+    eyes(c, 0, -34, 5, 3, '#d62828'); grin(c, 0, -28, 4, '#123', 1.5);
+    Q(c, 0, -18, -6, -10, 4, -4 + f * 0.3, '#1f3a6a', 2.5);
+    for (let i = -3; i <= 3; i++) Q(c, i * 12 - 6, -2, i * 12, -6 + Math.sin(t * 3 + i) * 2, i * 12 + 6, -2, '#4fa3d9', 3);
+  },
+  r4dancingdevil(c, t, w) {
+    const sw = Math.sin(t * 6) * 4;
+    const cols = ['#d62828', '#1d1d1d', '#f4c430'];
+    for (let k = 0; k < 3; k++) { const y0 = -60 + k * 20, half = 8 + k * 7; c.fillStyle = cols[k]; c.beginPath(); c.moveTo(-half, y0); c.lineTo(half, y0); c.lineTo(half + 7 + sw * (k + 1) / 3, y0 + 21); for (let i = 0; i <= 8; i++) c.lineTo(half + 7 - i * (2 * half + 14) / 8 + sw * (k + 1) / 3, y0 + (i % 2 ? 16 : 21)); c.closePath(); c.fill(); }
+    E(c, 2, -70, 9, 12, '#f3eee0');
+    eyes(c, 3, -72, 3.5, 2.4, '#d62828'); R(c, -1, -64, 8, 3, 1.5, '#d62828');
+    for (const sg of [-1, 1]) Q(c, 2 + sg * 5, -78, 2 + sg * 12, -86, 2 + sg * 8, -94, '#1d1d1d', 3);
+    for (let i = 0; i < 5; i++) Ci(c, -6 + i * 4, -82, 2, '#f7f3ea');
+  },
+  r4bakame(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 8, k = Math.sin(w) * 4;
+    c.save(); c.translate(0, -s);
+    E(c, -14 - k, -4, 10, 3.5, '#8a8a9a'); L(c, [12, -14, 16 + k, -2], '#9a9aaa', 3.5);
+    Ci(c, -20, -18, 5, '#fff');
+    E(c, -2, -16, 18, 10, '#a8a8b8'); E(c, 0, -12, 12, 5, '#efeff5');
+    Ci(c, 16, -26, 9, '#a8a8b8');
+    E(c, 8, -44 + Math.sin(t * 3), 3.5, 13, '#a8a8b8', -0.6); E(c, 15, -44, 3.5, 13, '#a8a8b8', -0.2); E(c, 15, -44, 1.6, 9, '#f2c4ce', -0.2);
+    eye(c, 18, -28, 3, '#3a2210'); Ci(c, 24, -24, 1.6, '#d97a8a'); grin(c, 19, -21, 3.5, '#3a2210', 1.4);
+    L(c, [21, -18, 30, -14], '#2a9d48', 2); E(c, 31, -14, 5, 2.6, '#f4c430', 0.3);
+    c.restore();
+  },
+  r4cunnie(c, t, w) {
+    const s = Math.sin(w) * 4;
+    P(c, [-18, -22, -24, -26, -20, -18], '#6b3e1f');
+    for (const [x, d] of [[-14, 1], [-8, -1], [8, 1], [13, -1]]) { L(c, [x, -14, x + s * d, -2], '#7a4a24', 2.5); P(c, [x + s * d - 1.5, -2, x + s * d + 1.5, -2, x + s * d, 0], '#2b1d10'); }
+    E(c, -2, -20, 18, 9, '#a0602a');
+    for (let i = 0; i < 4; i++) { E(c, -12 + i * 7, -24, 2.5, 1.3, '#f3eee0'); L(c, [-14 + i * 7, -18, -10 + i * 7, -18], '#f3eee0', 1.5); }
+    E(c, -2, -15, 13, 3, '#e8c49a');
+    L(c, [12, -24, 18, -32], '#a0602a', 6);
+    E(c, 22, -34, 7, 6, '#a0602a'); E(c, 28, -32, 4, 3, '#8b4a1f');
+    E(c, 17, -42, 2.5, 5, '#a0602a', -0.3); E(c, 23, -42, 2.5, 5, '#a0602a', 0.3);
+    eye(c, 22, -36, 2.8, '#2b1d10'); Ci(c, 31, -32, 1.3, '#111');
+  },
+  r4adze(c, t) {
+    const g = 0.4 + 0.35 * Math.sin(t * 6), f = Math.sin(t * 22) * 0.4;
+    c.save(); c.globalAlpha = g; Ci(c, -6, -22, 18, '#fff3a0'); c.restore();
+    for (const sg of [-1, 1]) { c.save(); c.translate(0, -30); c.rotate(sg * (0.6 + f)); c.globalAlpha = 0.7; E(c, 0, -12, 5, 12, '#d8f0ff'); c.restore(); }
+    E(c, -8, -22, 10, 8, '#f9ff8a'); E(c, -8, -22, 6, 5, '#fff');
+    E(c, 4, -28, 9, 7, '#3a3a2a'); R(c, -2, -34, 10, 4, 2, '#d62828');
+    Ci(c, 10, -32, 7, '#2b2b20');
+    eyes(c, 12, -33, 3, 2.6, '#2a9d48'); grin(c, 13, -28, 2.5, '#fff', 1.2);
+    Q(c, 10, -38, 12, -46, 18, -48, '#2b2b20', 1.5); Q(c, 13, -38, 18, -44, 22, -44, '#2b2b20', 1.5);
+    for (const x of [-2, 4, 10]) L(c, [x, -22, x - 2, -14], '#2b2b20', 1.5);
+  },
+  r4chickcharney(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-4, -24, -5 + s, -2], '#e0a91b', 3); L(c, [4, -24, 5 - s, -2], '#e0a91b', 3);
+    for (const x of [-5 + s, 5 - s]) for (const dx of [-4, 0, 4]) L(c, [x, -1, x + dx, 0], '#e0a91b', 2);
+    E(c, -12, -30, 6, 12, '#8b6b4a', 0.4);
+    E(c, 0, -38, 15, 18, '#a0805a'); E(c, 2, -34, 9, 12, '#e8d6b0');
+    for (let y = -42; y < -24; y += 5) for (let x = -3; x <= 7; x += 5) Q(c, x - 2, y, x, y + 2, x + 2, y, '#a0805a', 1.2);
+    E(c, 2, -62, 14, 12, '#a0805a');
+    P(c, [-10, -68, -14, -80, -4, -72], '#8b6b4a'); P(c, [12, -70, 16, -82, 8, -72], '#8b6b4a');
+    E(c, 2, -62, 11, 8, '#e8d6b0');
+    for (const x of [-3, 7]) { Ci(c, x, -63, 4.5, '#d62828'); Ci(c, x + 0.5, -63, 2, '#111'); Ci(c, x - 1, -64.5, 0.9, '#fff'); }
+    P(c, [0, -59, 4, -59, 2, -53], '#e0a91b');
+  },
+  r4ciguapa(c, t, w) {
+    const s = Math.sin(w) * 3, h = Math.sin(t * 3) * 2;
+    L(c, [-4, -16, -5 + s, -3], '#4a7ab8', 4); L(c, [4, -16, 5 - s, -3], '#4a7ab8', 4);
+    E(c, -9 + s, -1, 5, 2.5, '#4a7ab8'); E(c, -1 - s, -1, 5, 2.5, '#4a7ab8');
+    c.fillStyle = '#1d1d24'; c.beginPath(); c.moveTo(-8, -72); c.quadraticCurveTo(-24, -40, -18 + h, -10); c.lineTo(16 + h, -12); c.quadraticCurveTo(14, -40, 12, -66); c.closePath(); c.fill();
+    for (let i = 0; i < 6; i++) Q(c, -8 + i * 4, -60, -12 + i * 6, -30, -16 + i * 6 + h, -12, '#3a3a48', 1.5);
+    Ci(c, 3, -62, 10, '#6a9ad6');
+    c.fillStyle = '#1d1d24'; c.beginPath(); c.arc(1, -64, 12, Math.PI * 0.95, Math.PI * 2.1); c.fill();
+    eyes(c, 5, -61, 3.5, 3, '#2a2a6a'); grin(c, 6, -55, 3, '#1d2a50', 1.3);
+    L(c, [10, -40, 18, -30], '#6a9ad6', 3);
+  },
+  r4tibolom(c, t, w) {
+    const s = Math.abs(Math.sin(w * 1.3)) * 5;
+    c.save(); c.translate(0, -s);
+    L(c, [-3, -8, -4, -2], '#3a2a1a', 3); L(c, [3, -8, 4, -2], '#3a2a1a', 3);
+    E(c, -5, -1, 4, 2, '#3a2a1a'); E(c, 5, -1, 4, 2, '#3a2a1a');
+    for (let i = 0; i < 6; i++) P(c, [-9 + i * 3, -16, -10 + i * 3.5, -6, -6 + i * 3, -16], i % 2 ? '#3f8f3a' : '#5fae4a');
+    E(c, 0, -18, 8, 6, '#6b4a3a');
+    L(c, [-7, -20, -12, -14 + s], '#6b4a3a', 2.5); L(c, [7, -20, 12, -26], '#6b4a3a', 2.5);
+    Ci(c, 1, -34, 13, '#7a5a48');
+    E(c, -12, -36, 4, 5, '#7a5a48'); E(c, 14, -36, 4, 5, '#7a5a48');
+    for (const x of [-4, 7]) { Ci(c, x, -36, 5, '#fff'); Ci(c, x + 1, -35.5, 2.6, '#111'); Ci(c, x, -37, 1, '#fff'); }
+    grin(c, 2, -27, 5, '#2b1d14', 1.6); furBall(c, 1, -46, 6, 3, '#1d1410', 8, 3);
+    c.restore();
+  },
+  r4tunda(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-5, -22, -6 + s, -3], '#2f5a3a', 5); E(c, -6 + s, -1, 5, 2.5, '#2f5a3a');
+    L(c, [5, -22, 6 - s, -4], '#8b5a2b', 3); for (let i = -1; i <= 1; i++) L(c, [6 - s, -6, 6 - s + i * 3, -1], '#8b5a2b', 2); Ci(c, 6 - s, -6, 2.5, '#a0703f');
+    P(c, [-14, -52, 14, -52, 18, -18, -18, -18], '#3a6a4a'); for (let x = -14; x <= 14; x += 5) P(c, [x - 2.5, -18, x, -12, x + 2.5, -18], '#3a6a4a');
+    L(c, [-13, -48, -20, -30 + s], '#4f8a5a', 5);
+    L(c, [13, -48, 22, -40], '#4f8a5a', 5);
+    c.save(); c.translate(26, -42); c.rotate(Math.sin(t * 3) * 0.2); Q(c, -4, 4, 2, -4, 8, 2, '#ff8f6b', 4); Ci(c, 8, 1, 2, '#ff8f6b'); L(c, [8, 0, 13, -4], '#ff8f6b', 0.8); c.restore();
+    Ci(c, 2, -62, 11, '#4f8a5a');
+    furBall(c, 0, -66, 13, 9, '#2b1d14', 14, 5);
+    E(c, 6, -60, 7, 7, '#4f8a5a');
+    eyes(c, 6, -62, 3.2, 2.8, '#d6a21b'); grin(c, 7, -55, 3.5, '#1d3a20', 1.4);
+  },
+  r4boitata(c, t, w) {
+    const s = Math.sin(w) * 4;
+    for (let i = 0; i < 9; i++) { const x = -38 + i * 7, y = -14 + Math.sin(i * 0.9 + t * 4 + s * 0.2) * 5; c.save(); c.globalAlpha = 0.5; Ci(c, x, y - 3, 8 - i * 0.3, '#ffd23f'); c.restore(); Ci(c, x, y, 7, i % 2 ? '#e8521f' : '#ff7b29'); }
+    for (let i = 0; i < 6; i++) { const p = (t * 1.5 + i / 6) % 1; c.globalAlpha = 1 - p; P(c, [-34 + i * 10, -20 - p * 10, -31 + i * 10, -30 - p * 16, -28 + i * 10, -20 - p * 10], '#ffd23f'); c.globalAlpha = 1; }
+    c.save(); c.globalAlpha = 0.45; Ci(c, 30, -30, 18, '#fff3a0'); c.restore();
+    E(c, 30, -28, 14, 11, '#ff7b29'); E(c, 40, -24, 8, 5, '#e8521f');
+    for (const x of [24, 34]) { Ci(c, x, -33, 6, '#fff9c4'); Ci(c, x + 1, -33, 3, '#2f6db3'); Ci(c, x, -34.5, 1.2, '#fff'); }
+    grin(c, 40, -21, 4, '#7a1a0a', 1.6); L(c, [46, -22, 52, -22], '#d62828', 1.5); L(c, [52, -22, 55, -25], '#d62828', 1.2); L(c, [52, -22, 55, -19], '#d62828', 1.2);
+  },
+  r4madremonte(c, t, w) {
+    const s = Math.sin(w) * 3, h = Math.sin(t * 2) * 1.5;
+    c.fillStyle = '#7a6a3a'; c.beginPath(); c.moveTo(-10, -64); c.lineTo(10, -64); c.lineTo(22, -2);
+    for (let i = 0; i <= 8; i++) c.lineTo(22 - i * 5.5, i % 2 ? -8 : -1); c.closePath(); c.fill();
+    for (let i = 0; i < 7; i++) E(c, -12 + (i % 3) * 10 + (i > 2 ? 3 : 0), -50 + Math.floor(i / 3) * 14, 5, 3, i % 2 ? '#9a8a4a' : '#5a6a2a', i);
+    for (const [x, y] of [[-8, -40], [6, -26], [12, -46], [-12, -16]]) { Ci(c, x, y, 2.6, '#f4a261'); Ci(c, x, y, 1, '#ffd23f'); }
+    for (let i = 0; i < 5; i++) Q(c, -6 + i * 3, -70, -14 + i * 2, -50, -16 + i * 2 + h, -30, '#4a5a2a', 2);
+    L(c, [8, -58, 20, -44 + s], '#7a6a3a', 4); E(c, 21, -42 + s, 3, 3, '#a07a4a');
+    Ci(c, 2, -70, 8, '#a07a4a');
+    eyes(c, 4, -71, 3, 2.3, '#2b3a10'); grin(c, 5, -66, 2.5, '#3a2a10', 1.2);
+    E(c, 2, -79 + h, 26, 5, '#4f7a2a'); E(c, 2, -85 + h, 12, 7, '#3f6a2a');
+    for (let i = 0; i < 6; i++) E(c, -20 + i * 8, -80 + h, 5, 2.2, '#8fbf5a', 0.5);
+    for (const [x, col] of [[-6, '#f4a261'], [6, '#e63946'], [12, '#ffd23f']]) Ci(c, x, -88 + h, 2.5, col);
+  },
+  r4cuero(c, t) {
+    const f = Math.sin(t * 3) * 3;
+    c.fillStyle = '#c9a07a'; c.beginPath(); c.moveTo(-38, -18 + f); c.quadraticCurveTo(-30, -34, -10, -28); c.quadraticCurveTo(0, -36, 14, -28); c.quadraticCurveTo(34, -34, 40, -18 - f); c.quadraticCurveTo(30, -6, 12, -12); c.quadraticCurveTo(0, -4, -12, -12); c.quadraticCurveTo(-30, -6, -38, -18 + f); c.fill();
+    for (const [x, y, rx, ry] of [[-18, -22, 7, 4], [6, -20, 9, 5], [24, -24, 5, 3]]) E(c, x, y, rx, ry, '#7a4a24');
+    for (let i = 0; i < 9; i++) { const a = -36 + i * 9; Ci(c, a, -18 + Math.sin(i * 1.3) * 10 * (i % 2 ? 1 : -1) * 0.2 - (i % 2 ? 11 : -6) + (i < 4 ? f * 0.3 : -f * 0.3), 3, '#fff3d6'); Ci(c, a + 0.5, -18 + Math.sin(i * 1.3) * 2 - (i % 2 ? 11 : -6), 1.4, '#d62828'); }
+    for (const [x, y] of [[-38, -18 + f], [40, -18 - f]]) for (let k = -1; k <= 1; k++) L(c, [x, y, x + (x < 0 ? -4 : 4), y + k * 4], '#3a2a1a', 1.5);
+    for (let i = -3; i <= 3; i++) Q(c, i * 12 - 6, -2, i * 12, -6 + Math.sin(t * 3 + i) * 2, i * 12 + 6, -2, '#4fa3d9', 3);
+  },
+  r4noniep(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    L(c, [-3, -10, -4 + s, -2], '#3a8aa0', 3); L(c, [3, -10, 4 - s, -2], '#3a8aa0', 3);
+    E(c, -5 + s, -1, 3.5, 2, '#3a8aa0'); E(c, 5 - s, -1, 3.5, 2, '#3a8aa0');
+    for (let i = 0; i < 5; i++) E(c, -6 + i * 3, -9, 1.8, 4, '#e8d29a', (i - 2) * 0.3);
+    E(c, 0, -17, 7, 7, '#4fb3c8');
+    L(c, [-6, -19, -11, -12 + s], '#4fb3c8', 2.5); L(c, [6, -19, 11, -24], '#4fb3c8', 2.5);
+    c.strokeStyle = '#f3eee0'; c.lineWidth = 2.5; c.beginPath(); c.arc(13, -28, 4, 0.2, Math.PI * 1.2); c.stroke(); L(c, [17, -27, 17, -35], '#f3eee0', 2.5);
+    Ci(c, 0, -30, 9, '#4fb3c8');
+    for (let i = 0; i < 6; i++) Q(c, -8 + i * 3, -36, -10 + i * 3, -42, -8 + i * 3 + Math.sin(t * 3 + i), -46, '#2a7a3a', 2);
+    eyes(c, 1, -30, 3.5, 2.6, '#1d3a5a'); grin(c, 2, -25, 3, '#1d3a5a', 1.4);
+  },
+  r4yarama(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 6;
+    c.save(); c.translate(0, -s);
+    L(c, [-5, -14, -8, -3], '#c0392b', 4); L(c, [5, -14, 8, -3], '#c0392b', 4);
+    for (const x of [-8, 8]) for (const dx of [-3, 0, 3]) Ci(c, x + dx, -2, 1.8, '#ff8f80');
+    E(c, 0, -22, 11, 11, '#d6453a'); E(c, 2, -20, 7, 7, '#f08a7a');
+    L(c, [-10, -24, -18, -18 + s], '#d6453a', 3); L(c, [10, -24, 18, -30], '#d6453a', 3);
+    for (const [x, y] of [[-18, -18 + s], [18, -30]]) for (const d of [-2.5, 0, 2.5]) Ci(c, x + d, y + (x > 0 ? -2 : 2), 1.8, '#ff8f80');
+    Ci(c, 2, -44, 17, '#d6453a');
+    eyes(c, 4, -50, 6, 4.2, '#5a1a1a');
+    E(c, 4, -38, 12, 5, '#7a1a1a'); E(c, 4, -36, 8, 2.5, '#f08a7a');
+    c.restore();
+  },
+  r4capcaun(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-7, -24, -8 + s, -3], '#6b4a3a', 8); L(c, [7, -24, 8 - s, -3], '#6b4a3a', 8);
+    E(c, -8 + s, -2, 6, 3, '#2b1d14'); E(c, 8 - s, -2, 6, 3, '#2b1d14');
+    P(c, [-16, -56, 16, -56, 18, -22, -18, -22], '#a0522b'); R(c, -17, -32, 34, 4, 2, '#3a2a1a');
+    L(c, [-16, -52, -24, -30 + s], '#8a6a4a', 7); L(c, [16, -52, 24, -32 - s], '#8a6a4a', 7);
+    E(c, 2, -66, 13, 12, '#8a6a4a'); E(c, 14, -60, 10, 6, '#a08060'); Ci(c, 23, -62, 2.6, '#1d1d1d');
+    E(c, -8, -70, 5, 11, '#5a3a2a', 0.5); E(c, 10, -78, 4, 9, '#5a3a2a', 0.4);
+    eyes(c, 6, -69, 4, 2.6, '#c0392b'); eye(c, -6, -64, 2.2, '#c0392b');
+    R(c, 10, -56, 14, 3, 1.5, '#3a1a0a'); teeth(c, 17, -56, 6, 4);
+  },
+  r4ala(c, t) {
+    const b = Math.sin(t * 2) * 3;
+    c.save(); c.translate(0, b);
+    for (const [x, y, r] of [[-20, -40, 14], [-4, -48, 18], [14, -44, 15], [26, -36, 10], [-28, -32, 9], [4, -34, 16]]) Ci(c, x, y, r, '#4a4e66');
+    for (const [x, y, r] of [[-8, -54, 8], [12, -52, 7]]) Ci(c, x, y, r, '#6a6e8a');
+    eyes(c, 2, -46, 8, 5, '#ffd23f', '#e8e8f0');
+    E(c, 6, -32, 14, 7, '#1d1d2a'); teeth(c, 6, -36, 10, 6);
+    c.restore();
+    for (let i = 0; i < 7; i++) { const p = (t * 1.2 + i / 7) % 1; Ci(c, -24 + i * 8, -22 + p * 20 + b, 2.2, '#e8f4ff'); }
+    L(c, [30, -40 + b, 36, -28, 32, -26, 38, -14], '#ffd23f', 2.5);
+  },
+  r4permonik(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    L(c, [-3, -12, -4 + s, -3], '#2b2b2b', 3.5); L(c, [3, -12, 4 - s, -3], '#2b2b2b', 3.5);
+    E(c, -5 + s, -1, 4.5, 2.5, '#5a3a1a'); E(c, 5 - s, -1, 4.5, 2.5, '#5a3a1a');
+    P(c, [-10, -28, 10, -28, 12, -11, -12, -11], '#1d3a2a'); R(c, -11, -15, 22, 3, 1, '#c9a05a'); E(c, -10, -12, 6, 6, '#e8e1d6');
+    L(c, [-9, -26, -14, -36], '#1d3a2a', 3); L(c, [-14, -36, -10, -42], '#6b3e1f', 2); P(c, [-16, -42, -4, -44, -6, -40], '#8e9296');
+    L(c, [9, -26, 15, -18], '#1d3a2a', 3); L(c, [15, -18, 15, -14], '#444', 1.5); R(c, 12, -14, 6, 8, 1, '#444');
+    c.save(); c.globalAlpha = 0.4 + 0.2 * Math.sin(t * 5); Ci(c, 15, -10, 7, '#ffe680'); c.restore(); Ci(c, 15, -10, 2.5, '#ffd23f');
+    Ci(c, 0, -35, 8, '#e8b890');
+    furBall(c, 1, -28, 9, 6, '#f3eee0', 10, 3);
+    eyes(c, 1, -37, 3.2, 2.2); E(c, 3, -33, 2.4, 2, '#d98a6a');
+    R(c, -8, -48, 16, 8, 3, '#2b2b2b'); E(c, 0, -41, 10, 2.5, '#1d1d1d'); Ci(c, 0, -45, 2, '#ffd23f');
+  },
+  r4kosa(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-5, -20, -6 + s, -3], '#4a3a2a', 5); L(c, [5, -20, 6 - s, -3], '#4a3a2a', 5);
+    E(c, -6 + s, -1, 5, 2.5, '#d62828'); E(c, 6 - s, -1, 5, 2.5, '#d62828');
+    furBall(c, 0, -36, 16, 20, '#f3eee0', 18, 4);
+    for (let i = 0; i < 3; i++) bell(c, -8 + i * 8, -22 + Math.sin(t * 8 + i), 3);
+    L(c, [-15, -44, -22, -28 + s], '#e8e1d6', 5); L(c, [15, -44, 22, -54], '#e8e1d6', 5);
+    R(c, 20, -66, 3, 16, 1, '#8b5a2b'); Ci(c, 21.5, -68, 4, '#d62828');
+    Ci(c, 2, -62, 10, '#f4c9a0'); Ci(c, -3, -59, 2.5, '#f08a7a'); Ci(c, 9, -59, 2.5, '#f08a7a');
+    Ci(c, -1, -64, 1.6, '#111'); Ci(c, 6, -64, 1.6, '#111'); grin(c, 3, -58, 3.5, '#7a2a0c', 1.5);
+    P(c, [-8, -66, 2, -94, 12, -66], '#8b2a2a'); L(c, [-4, -74, 8, -74], '#f4c430', 2); Ci(c, 2, -94, 2.5, '#f4c430');
+  },
+  r4bubu(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 3, wob = Math.sin(t * 4) * 2;
+    c.fillStyle = '#5a3a8a'; c.beginPath(); c.moveTo(-20, 0); c.quadraticCurveTo(-24 - wob, -30, -8, -46); c.quadraticCurveTo(6, -56, 18, -42); c.quadraticCurveTo(26 + wob, -22, 20, 0);
+    for (let i = 0; i < 5; i++) c.lineTo(16 - i * 9, i % 2 ? -6 + s : 0); c.closePath(); c.fill();
+    R(c, -22, -24, 44, 10, 3, '#3fa3a0'); for (let x = -18; x <= 18; x += 8) Ci(c, x, -19, 2, '#ffd23f');
+    eyes(c, 4, -36, 6, 5.5, '#2a9d48', '#fff6c9');
+    E(c, 4, -27, 5, 2.5, '#2b1840');
+    L(c, [-18, -18, -26, -8 + wob], '#5a3a8a', 4); L(c, [18, -18, 26, -10 - wob], '#5a3a8a', 4);
+  },
+  r4nusnsays(c, t, w) {
+    const s = Math.abs(Math.sin(w * 1.3)) * 6;
+    c.save(); c.translate(0, -s);
+    L(c, [-2, -9, -3, -2], '#7a4a24', 2.5); L(c, [2, -9, 3, -2], '#7a4a24', 2.5);
+    E(c, -3, -1, 3, 1.8, '#2b2b2b'); E(c, 4, -1, 3, 1.8, '#2b2b2b');
+    P(c, [-6, -20, 6, -20, 7, -8, -7, -8], '#2f6db3'); R(c, -7, -13, 14, 2, 1, '#f4c430');
+    L(c, [-5, -18, -9, -12], '#c98a5a', 2); L(c, [5, -18, 10, -24], '#c98a5a', 2);
+    L(c, [10, -24, 10, -30], '#6b3e1f', 1.5); L(c, [10, -30, 7, -34], '#6b3e1f', 1.5); L(c, [10, -30, 13, -34], '#6b3e1f', 1.5);
+    Ci(c, 0, -27, 7.5, '#c98a5a');
+    furBall(c, 0, -33, 7, 3, '#2b1d14', 9, 2.5);
+    eyes(c, 1, -27, 2.8, 2.2); grin(c, 2, -23, 3, '#5a2a0c', 1.3);
+    c.restore();
+  },
+  r4burmatedge(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -26, -26, -40, -26, -42, -12, '#6b8a3a', 6); furBall(c, -42, -10, 3, 4, '#3a4a1f', 6, 3);
+    for (const [x, d] of [[-18, 1], [-6, -1], [8, 1], [18, -1]]) R(c, x - 4.5 + s * d * 0.4, -16, 9, 16, 4, '#4f6a2a');
+    E(c, 0, -32, 28, 20, '#6b8a3a');
+    for (let i = 0; i < 6; i++) Ci(c, -18 + i * 7, -44 + Math.sin(i * 2) * 3, 3, '#8fae4a');
+    E(c, 26, -38, 16, 14, '#7a9a4a');
+    P(c, [18, -48, 14, -62, 24, -50], '#e8d29a'); P(c, [28, -50, 32, -64, 34, -48], '#e8d29a');
+    eyes(c, 26, -44, 5, 3.8, '#c0392b');
+    E(c, 32, -30, 11, 7, '#3a1a0a'); teeth(c, 32, -36, 9, 5); E(c, 32, -27, 6, 3, '#d6453a');
+  },
+  r4ebigane(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -22, -20, -36, -20, -38, -34 + Math.sin(t * 3) * 3, '#d9a441', 4);
+    for (const [x, d] of [[-16, 1], [-8, -1], [8, 1], [16, -1]]) { L(c, [x, -14, x + s * d, -2], '#d9a441', 5); E(c, x + s * d + 1, -1, 4, 2, '#b8862b'); }
+    E(c, -2, -22, 22, 11, '#e0b04a');
+    for (const [x, y] of [[-14, -24], [-6, -28], [2, -22], [-10, -18], [8, -28], [12, -20]]) { Ci(c, x, y, 2.6, '#6b3e1f'); Ci(c, x, y, 1.1, '#e0b04a'); }
+    L(c, [14, -26, 20, -42], '#4f8a7a', 9);
+    L(c, [18, -38, 30, -30], '#4f8a7a', 4); L(c, [16, -38, 6, -44 + s], '#4f8a7a', 4);
+    Ci(c, 22, -52, 10, '#4f8a7a');
+    furBall(c, 21, -60, 10, 4, '#2b1d14', 12, 4);
+    eyes(c, 24, -53, 3.5, 2.6, '#d6a21b'); grin(c, 25, -46, 4, '#1d3a30', 1.5);
+    P(c, [28, -47, 29, -44, 30, -47], '#fff');
+  },
+  r4zako(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 7;
+    c.save(); c.translate(0, -s);
+    Q(c, -10, -16, -26, -20, -22, -40 + Math.sin(t * 3) * 4, '#8a6a4a', 3);
+    L(c, [-5, -12, -7, -3], '#8a6a4a', 4); L(c, [5, -12, 7, -3], '#8a6a4a', 4);
+    E(c, -8, -2, 4, 2, '#e8b890'); E(c, 8, -2, 4, 2, '#e8b890');
+    E(c, 0, -20, 11, 12, '#a0805a'); E(c, 2, -18, 6, 8, '#e8c8a0');
+    L(c, [-9, -24, -16, -14], '#8a6a4a', 3.5); L(c, [9, -24, 18, -34], '#8a6a4a', 3.5);
+    c.save(); c.translate(19, -36); c.rotate(-0.4); c.fillStyle = '#ffd23f'; c.beginPath(); c.moveTo(0, -7); c.quadraticCurveTo(6, 0, 1, 7); c.quadraticCurveTo(3, 0, -1, -6); c.fill(); c.restore();
+    Ci(c, 2, -40, 10, '#a0805a');
+    Ci(c, -8, -40, 4, '#a0805a'); Ci(c, -8, -40, 2.2, '#e8b890');
+    E(c, 5, -38, 7, 7, '#e8c8a0');
+    eyes(c, 5, -42, 2.8, 2.4, '#3a2210'); grin(c, 7, -35, 3, '#5a3a1a', 1.4);
+    c.restore();
+  },
+  r4sisimite(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-7, -22, -8 + s, -4], '#3a3430', 8); L(c, [7, -22, 8 - s, -4], '#3a3430', 8);
+    E(c, -12 + s, -2, 7, 3, '#5a4e44'); E(c, 3 - s, -2, 7, 3, '#5a4e44');
+    furBall(c, 0, -46, 20, 28, '#4a423c', 20, 6);
+    furBall(c, -24, -40 + s, 6, 18, '#4a423c', 8, 3); furBall(c, 24, -40 - s, 6, 18, '#4a423c', 8, 3);
+    E(c, 2, -52, 11, 14, '#6a5e54');
+    furBall(c, 4, -80, 13, 12, '#4a423c', 14, 5);
+    E(c, 7, -77, 9, 8, '#8a7a6a');
+    Ci(c, 3, -80, 2.6, '#fff'); Ci(c, 11, -80, 2.6, '#fff'); Ci(c, 3.6, -80, 1.3, '#111'); Ci(c, 11.6, -80, 1.3, '#111');
+    E(c, 8, -74, 3, 1.8, '#3a2a20'); grin(c, 8, -71, 4, '#2b1d14', 1.5);
+  },
+  r4losi(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-8, -26, -9 + s, -4], '#3f8fa0', 9); L(c, [8, -26, 9 - s, -4], '#3f8fa0', 9);
+    E(c, -9 + s, -2, 6, 3, '#2f6f80'); E(c, 9 - s, -2, 6, 3, '#2f6f80');
+    P(c, [-18, -36, 18, -36, 20, -20, -20, -20], '#7a3e10'); for (let x = -16; x <= 16; x += 8) P(c, [x - 3, -30, x, -34, x + 3, -30, x, -26], '#e8d2a8');
+    E(c, 0, -54, 20, 20, '#4fa3b8');
+    L(c, [-19, -62, -28, -40 + s], '#4fa3b8', 8);
+    L(c, [19, -62, 30, -70], '#4fa3b8', 8); L(c, [30, -70, 36, -100], '#8b5a2b', 3); Q(c, 36, -100, 42, -80, 40, -60, '#e8e1d6', 1); Ci(c, 40, -58, 2, '#e8e1d6');
+    E(c, -30, -36 + s, 6, 7, '#8b6b5a'); L(c, [-30, -42 + s, -34, -50 + s], '#3f8f3a', 2.5);
+    Ci(c, 2, -84, 13, '#4fa3b8');
+    furBall(c, 2, -94, 12, 5, '#1d1d24', 12, 4);
+    eyes(c, 4, -84, 4.5, 3.2); E(c, 6, -78, 2.5, 2, '#2f6f80'); grin(c, 6, -75, 5, '#1d3a40', 1.6);
+  },
+});
+
+const MONSTERS4 = [
+  // Europe
+  { id: 'r4tamarro', cont: 'europe', name: 'Tamarro', place: 'Andorra', map: 'Andorra', fact: 'A tiny, shy forest creature that guards the mountain woods of Andorra. It is so quick that almost nobody has ever seen one!', tr: 'r4skis', trName: 'Little skis', box: [42, 50], sp: 95 },
+  { id: 'r4macic', cont: 'europe', name: 'Macić', place: 'Croatia (Dalmatia and Istria)', map: 'Croatia', fact: 'A cheeky little sprite in a red cap who plays tricks in houses at night. Grab his cap and he may give you treasure to get it back!', tr: 'r4cravat', trName: 'Cravat necktie', box: [40, 66], sp: 90 },
+  { id: 'r4nakki', cont: 'europe', name: 'Näkki', place: 'Finland', map: 'Finland', fact: 'A water spirit that lurks in Finnish lakes, wells and under bridges. Children are told to stay away from the edge so the näkki cannot grab them.', tr: 'r4pie', trName: 'Karelian pie', box: [58, 70], sp: 50 },
+  { id: 'r4wildmannli', cont: 'europe', name: 'Wildmannli', place: 'Liechtenstein', map: 'Liechtenstein', fact: 'Hairy little wild men of the mountains who looked after farmers\' cows. Once they paid a midwife with charcoal, which later turned to gold!', tr: 'r4charcoal', trName: 'Golden charcoal', box: [52, 72], sp: 70 },
+  { id: 'r4capcaun', cont: 'europe', name: 'Căpcăun', place: 'Moldova', map: 'Moldova', fact: 'A dog-headed ogre from Moldovan and Romanian fairy tales. Some stories give it extra eyes on the back of its head, so it can see behind itself!', tr: 'r4grapes', trName: 'Bunch of grapes', box: [60, 92], sp: 50 },
+  { id: 'r4ala', cont: 'europe', name: 'Ala', place: 'North Macedonia', map: 'Macedonia', fact: 'A storm demon of Macedonian folklore that drives dark hail clouds over fields and orchards, trying to gobble up the harvest.', tr: 'r4ohrid', trName: 'Ohrid pearl necklace', box: [80, 70], sp: 60, fly: true },
+  { id: 'r4permonik', cont: 'europe', name: 'Permoník', place: 'Slovakia (mining towns)', map: 'Slovakia', fact: 'Little miner dwarfs of Slovak mining legends, with lanterns and pickaxes. They help kind miners and lead rude ones astray in the tunnels!', tr: 'r4fujara', trName: 'Fujara shepherd flute', box: [36, 52], sp: 85 },
+  { id: 'r4mavka', cont: 'europe', name: 'Mavka', place: 'Ukraine', map: 'Ukraine', fact: 'A green-haired forest spirit girl with flowers in her hair. She stars in the famous Ukrainian play "The Forest Song" by Lesya Ukrainka.', tr: 'r4pysanka', trName: 'Pysanka egg', box: [42, 88], sp: 70 },
+  // Asia
+  { id: 'r4kosa', cont: 'asia', name: 'Kosa', place: 'Azerbaijan (Novruz festival)', map: 'Azerbaijan', fact: 'A jolly costumed character of Novruz, the spring festival. In the Kosa-Kosa game he goes door to door with songs and jokes, collecting treats.', tr: 'r4semeni', trName: 'Novruz wheat sprouts', box: [52, 100], sp: 65 },
+  { id: 'r4bunian', cont: 'asia', name: 'Orang Bunian', place: 'Brunei', map: 'Brunei', fact: 'Hidden forest people of Malay legends, said to live in a secret, invisible world deep in the jungles and hills of Borneo.', tr: 'r4jongbatu', trName: 'Jong Batu stone ship', box: [40, 64], sp: 80 },
+  { id: 'r4bubu', cont: 'asia', name: "Bu'bu'", place: 'Jordan (Levant)', map: 'Jordan', fact: "The bogeyman of Levantine homes. Parents say the bu'bu' will come, so children go to bed on time! Nobody agrees on what it looks like.", tr: 'r4dallah', trName: 'Coffee pot (dallah)', box: [56, 56], sp: 60 },
+  { id: 'r4kinnari', cont: 'asia', name: 'Kinnari', place: 'Laos', map: 'Laos', fact: 'Half woman, half swan, the graceful kinnari comes from old Buddhist tales. Lao dancers perform a famous kinnari dance with wings.', tr: 'r4khaen', trName: 'Khaen bamboo pipes', box: [66, 88], sp: 70 },
+  { id: 'r4chinthe', cont: 'asia', name: 'Chinthe', place: 'Myanmar', map: 'Myanmar', fact: 'A curly-maned lion that guards the gates of Burmese pagodas. Huge chinthe statues stand in pairs to keep watch.', tr: 'r4parasol', trName: 'Paper parasol', box: [72, 62], sp: 60 },
+  { id: 'r4nusnsays', cont: 'asia', name: 'Nus Nsays', place: 'Palestine', map: 'Palestine', fact: 'Half-a-Halfling, the tiny hero of Palestinian folk tales. He is the smallest of his brothers but the cleverest, and he outsmarts the ghoul!', tr: 'r4tatreez', trName: 'Tatreez embroidery', box: [30, 46], sp: 95 },
+  { id: 'r4nittaewo', cont: 'asia', name: 'Nittaewo', place: 'Sri Lanka', map: 'Sri Lanka', fact: 'In Vedda legends, the nittaewo were little hairy people with sharp claws who lived in the forests of eastern Sri Lanka long ago.', tr: 'r4sapphire', trName: 'Blue sapphire', box: [40, 56], sp: 85 },
+  { id: 'r4lafaek', cont: 'asia', name: 'Lafaek', place: 'Timor-Leste', map: 'Timor-Leste', fact: 'A boy helped a little crocodile, who carried him over the sea. When the crocodile grew old, its body became the island of Timor!', tr: 'r4tais', trName: 'Tais cloth', box: [92, 54], sp: 50 },
+  { id: 'r4kimquy', cont: 'asia', name: 'Golden Turtle', place: 'Vietnam (Hoàn Kiếm Lake)', map: 'Vietnam', fact: 'Kim Quy, the golden turtle, rose from Hoàn Kiếm Lake in Hanoi to take back a magic sword from King Lê Lợi. The lake\'s name means "returned sword".', tr: 'r4sword', trName: 'Magic sword', box: [104, 40], sp: 40 },
+  // Africa
+  { id: 'r4kishi', cont: 'africa', name: 'Kishi', place: 'Angola (Mbundu stories)', map: 'Angola', fact: 'A sneaky trickster with two faces: a smiling one in front and a hyena face hidden in the hair on the back of its head!', tr: 'r4pensador', trName: 'Pensador carving', box: [50, 84], sp: 60 },
+  { id: 'r4gustave', cont: 'africa', name: 'Gustave', place: 'Burundi (Lake Tanganyika)', map: 'Burundi', fact: 'A real, enormous Nile crocodile of Lake Tanganyika, about six metres long. He is so famous and hard to catch that he became a living legend.', tr: 'r4ingoma', trName: 'Royal drum', box: [86, 34], sp: 50 },
+  { id: 'r4burmatedge', cont: 'africa', name: 'Burma-te-dge', place: 'Chad (Ngambay tale)', map: 'Chad', fact: 'In a folk tale of the Ngambay people of Chad, an enormous monster called Burma-te-dge chased people until the brave twins Mbairo and Dila beat it.', tr: 'r4gumarabic', trName: 'Gum arabic', box: [90, 66], sp: 45 },
+  { id: 'r4goubet', cont: 'africa', name: 'Goubet Monster', place: 'Djibouti', map: 'Djibouti', fact: 'Sailors told of a monster in the deep Goubet bay, the "Devil\'s Cauldron". It may have been giant manta rays leaping from the water!', tr: 'r4salt', trName: 'Lake Assal salt', box: [84, 50], sp: 65, fly: true },
+  { id: 'r4ebigane', cont: 'africa', name: 'Ebigane', place: 'Gabon (Fang mvett epics)', map: 'Gabon', fact: 'In the mvett epics of the Fang, sung to a harp-zither, the ebigane is a shape-shifting monster that can be an animal, a person, or both at once!', tr: 'r4soapstone', trName: 'Mbigou soapstone carving', box: [76, 66], sp: 70 },
+  { id: 'r4dancingdevil', cont: 'africa', name: 'Dancing Devil', place: 'Liberia', map: 'Liberia', fact: 'At Christmas in Liberia, masked "country devils" in big swishing raffia skirts dance through the streets, and people give them coins.', tr: 'r4coins', trName: 'Christmas coins', box: [52, 96], sp: 55 },
+  { id: 'r4zako', cont: 'africa', name: 'Zako the Monkey', place: 'Mauritius', map: 'Mauritius', fact: 'Zako (Mister Jaco) the monkey is a favourite trickster of Mauritian Creole folk tales, always up to cheeky pranks and clever escapes.', tr: 'r4bluepenny', trName: 'Blue Penny stamp', box: [52, 58], sp: 90 },
+  { id: 'r4bakame', cont: 'africa', name: 'Bakame the Hare', place: 'Rwanda', map: 'Rwanda', fact: 'The clever trickster hare of Rwandan tales. Little Bakame outsmarts the lion, the elephant and the greedy hyena again and again!', tr: 'r4agaseke', trName: 'Agaseke basket', box: [64, 66], sp: 90 },
+  { id: 'r4cunnie', cont: 'africa', name: 'Cunnie Rabbit', place: 'Sierra Leone', map: 'Sierra Leone', fact: 'The hero of Sierra Leone folk tales. Not really a rabbit, he is a tiny spotted deer called a chevrotain, and he is very, very clever.', tr: 'r4groundnut', trName: 'Groundnuts', box: [58, 48], sp: 95 },
+  { id: 'r4adze', cont: 'africa', name: 'Adze', place: 'Togo (Ewe stories)', map: 'Togo', fact: 'A spooky spirit of Ewe stories that flies about in the form of a glowing firefly. Its light gives it away at night!', tr: 'r4waxprint', trName: 'Wax print cloth', box: [50, 52], sp: 80, fly: true },
+  // North America
+  { id: 'r4chickcharney', cont: 'namerica', name: 'Chickcharney', place: 'Bahamas (Andros)', map: 'Bahamas', fact: 'A red-eyed, owl-like creature with three toes that lives in the pine forests of Andros. Be polite to it and it brings good luck!', tr: 'r4flamingo', trName: 'Flamingo feathers', box: [42, 82], sp: 70 },
+  { id: 'r4ciguapa', cont: 'namerica', name: 'Ciguapa', place: 'Dominican Republic', map: 'Dominican Rep.', fact: 'A shy mountain creature with very long hair and feet that point backwards, so her footprints lead the wrong way!', tr: 'r4larimar', trName: 'Larimar stone', box: [44, 74], sp: 80 },
+  { id: 'r4sisimite', cont: 'namerica', name: 'Sisimite', place: 'Honduras', map: 'Honduras', fact: 'A huge, hairy creature of the Honduran mountains. Its feet point backwards, so following its footprints leads you the wrong way!', tr: 'r4jade', trName: 'Maya jade mask', box: [70, 98], sp: 45 },
+  { id: 'r4tibolom', cont: 'namerica', name: 'Ti Bolom', place: 'Saint Lucia', map: 'Saint Lucia', fact: 'Its name means "little man" in Kwéyòl. Saint Lucian stories tell of this tiny, mischievous spirit that runs errands at night.', tr: 'r4madras', trName: 'Madras cloth', box: [36, 56], sp: 90 },
+  // South America
+  { id: 'r4tunda', cont: 'samerica', name: 'La Tunda', place: 'Ecuador (Esmeraldas)', map: 'Ecuador', fact: 'A shape-shifting forest creature with one foot like a wooden stirring stick. She lures children into the mangroves and feeds them shrimp!', tr: 'r4panama', trName: 'Toquilla straw hat', box: [56, 84], sp: 65 },
+  { id: 'r4boitata', cont: 'samerica', name: 'Boitatá', place: 'Brazil', map: 'Brazil', fact: 'A giant snake made of fire with huge shining eyes. It protects the fields and forests from people who set fires.', tr: 'r4guarana', trName: 'Guaraná fruit', box: [112, 54], sp: 70 },
+  { id: 'r4madremonte', cont: 'samerica', name: 'La Madremonte', place: 'Colombia', map: 'Colombia', fact: 'The Mother of the Mountain, covered in moss and leaves with a big leafy hat. She protects the forest and scolds anyone who harms it.', tr: 'r4mochila', trName: 'Woven mochila bag', box: [56, 94], sp: 50 },
+  { id: 'r4cuero', cont: 'samerica', name: 'El Cuero', place: 'Argentina (Mapuche stories)', map: 'Argentina', fact: 'A lake creature that looks like a stretched-out cowhide, with eyes all around its edges and claws on its corners!', tr: 'r4empanada', trName: 'Empanada', box: [88, 40], sp: 55 },
+  // Oceania
+  { id: 'r4noniep', cont: 'oceania', name: 'Noniep', place: 'Marshall Islands', map: 'Marshall Is.', fact: 'Friendly little people who live beneath the atolls of the Marshall Islands. Some stories say they invented the shell fishhook.', tr: 'r4stickchart', trName: 'Stick navigation chart', box: [38, 48], sp: 90 },
+  { id: 'r4losi', cont: 'oceania', name: 'Losi', place: 'Samoa', map: 'Samoa', fact: 'Losi the giant fisherman of Samoan legend went up to the sky and brought back taro, the food of the gods, for people on Earth.', tr: 'r4taro', trName: 'Taro root', box: [90, 112], sp: 45 },
+  { id: 'r4yarama', cont: 'oceania', name: 'Yara-ma-yha-who', place: 'Australia (story books)', map: 'Australia', fact: 'A little red creature with a giant head and suckers on its fingers that lives in fig trees. It gulps people up and spits them out a bit shorter!', tr: 'r4fig', trName: 'Wild fig', box: [42, 66], sp: 80 },
+].map(m => Object.assign(m, { round: 4 }));
+MONSTERS.push(...MONSTERS4);
+// ---------------------------------------------------------------- round 5
+// ---------------------------------------------------------------- round 5 treasures
+Object.assign(TREASURE, {
+  r5straw(c) { for (let i = 0; i < 8; i++) { const a = i / 8 * TAU; L(c, [0, 0, Math.cos(a) * 15, Math.sin(a) * 15], i % 2 ? '#d9a441' : '#f2d27a', 3); } Ci(c, 0, 0, 5, '#e8b84a'); Ci(c, 0, 0, 2, '#c0392b'); },
+  r5paprika(c) { c.fillStyle = '#d62828'; c.beginPath(); c.moveTo(-6, -10); c.quadraticCurveTo(12, -12, 8, 4); c.quadraticCurveTo(2, 16, -4, 16); c.quadraticCurveTo(-12, 4, -6, -10); c.fill(); E(c, -3, -2, 2, 6, '#ff7b7b', 0.3); P(c, [-6, -10, 0, -14, 4, -10], '#2a9d48'); L(c, [-1, -13, 2, -19], '#2a7a3a', 2.5); },
+  r5boat(c) { E(c, 0, 12, 18, 2.5, '#5aa9e6'); L(c, [0, 3, 0, -16], '#5a3a1a', 2); P(c, [1, -15, 12, -3, 1, -3], '#fff'); P(c, [-16, 2, 16, 2, 10, 11, -10, 11], '#8b5a2b'); R(c, -16, 0, 32, 3, 1, '#6b3e1f'); for (const x of [-7, 0, 7]) Ci(c, x, 6, 1.5, '#e0a91b'); },
+  r5azulejo(c) { R(c, -14, -14, 28, 28, 2, '#f4f7fb'); c.strokeStyle = '#1f4fa0'; c.lineWidth = 2; c.strokeRect(-12, -12, 24, 24); for (let i = 0; i < 4; i++) { const a = i * TAU / 4; E(c, Math.cos(a) * 6, Math.sin(a) * 6, 4, 2, '#3f78c8', a); P(c, [-12 + (i % 2) * 24, -12 + (i >> 1) * 24, -12 + (i % 2) * 24 + (i % 2 ? -6 : 6), -12 + (i >> 1) * 24, -12 + (i % 2) * 24, -12 + (i >> 1) * 24 + (i >> 1 ? -6 : 6)], '#1f4fa0'); } Ci(c, 0, 0, 3, '#f4c430'); },
+  r5triglavrose(c) { L(c, [0, 15, 0, 0], '#5f8f4a', 2); E(c, -5, 9, 5, 2, '#5f8f4a', -0.5); E(c, 5, 6, 5, 2, '#5f8f4a', 0.5); for (let i = 0; i < 5; i++) { const a = i / 5 * TAU - 1.57; Ci(c, Math.cos(a) * 6, -4 + Math.sin(a) * 6, 5, '#f28bb0'); } Ci(c, 0, -4, 3.5, '#ffd23f'); },
+  r5guardhat(c) { furBall(c, 0, -14, 6, 5, '#d62828', 10, 3); P(c, [-17, 4, -10, 2, -8, -6, 0, -11, 8, -6, 10, 2, 17, 4, 12, 9, 0, 6, -12, 9], '#c9ced4'); L(c, [0, -11, 0, 4], '#9aa0a6', 2); E(c, -4, -3, 2.5, 4, '#eef1f4'); },
+  r5krama(c) { for (let i = 0; i < 4; i++) for (let k = 0; k < 4; k++) { c.fillStyle = (i + k) % 2 ? '#c0392b' : '#fff'; c.fillRect(-12 + i * 6, -14 + k * 6, 6, 6); } c.strokeStyle = '#8e1f1f'; c.lineWidth = 1.5; c.strokeRect(-12, -14, 24, 24); for (let i = 0; i < 5; i++) L(c, [-11 + i * 5.5, 11, -11 + i * 5.5, 16], '#c0392b', 1.5); },
+  r5baursak(c) { for (const [x, y] of [[-9, 7], [1, 8], [11, 6], [-4, -3], [7, -3], [2, -12]]) { R(c, x - 5, y - 5, 10, 10, 4, '#d99a3e'); Ci(c, x - 2, y - 2, 2, '#f2c46e'); } },
+  r5cedar(c) { R(c, -2, 6, 4, 10, 1, '#6b3e1f'); for (let i = 0; i < 4; i++) { const y = 8 - i * 6.5, wd = 16 - i * 3.5; P(c, [-wd, y, -wd * 0.4, y - 5, 0, y - 7, wd * 0.4, y - 5, wd, y], '#2e7d32'); } },
+  r5riceball(c) { c.fillStyle = '#fff'; c.beginPath(); c.moveTo(0, -14); c.quadraticCurveTo(16, 8, 10, 12); c.lineTo(-10, 12); c.quadraticCurveTo(-16, 8, 0, -14); c.fill(); R(c, -7, 2, 14, 11, 1, '#1d3b2a'); for (const [x, y] of [[-3, -6], [3, -4], [0, -9], [-6, -1], [6, -1]]) E(c, x, y, 1.3, 0.8, '#e6e6e6'); },
+  r5soap(c) { P(c, [-12, -4, 0, -10, 12, -4, 0, 2], '#c9b26a'); P(c, [-12, -4, 0, 2, 0, 14, -12, 8], '#8a9a4a'); P(c, [12, -4, 0, 2, 0, 14, 12, 8], '#6f7f3a'); E(c, 0, -4, 4, 2, '#a8904a'); },
+  r5dragontree(c) { R(c, -2.5, -4, 5, 18, 1, '#8a7a6a'); for (const x of [-9, 0, 9]) L(c, [0, -2, x, -9], '#8a7a6a', 2.5); E(c, 0, -11, 17, 6, '#2e6b3a'); E(c, 0, -13, 14, 4, '#3f8a4a'); Ci(c, 1, 8, 2, '#c0392b'); Ci(c, 1, 12, 1.4, '#c0392b'); },
+  r5kapok(c) { E(c, 0, 4, 13, 6, '#7a6a3a', -0.25); E(c, 0, 2, 10, 3, '#5a4a2a', -0.25); furBall(c, 0, -5, 10, 7, '#fff', 10, 3); Ci(c, -3, -7, 2.5, '#f2f2f2'); Ci(c, 4, -4, 1.4, '#3a2a1a'); },
+  r5cachupa(c) { L(c, [-16, -2, -12, 2], '#333', 2.5); L(c, [16, -2, 12, 2], '#333', 2.5); E(c, 0, 4, 14, 10, '#4a4a4a'); E(c, 0, -4, 13, 4, '#7a4a24'); for (let i = 0; i < 9; i++) Ci(c, -9 + i * 2.3, -4 + (i % 3 - 1) * 1.5, 1.6, i % 2 ? '#ffd23f' : '#5a2a1a'); },
+  r5ylang(c) { for (let i = 0; i < 6; i++) { c.save(); c.rotate(i / 6 * TAU + 0.3); E(c, 2, 9, 2.6, 9, '#e8e05a', 0.25); c.restore(); } Ci(c, 0, 0, 3.5, '#b8a030'); Ci(c, 0, 0, 1.5, '#7a5a1a'); },
+  r5balafon(c) { R(c, -16, 4, 32, 3, 1, '#6b3e1f'); for (let i = 0; i < 6; i++) Ci(c, -12 + i * 5, 11, 2.6 - i * 0.15, '#d9a441'); for (let i = 0; i < 6; i++) R(c, -14 + i * 5, -6 + i, 4, 12 - i * 1.4, 1, '#a0703f'); L(c, [8, -16, 14, -6], '#6b3e1f', 1.5); Ci(c, 8, -16, 2.5, '#c0392b'); },
+  r5raindrop(c) { c.fillStyle = '#4aa8f0'; c.beginPath(); c.moveTo(0, -16); c.bezierCurveTo(4, -6, 12, 0, 12, 6); c.arc(0, 6, 12, 0, Math.PI); c.bezierCurveTo(-12, 0, -4, -6, 0, -16); c.fill(); E(c, -5, 3, 2.5, 5, '#c9ecff', 0.3); },
+  r5sorghum(c) { L(c, [0, 16, 0, -4], '#8a9a3a', 2.5); E(c, -6, 8, 7, 2, '#8a9a3a', -0.5); E(c, 6, 4, 7, 2, '#8a9a3a', 0.5); for (let i = 0; i < 12; i++) Ci(c, ((i % 3) - 1) * 4, -6 - Math.floor(i / 3) * 3.5, 2.8, i % 2 ? '#b5522a' : '#c96a3a'); },
+  r5jasmine(c) { L(c, [0, 16, 0, 0], '#2a7a3a', 2); for (const [x, y] of [[0, -6], [-7, -2], [7, -2], [-4, -12], [4, -12]]) { for (let i = 0; i < 5; i++) { const a = i / 5 * TAU; Ci(c, x + Math.cos(a) * 2.6, y + Math.sin(a) * 2.6, 2.2, '#fff'); } Ci(c, x, y, 1.3, '#f4e27a'); } },
+  r5tukdrum(c) { E(c, 0, 8, 13, 5, '#8e1f1f'); R(c, -13, -8, 26, 16, 1, '#d62828'); for (let i = 0; i < 4; i++) L(c, [-13 + i * 8.7, -8, -13 + (i + 1) * 8.7 - 4, 8], '#f4c430', 1.5); E(c, 0, -8, 13, 5, '#f2e6c8'); L(c, [6, -20, 2, -10], '#6b3e1f', 2); Ci(c, 6, -20, 2.5, '#fff'); },
+  r5pupusa(c) { E(c, 0, 4, 16, 9, '#c9922b'); E(c, 0, 2, 15, 8, '#f2d48a'); for (const [x, y] of [[-7, 1], [4, 4], [8, -1], [-2, 6], [0, -2]]) Ci(c, x, y, 1.6, '#a0602a'); for (let i = 0; i < 5; i++) L(c, [-6 + i * 3, -6, -4 + i * 3, -10], i % 2 ? '#e76f51' : '#7cc45a', 1.5); },
+  r5hammock(c) { L(c, [-16, -14, -16, 14], '#6b3e1f', 3); L(c, [16, -14, 16, 14], '#6b3e1f', 3); const cols = ['#d62828', '#f4c430', '#2a9d48', '#2f6db3']; for (let i = 0; i < 4; i++) Q(c, -15, -10 + i * 2, 0, 8 + i * 2.5, 15, -10 + i * 2, cols[i], 2.5); },
+  r5brigadeiro(c) { P(c, [-12, 2, 12, 2, 9, 13, -9, 13], '#e63946'); for (let x = -9; x <= 9; x += 3) L(c, [x, 3, x * 0.8, 12], '#b5222f', 1); Ci(c, 0, -4, 10, '#4a2a17'); for (let i = 0; i < 12; i++) { const a = i * 2.2, r = 3 + (i % 3) * 3; R(c, Math.cos(a) * r - 1, -4 + Math.sin(a) * r - 0.6, 2.5, 1.2, 0.5, '#2a160b'); } Ci(c, -3, -8, 2, '#7a4a2a'); },
+  r5goldwand(c) { L(c, [-12, 14, 8, -8], '#e0a91b', 3.5); L(c, [-12, 14, 8, -8], '#ffe680', 1); Ci(c, 10, -10, 5, '#f4c430'); for (let i = 0; i < 4; i++) { const a = i * TAU / 4 + 0.4; L(c, [10 + Math.cos(a) * 7, -10 + Math.sin(a) * 7, 10 + Math.cos(a) * 11, -10 + Math.sin(a) * 11], '#ffd23f', 2); } },
+  r5raistone(c) { R(c, -18, -2, 36, 4, 1, '#8b5a2b'); c.strokeStyle = '#b8b0a0'; c.lineWidth = 10; c.beginPath(); c.arc(0, 0, 10, 0.25, Math.PI - 0.25); c.stroke(); c.beginPath(); c.arc(0, 0, 10, Math.PI + 0.25, TAU - 0.25); c.stroke(); Ci(c, -5, -9, 2, '#d8d2c4'); },
+  r5paua(c) { E(c, 0, 0, 15, 11, '#5a6b6a', -0.2); E(c, 0, 0, 12, 8.5, '#1e88a8', -0.2); E(c, 1, -1, 9, 6, '#3fb58a', -0.2); E(c, 2, -1, 5.5, 3.5, '#8e5fd6', -0.2); E(c, 2, -2, 2.5, 1.5, '#e0f7ff', -0.2); for (let i = 0; i < 5; i++) Ci(c, -11 + i * 4.5, 7 - i * 1.2, 1.3, '#2b2b2b'); },
+  r5marionette(c) { L(c, [-13, -17, 13, -17], '#6b3e1f', 3); for (const [x1, x2, y] of [[-11, -9, -1], [11, 9, -1], [-4, -3, 14], [4, 3, 14], [0, 0, -10]]) L(c, [x1, -17, x2, y], '#bbb', 0.7); L(c, [-3, 4, -9, -1], '#f5d0b0', 2); L(c, [3, 4, 9, -1], '#f5d0b0', 2); L(c, [-2, 8, -3, 14], '#2b2b2b', 2.5); L(c, [2, 8, 3, 14], '#2b2b2b', 2.5); R(c, -4, -2, 8, 11, 2, '#d62828'); Ci(c, 0, -6, 4.5, '#f5d0b0'); P(c, [-5, -9, 0, -16, 5, -9], '#2f6db3'); Ci(c, -1.5, -6, 0.8, '#111'); Ci(c, 1.5, -6, 0.8, '#111'); Ci(c, 0, -4, 1, '#e86b6b'); },
+  r5melon(c) { L(c, [10, -8, 14, -14], '#6b3e1f', 2); E(c, 0, 2, 15, 10, '#e8c84a', -0.2); for (let i = -2; i <= 2; i++) Q(c, i * 5 - 3, -7, i * 6, 2, i * 5 + 3, 11, '#c9a43a', 1); E(c, -5, -2, 4, 2.5, '#f7e49a', -0.2); E(c, 15, -14, 5, 2.5, '#2a7a3a', 0.4); },
+  r5arrowroot(c) { for (const [a, l] of [[-0.5, 14], [0, 16], [0.5, 14]]) { c.save(); c.translate(0, -2); c.rotate(a); E(c, 0, -l / 2 - 2, 3.5, l / 2, '#3f9b4a'); c.restore(); } E(c, -5, 7, 4.5, 8, '#efe2c8', 0.4); E(c, 5, 7, 4, 7.5, '#e6d6b6', -0.4); for (const y of [4, 8, 12]) { L(c, [-8, y - 2, -3, y], '#c9b48a', 1); L(c, [3, y, 8, y - 2], '#c9b48a', 1); } },
+  r5kavabowl(c) { for (const x of [-10, -4, 4, 10]) R(c, x - 1.5, 2, 3, 10, 1, '#6b3e1f'); c.fillStyle = '#8b5a2b'; c.beginPath(); c.moveTo(-17, -4); c.quadraticCurveTo(0, 16, 17, -4); c.closePath(); c.fill(); E(c, 0, -4, 17, 4, '#a0703f'); E(c, 0, -4, 14, 2.6, '#c9b48a'); L(c, [17, -4, 20, -8], '#6b3e1f', 1.5); },
+  r5dilmunseal(c) { Ci(c, 0, 0, 14, '#a8987a'); Ci(c, 0, 0, 12, '#cfc3a8'); L(c, [-8, 4, -2, 4, -2, -2, -8, -2], '#7a6a4a', 1.5); L(c, [-8, -2, -10, -6], '#7a6a4a', 1.5); L(c, [-7, 4, -7, 8], '#7a6a4a', 1.2); L(c, [-3, 4, -3, 8], '#7a6a4a', 1.2); Ci(c, 6, -4, 2.5, '#7a6a4a'); L(c, [6, -1, 6, 8], '#7a6a4a', 1.5); L(c, [2, 2, 10, 2], '#7a6a4a', 1.5); for (let i = 0; i < 8; i++) Ci(c, Math.cos(i * TAU / 8) * 10, Math.sin(i * TAU / 8) * 10, 0.9, '#7a6a4a'); },
+  r5sakotis(c) { E(c, 0, 14, 12, 3, '#c9ced4'); for (let i = 0; i < 6; i++) { const y = 10 - i * 5, wd = 9 - i * 1.2; for (const sg of [-1, 1]) P(c, [sg * wd * 0.6, y - 1, sg * (wd + 6), y + 2, sg * wd * 0.6, y + 2], '#c9822b'); } P(c, [-9, 13, -3, -18, 3, -18, 9, 13], '#e0a94a'); for (let y = 8; y > -16; y -= 5) L(c, [-6 + (8 - y) * 0.15, y, 6 - (8 - y) * 0.15, y], '#c9822b', 1); },
+  r5quipu(c) { L(c, [-15, -12, 15, -12], '#8b5a2b', 3); const cols = ['#d62828', '#f4c430', '#2a9d48', '#2f6db3', '#fff', '#8e44ad']; for (let i = 0; i < 6; i++) { const x = -12 + i * 4.8; L(c, [x, -12, x + (i % 2 ? 1 : -1), 12 - (i % 3) * 3], cols[i], 2); for (let k = 0; k < 2; k++) Ci(c, x + (i % 2 ? 0.4 : -0.4) * (k + 1), -4 + k * 6 + (i % 2) * 2, 2, cols[i]); } },
+  r5waterjar(c) { E(c, 0, 4, 12, 11, '#c9773a'); P(c, [-5, -6, 5, -6, 4, -12, -4, -12], '#c9773a'); E(c, 0, -12, 6, 2, '#a85a2a'); E(c, 0, -12, 4, 1.2, '#4a2a1a'); for (let i = 0; i < 2; i++) L(c, [-10, 1 + i * 5, 10, 1 + i * 5], '#f2e6c8', 1.2); for (const x of [-6, 0, 6]) P(c, [x - 2, 8, x, 12, x + 2, 8], '#f2e6c8'); E(c, -5, 0, 2.5, 5, '#e0975a'); Ci(c, 14, -10, 1.5, '#7cc7f2'); Ci(c, 16, -5, 1.2, '#7cc7f2'); },
+  r5silphium(c) { Ci(c, 0, 0, 14, '#c9922b'); Ci(c, 0, 0, 12, '#f4c430'); L(c, [0, 10, 0, -8], '#a0761a', 2); for (const y of [5, 0, -4]) { E(c, -4, y, 4, 1.6, '#a0761a', 0.4); E(c, 4, y, 4, 1.6, '#a0761a', -0.4); } Ci(c, 0, -9, 3, '#a0761a'); Ci(c, -5, -7, 2, '#fff3b0'); },
+  r5ebony(c) { E(c, 0, 14, 9, 3, '#3a2a1a'); c.strokeStyle = '#2b1d14'; c.lineWidth = 4; for (let i = 0; i < 3; i++) { c.beginPath(); c.ellipse(i % 2 ? 3 : -3, 8 - i * 9, 6, 5, 0, 0, TAU); c.stroke(); } Ci(c, 1, -16, 5, '#2b1d14'); Ci(c, 2, -17, 1, '#6b5040'); L(c, [-6, 12, -4, -12], '#2b1d14', 3); L(c, [6, 12, 4, -12], '#2b1d14', 3); L(c, [-2, -14, -1, -18], '#6b5040', 1); },
+  r5raffia(c) { for (let i = 0; i < 9; i++) { const a = -2.3 + i * 0.2; L(c, [0, -2, Math.cos(a) * 17, -2 + Math.sin(a) * 17], i % 2 ? '#e8d29a' : '#c9b06a', 1.6); } R(c, -2.5, -4, 5, 18, 2, '#6b3e1f'); R(c, -3, -5, 6, 4, 1, '#d62828'); },
+  r5kotomisi(c) { for (let i = 0; i < 4; i++) { c.save(); c.rotate(-0.8 + i * 0.5); P(c, [-3, -2, 0, -16, 3, -2], ['#d62828', '#f4c430', '#2a9d48', '#e76f51'][i]); c.restore(); } c.fillStyle = '#f4c430'; c.beginPath(); c.arc(0, 4, 12, Math.PI, 0); c.fill(); for (let i = 0; i < 3; i++) L(c, [-11 + i, 0 + i * 3, 11 - i, 0 + i * 3], i % 2 ? '#2a9d48' : '#d62828', 1.5); R(c, -13, 4, 26, 4, 2, '#d62828'); },
+});
+
+// ---------------------------------------------------------------- round 5 monsters
+Object.assign(DRAW, {
+  r5lesavik(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-5, -24, -6 + s, -2], '#6b4a2a', 6); L(c, [5, -24, 6 - s, -2], '#6b4a2a', 6);
+    E(c, -6 + s, -1, 5, 2.5, '#4a3018'); E(c, 6 - s, -1, 5, 2.5, '#4a3018');
+    E(c, 0, -42, 15, 21, '#7a5a3a'); for (let y = -56; y < -26; y += 7) L(c, [-8, y, -6, y + 4], '#5a3e22', 1.5);
+    L(c, [-13, -52, -22, -36 + s, -27, -32], '#7a5a3a', 5); L(c, [13, -52, 22, -38 - s, 27, -34], '#7a5a3a', 5);
+    for (const [x, y] of [[-27, -32], [27, -34]]) for (let i = -1; i <= 1; i++) L(c, [x, y, x + i * 3 + (x > 0 ? 3 : -3), y - 4], '#5a3e22', 1.5);
+    E(c, 2, -70, 11, 11, '#8a6a45');
+    furBall(c, 4, -55, 9, 9, '#4f8f3a', 12, 4);
+    L(c, [-4, -78, -10, -92, -16, -94], '#5a3e22', 2.5); L(c, [-10, -92, -8, -100], '#5a3e22', 2); L(c, [8, -78, 12, -92, 18, -96], '#5a3e22', 2.5); L(c, [12, -92, 10, -100], '#5a3e22', 2);
+    furBall(c, 0, -79, 12, 5, '#3f7a2e', 12, 4);
+    for (let i = 0; i < 4; i++) E(c, -10 + i * 7, -82 + Math.sin(t * 2 + i) * 1.5, 3.5, 2, ['#7cc45a', '#e0a91b', '#5fa03a', '#c0602a'][i], i);
+    eyes(c, 4, -70, 4, 2.6, '#2a9d48'); E(c, 11, -65, 2.5, 3, '#6b4a2a');
+  },
+  r5turul(c, t) {
+    const f = Math.sin(t * 6) * 0.4;
+    for (const sg of [-1, 1]) { c.save(); c.translate(0, -38); c.scale(sg, 1); c.rotate(-0.35 + f); P(c, [2, 0, 20, -16, 40, -18, 44, -10, 36, -6, 40, 0, 30, 2, 34, 8, 20, 6, 6, 8], sg > 0 ? '#8b5a2b' : '#6b4423'); L(c, [4, 0, 40, -16], '#4a2e14', 2); c.restore(); }
+    P(c, [-4, -26, -14, -10, -6, -14, 0, -8, 4, -14, 2, -24], '#6b4423');
+    L(c, [-3, -24, -4, -16], '#e0a91b', 2.5); L(c, [3, -24, 4, -16], '#e0a91b', 2.5);
+    E(c, 0, -36, 10, 14, '#a0703f'); E(c, 3, -33, 6, 9, '#e8d29a');
+    for (let i = 0; i < 4; i++) P(c, [1 + (i % 2) * 3, -38 + i * 4, 3 + (i % 2) * 3, -36 + i * 4, 1 + (i % 2) * 3, -35 + i * 4], '#8b5a2b');
+    E(c, 6, -53, 8, 7, '#a0703f'); P(c, [12, -57, 21, -53, 14, -49], '#f4c430'); P(c, [17, -52, 20, -50, 15, -49], '#c9922b');
+    eye(c, 8, -55, 2.6, '#5a1a1a');
+    P(c, [0, -59, 0, -65, 3, -62, 6, -67, 9, -62, 12, -65, 12, -59], '#f4c430');
+  },
+  r5aitvaras(c, t, w) {
+    const s = Math.sin(w) * 3, fl = Math.sin(t * 10);
+    for (let i = 0; i < 4; i++) Q(c, -8, -26, -22 - i * 3, -40 + i * 7 + fl * 2, -28 - i * 2, -58 + i * 12, ['#e63946', '#ff9f1c', '#ffd23f', '#ff6b1c'][i], 6 - i);
+    for (let i = 0; i < 4; i++) { const p = (t + i / 4) % 1; Ci(c, -30 - p * 10, -50 + i * 8 - p * 12, 2 * (1 - p), '#ffd23f'); }
+    L(c, [-3, -14, -4 + s, -2], '#e0a91b', 2.5); L(c, [3, -14, 4 - s, -2], '#e0a91b', 2.5);
+    for (const x of [-4 + s, 4 - s]) L(c, [x - 3, -1, x + 4, -1], '#e0a91b', 2);
+    E(c, 0, -24, 14, 12, '#c0392b'); E(c, 3, -21, 9, 8, '#e76f51'); E(c, -3, -25, 9, 5, '#8e1f1f', 0.3);
+    E(c, 10, -38, 7, 10, '#c0392b');
+    P(c, [6, -46, 8, -53, 10, -48, 12, -54, 14, -48, 17, -52, 17, -44], '#ff2a2a');
+    P(c, [16, -41, 23, -39, 16, -37], '#f4c430'); E(c, 16, -33, 2, 3.2, '#ff2a2a');
+    eye(c, 12, -42, 2.4, '#111');
+  },
+  r5devotadove(c, t) {
+    const f = Math.sin(t * 7) * 0.45;
+    c.save(); c.globalAlpha = 0.25 + 0.15 * Math.sin(t * 3); Ci(c, 0, -30, 24, '#fff6c9'); c.restore();
+    for (const sg of [-1, 1]) { c.save(); c.translate(-2, -32); c.scale(sg, 1); c.rotate(-0.3 + f); E(c, 18, -2, 20, 7, sg > 0 ? '#fff' : '#e3ecf5', 0.15); for (let i = 0; i < 3; i++) E(c, 30 + i * 4, 1 + i, 6, 3, '#c9dcf0', 0.3); c.restore(); }
+    P(c, [-12, -30, -26, -36, -28, -26, -24, -22, -12, -24], '#eef3f8');
+    E(c, 0, -28, 13, 9, '#fff'); E(c, 10, -38, 7, 7, '#fff');
+    P(c, [16, -39, 22, -37, 16, -35], '#f7a1c4'); eye(c, 12, -40, 2.2, '#1d3557');
+    L(c, [12, -32, 22, -26], '#5f8f4a', 1.5); E(c, 18, -27, 3, 1.5, '#7cb342', 0.5); E(c, 22, -25, 3, 1.5, '#7cb342', -0.3);
+  },
+  r5adamastor(c, t, w) {
+    const s = Math.sin(w) * 2;
+    R(c, -12 + s, -26, 10, 26, 3, '#5d6b78'); R(c, 2 - s, -26, 10, 26, 3, '#5d6b78');
+    P(c, [-20, -66, 20, -66, 24, -24, -22, -24], '#6b7a8a'); P(c, [-14, -60, -2, -64, -6, -48], '#7f8e9e'); P(c, [6, -40, 18, -44, 14, -30], '#56636f');
+    L(c, [-20, -62, -30, -42 + s, -28, -32], '#6b7a8a', 9); L(c, [20, -62, 30, -48 - s], '#6b7a8a', 9);
+    P(c, [30, -50, 38, -62, 34, -56, 42, -72, 33, -60, 36, -66, 28, -52], '#ffd23f');
+    furBall(c, 4, -70, 16, 12, '#dfe6ee', 14, 4);
+    E(c, 2, -84, 13, 12, '#7d8c9c');
+    furBall(c, 0, -94, 15, 6, '#c9d3dd', 12, 4);
+    L(c, [-4, -90, 4, -88], '#2b3540', 2.5); L(c, [8, -88, 15, -90], '#2b3540', 2.5);
+    Ci(c, 1, -85, 2.6, '#ffd23f'); Ci(c, 12, -85, 2.6, '#ffd23f');
+    E(c, 8, -76, 6, 4 + Math.sin(t * 4), '#2b3540');
+    for (let i = 0; i < 4; i++) { const p = (t * 1.5 + i / 4) % 1; L(c, [-16 + i * 9, -100 + p * 30, -17 + i * 9, -96 + p * 30], `rgba(120,180,240,${1 - p})`, 1.5); }
+  },
+  r5zlatorog(c, t, w) {
+    const s = Math.sin(w) * 3;
+    for (const [x, d] of [[-14, 1], [-7, -1], [10, 1], [16, -1]]) { L(c, [x, -24, x + s * d, -4], '#e6e1d4', 4); E(c, x + s * d, -2, 2.5, 2, '#2b2b2b'); }
+    Q(c, -20, -32, -26, -34, -24, -28, '#f4f1ea', 4);
+    E(c, -2, -32, 21, 11, '#f4f1ea'); E(c, 0, -27, 15, 5, '#fffdf6');
+    Q(c, 12, -36, 18, -44, 20, -50, '#f4f1ea', 9);
+    E(c, 24, -52, 9, 7, '#f4f1ea', 0.3); E(c, 30, -48, 4, 3.5, '#e6e1d4');
+    Q(c, 18, -58, 17, -72, 24, -70, '#f4c430', 3.5); Q(c, 24, -58, 25, -73, 31, -69, '#f4c430', 3.5);
+    E(c, 14, -58, 5, 2, '#e6e1d4', -0.5);
+    L(c, [20, -54, 28, -50], '#3a3a3a', 1.5); eye(c, 25, -54, 2.4, '#3a2a1a'); Ci(c, 33, -48, 1.2, '#3a2a1a');
+    c.save(); c.globalAlpha = 0.5 + 0.4 * Math.sin(t * 5); Ci(c, 24, -72, 2, '#fff6c9'); c.restore();
+  },
+  r5basilisk(c, t, w) {
+    const s = Math.sin(w) * 3;
+    E(c, -4, -6, 21, 7, '#4f8a2a'); E(c, -2, -15, 16, 6, '#5fa03a'); E(c, 0, -22, 11, 5, '#4f8a2a');
+    for (let i = -2; i <= 2; i++) Ci(c, -4 + i * 7, -6, 1.6, '#c9e86a');
+    Q(c, 4, -22, 12, -32 + s, 12, -42, '#5fa03a', 9);
+    E(c, 16, -46, 10, 7, '#5fa03a', 0.15);
+    P(c, [8, -50, 8, -58, 12, -54, 15, -60, 18, -54, 22, -58, 22, -50], '#f4c430'); Ci(c, 15, -53, 1.6, '#d62828');
+    Ci(c, 17, -47, 3, '#ffd23f'); E(c, 17.5, -47, 0.9, 2.5, '#111');
+    const tg = Math.sin(t * 8) > 0 ? 6 : 2; L(c, [25, -43, 25 + tg, -42, 28 + tg, -40], '#d62828', 1.3);
+  },
+  r5reachsey(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    Q(c, -16, -18, -30, -24, -26, -44, '#c9a46b', 4); furBall(c, -26, -46, 4, 4, '#8b6a3a', 8, 2);
+    E(c, -12 + s, -6, 7, 6, '#b8935a'); R(c, 6 - s, -22, 6, 22, 2, '#c9a46b'); R(c, 14 + s, -22, 6, 22, 2, '#b8935a');
+    E(c, -4, -22, 18, 14, '#c9a46b');
+    for (let i = 0; i < 10; i++) { const a = i / 10 * TAU; Ci(c, 12 + Math.cos(a) * 14, -44 + Math.sin(a) * 14, 5.5, i % 2 ? '#8b6a3a' : '#a07a45'); }
+    Ci(c, 12, -44, 12, '#d9b47a');
+    E(c, 18, -38, 7, 5, '#c9a46b'); R(c, 13, -38, 12, 6, 2, '#7a2a1a'); teeth(c, 19, -38, 5, 4);
+    eyes(c, 13, -48, 4.5, 3, '#3a2a1a'); L(c, [6, -53, 11, -52], '#6b4a2a', 2); L(c, [15, -52, 21, -53], '#6b4a2a', 2);
+    E(c, 23, -42, 2.5, 2, '#6b4a2a');
+    E(c, -10, -28, 4, 3, '#7aa04a'); E(c, -2, -14, 3, 2, '#7aa04a');
+  },
+  r5tulpar(c, t) {
+    const f = Math.sin(t * 6) * 0.4, g = Math.sin(t * 6) * 3;
+    c.save(); c.translate(-4, -36); c.scale(-1, 1); c.rotate(-0.3 + f); P(c, [0, 0, 16, -20, 34, -24, 30, -14, 38, -10, 26, -4, 30, 2], '#d9b23a'); c.restore();
+    Q(c, -16, -30, -30, -32, -32, -18, '#f2e6c8', 5);
+    for (const [x, d] of [[-12, 1], [-6, -1], [10, 1], [16, -1]]) L(c, [x, -24, x + 4 * d + g * 0.3, -14, x + 2, -8], '#e8dcc0', 4);
+    E(c, 0, -30, 18, 9, '#f2e6c8');
+    Q(c, 12, -32, 18, -42, 20, -48, '#f2e6c8', 9);
+    E(c, 25, -50, 9, 5.5, '#f2e6c8', 0.4); L(c, [16, -54, 13, -64], '#f4c430', 2.5);
+    for (let i = 0; i < 4; i++) Q(c, 16 - i * 3, -54 + i * 4, 8 - i * 3, -52 + i * 4, 6 - i * 3, -44 + i * 4, '#2f6db3', 3);
+    eye(c, 24, -53, 2.2, '#1d3557'); Ci(c, 31, -47, 1, '#5a3a1a');
+    c.save(); c.translate(-4, -36); c.rotate(-0.3 + f); P(c, [0, 0, 16, -20, 34, -24, 30, -14, 38, -10, 26, -4, 30, 2], '#f4c430'); L(c, [2, -1, 32, -22], '#c9922b', 1.5); c.restore();
+  },
+  r5beirutdragon(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -20, -20, -38, -20, -44, -6, '#c0392b', 7); P(c, [-44, -6, -50, -2, -42, 0], '#8e1f1f');
+    for (let i = 0; i < 4; i++) P(c, [-36 + i * 6, -22 + i * 0.5, -33 + i * 6, -28, -30 + i * 6, -22], '#f4c430');
+    for (const [x, d] of [[-14, 1], [-6, -1], [10, 1], [18, -1]]) R(c, x - 3.5 + s * d * 0.4, -14, 8, 14, 3, '#a02a1f');
+    E(c, 0, -24, 22, 13, '#c0392b'); E(c, 2, -18, 16, 6, '#f2a65a');
+    c.save(); c.translate(-2, -34); c.rotate(-0.3 + Math.sin(t * 4) * 0.15); P(c, [0, 0, 8, -20, 16, -16, 22, -18, 20, -4], '#8e1f1f'); c.restore();
+    Q(c, 14, -28, 20, -38, 22, -42, '#c0392b', 10);
+    E(c, 28, -44, 11, 8, '#c0392b', 0.1); E(c, 36, -40, 5, 4, '#d9534f');
+    P(c, [22, -50, 18, -58, 26, -51], '#f3eee0'); P(c, [28, -51, 28, -60, 32, -50], '#f3eee0');
+    eye(c, 27, -46, 3, '#ffd23f'); Ci(c, 39, -42, 1.2, '#4a0a0a'); grin(c, 34, -38, 4, '#4a0a0a', 1.6);
+    for (let i = 0; i < 3; i++) { const p = (t * 0.8 + i / 3) % 1; c.globalAlpha = 0.6 * (1 - p); Ci(c, 42 + p * 8, -44 - p * 10, 2 + p * 4, '#aaa'); c.globalAlpha = 1; }
+  },
+  r5bulgasari(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -22, -26, -32, -28, -34, -18, '#6a7480', 3); furBall(c, -34, -16, 3, 3, '#4a525c', 6, 2);
+    for (const [x, d] of [[-16, 1], [-7, -1], [8, 1], [16, -1]]) { R(c, x - 4 + s * d * 0.4, -14, 8, 14, 3, '#e0a91b'); L(c, [x - 3 + s * d * 0.4, -10, x + 3 + s * d * 0.4, -10], '#2b2b2b', 1.5); L(c, [x - 3 + s * d * 0.4, -5, x + 3 + s * d * 0.4, -5], '#2b2b2b', 1.5); }
+    for (let i = 0; i < 12; i++) L(c, [-20 + i * 3.6, -32 + Math.abs(i - 6) * 0.8, -22 + i * 3.6, -44 + Math.abs(i - 6) * 1.2], '#b8c2cc', 1.5);
+    E(c, 0, -26, 22, 13, '#7a8794'); for (let i = 0; i < 5; i++) E(c, -14 + i * 7, -28, 3, 2, '#9aa6b2');
+    E(c, 22, -32, 10, 10, '#7a8794');
+    Q(c, 30, -30, 38, -24, 36, -14 + Math.sin(t * 4) * 2, '#7a8794', 5);
+    R(c, 32, -16 + Math.sin(t * 4) * 2, 10, 2.5, 1, '#c0c6cc'); E(c, 43, -15 + Math.sin(t * 4) * 2, 3, 2, '#c0c6cc');
+    E(c, 16, -40, 4, 5, '#6a7480'); eye(c, 24, -35, 2.8, '#d62828');
+  },
+  r5hmargayla(c, t, w) {
+    const s = Math.sin(w) * 3, h = Math.sin(t * 2);
+    c.save(); c.globalAlpha = 0.35 + 0.1 * h; Ci(c, 24, -54, 18, '#ffd23f'); c.restore();
+    for (let i = 0; i < 3; i++) Q(c, -16 + i * 12, -46, -12 + i * 12, -52 + h * 2, -16 + i * 12, -58, 'rgba(255,140,40,.6)', 1.5);
+    Q(c, -20, -26, -28, -22, -28, -12, '#c9a06a', 2.5); furBall(c, -28, -10, 3, 3, '#5a3a1a', 6, 2);
+    for (const [x, d] of [[-14, 1], [-6, -1], [8, 1], [15, -1]]) { R(c, x - 3 + s * d * 0.3, -16, 6, 16, 2, '#b88a55'); R(c, x - 3 + s * d * 0.3, -3, 6, 3, 1, '#3a2a1a'); }
+    E(c, 0, -26, 20, 11, '#c9a06a'); E(c, 0, -22, 14, 5, '#e8d2aa');
+    Q(c, 12, -30, 18, -38, 20, -42, '#c9a06a', 9); fur(c, 15, -44, 10, 6, '#5a3a1a', 4);
+    E(c, 26, -44, 10, 6.5, '#c9a06a', 0.4); E(c, 32, -39, 4.5, 4, '#e8d2aa');
+    E(c, 18, -58, 3, 10, '#c9a06a', -0.2); E(c, 24, -58, 3, 10, '#c9a06a', 0.2); E(c, 24, -57, 1.4, 7, '#f2b8a0', 0.2);
+    Ci(c, 24, -47, 3, '#ff6b1c'); Ci(c, 24, -47, 1.4, '#ffd23f'); Ci(c, 34, -40, 1, '#3a2a1a');
+  },
+  r5lotan(c, t, w) {
+    const s = Math.sin(t * 2) * 3;
+    for (let i = 0; i < 7; i++) {
+      const a = -2.6 + i * 0.37, hx = Math.cos(a) * 30 + 4, hy = -30 + Math.sin(a) * 40 + Math.sin(t * 3 + i) * 2;
+      Q(c, (i - 3) * 3, -14, (i - 3) * 6, -30 + s, hx, hy, i % 2 ? '#2a6fa8' : '#3a86c0', 6);
+      E(c, hx + 2, hy, 6, 4.5, '#3a86c0', 0.2); Ci(c, hx + 3, hy - 1.5, 1.7, '#ffd23f'); Ci(c, hx + 3.4, hy - 1.5, 0.8, '#111');
+      P(c, [hx - 2, hy - 3, hx - 3, hy - 8, hx + 1, hy - 4], '#f4c430');
+    }
+    E(c, 0, -10, 22, 10, '#2a6fa8');
+    for (let i = 0; i < 5; i++) E(c, -24 + i * 12, -2 + Math.sin(t * 4 + i) * 1.5, 8, 4, '#7cc7f2');
+    for (let i = 0; i < 5; i++) Ci(c, -22 + i * 12, -5 + Math.sin(t * 4 + i) * 1.5, 2, '#fff');
+  },
+  r5nasnas(c, t, w) {
+    const h = Math.abs(Math.sin(w * 1.5)) * 8;
+    c.save(); c.translate(0, -h);
+    L(c, [0, -20, 2, -4], '#7d5fb5', 6); E(c, 4, -2, 7, 3, '#4a3570');
+    c.fillStyle = '#9b7fd4'; c.beginPath(); c.ellipse(-2, -34, 14, 16, 0, -Math.PI / 2, Math.PI / 2); c.closePath(); c.fill();
+    L(c, [-2, -50, -2, -18], '#6a4fa0', 2);
+    L(c, [8, -40, 18, -50 + Math.sin(t * 6) * 3], '#9b7fd4', 4.5); Ci(c, 19, -51 + Math.sin(t * 6) * 3, 3, '#b49ae6');
+    c.fillStyle = '#b49ae6'; c.beginPath(); c.arc(-2, -60, 11, -Math.PI / 2, Math.PI / 2); c.closePath(); c.fill();
+    L(c, [-2, -71, -2, -49], '#6a4fa0', 2);
+    eye(c, 4, -62, 3.6, '#2a9d48'); Q(c, 0, -54, 4, -51, 7, -55, '#3a2560', 1.6);
+    L(c, [-2, -71, 2, -78, 7, -76], '#6a4fa0', 2);
+    c.restore();
+  },
+  r5aziza(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 3;
+    c.save(); c.translate(0, -s);
+    L(c, [-3, -10, -3, -2], '#3f8f4a', 3); L(c, [3, -10, 3, -2], '#3f8f4a', 3);
+    for (let i = 0; i < 5; i++) E(c, -8 + i * 4, -12, 3, 6, i % 2 ? '#7cb342' : '#9ccc65', (i - 2) * 0.3);
+    E(c, 0, -20, 7, 7, '#5fb36a');
+    L(c, [6, -22, 12, -28], '#5fb36a', 2.5);
+    c.save(); c.globalAlpha = 0.4 + 0.3 * Math.sin(t * 6); Ci(c, 14, -31, 6, '#fff3b0'); c.restore(); Ci(c, 14, -31, 2.5, '#ffd23f');
+    Ci(c, 1, -32, 8, '#6fc27a');
+    E(c, 0, -40, 11, 4, '#4a7d2a'); P(c, [-6, -42, 0, -50, 6, -42], '#7cb342');
+    eyes(c, 3, -32, 3.5, 2.6, '#5a3a00'); grin(c, 4, -28, 2.5, '#2a5a2a', 1.3);
+    c.restore();
+  },
+  r5nholobo(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-4, -18, -5 + s, -2], '#7a7f88', 5); L(c, [4, -18, 5 - s, -2], '#7a7f88', 5);
+    E(c, -5 + s, -1, 5, 2.5, '#5a5f68'); E(c, 5 - s, -1, 5, 2.5, '#5a5f68');
+    Q(c, -10, -22, -22, -22, -24, -10, '#8a8f98', 6);
+    E(c, 0, -32, 12, 14, '#2f6db3'); E(c, 0, -28, 8, 8, '#d0d3d8');
+    L(c, [-10, -38, -16, -50, -12, -56], '#8a8f98', 4);
+    E(c, -14, -60, 7, 7, '#c9a46b'); L(c, [-14, -66, -14, -70], '#8b5a2b', 2);
+    L(c, [10, -38, 16, -26 - s], '#8a8f98', 4);
+    E(c, 4, -54, 11, 10, '#9aa0a8'); E(c, 15, -50, 9, 5, '#9aa0a8', 0.2); E(c, 15, -48, 6, 3, '#d0d3d8');
+    P(c, [-5, -60, -4, -72, 3, -63], '#9aa0a8'); P(c, [4, -63, 8, -74, 11, -61], '#9aa0a8'); P(c, [5, -64, 8, -70, 9, -63], '#d99aa8');
+    Ci(c, 24, -51, 2.5, '#222'); eye(c, 9, -57, 2.6, '#c9922b');
+    E(c, 18, -44, 2.5, 4 + Math.sin(t * 5), '#e86b8a'); L(c, [12, -46, 22, -47], '#3a3a3a', 1.3);
+  },
+  r5gombessa(c, t) {
+    const sw = Math.sin(t * 4) * 0.2;
+    c.save(); c.translate(-26, -24); c.rotate(sw); P(c, [0, 0, -12, -10, -8, 0, -12, 10], '#3a5f8a'); E(c, -12, 0, 4, 3, '#3a5f8a'); c.restore();
+    E(c, 0, -24, 28, 13, '#3a6fa0'); E(c, 2, -19, 22, 6, '#5a8fc0');
+    for (const [x, y] of [[-14, -28], [-4, -32], [6, -26], [-8, -20], [12, -32], [-18, -22], [2, -30]]) Ci(c, x, y, 1.6, '#e8f2ff');
+    P(c, [-6, -36, 0, -46, 8, -36], '#2f5a85'); P(c, [-16, -34, -12, -42, -8, -35], '#2f5a85');
+    for (const [x, d] of [[-8, 1], [6, -1]]) { c.save(); c.translate(x, -14); c.rotate(0.3 * d + Math.sin(t * 5) * 0.3 * d); E(c, 0, 5, 4, 7, '#2f5a85'); P(c, [-3, 10, 0, 16, 3, 10], '#4a7fb0'); c.restore(); }
+    eye(c, 18, -27, 3.2, '#ffd23f'); grin(c, 22, -20, 4, '#1d3557', 1.6);
+  },
+  r5ngil(c, t, w) {
+    const s = Math.sin(w) * 3, sw = Math.sin(t * 6) * 2;
+    L(c, [-5, -18, -6 + s, -2], '#5a3a1a', 4); L(c, [5, -18, 6 - s, -2], '#5a3a1a', 4);
+    for (let i = 0; i < 12; i++) L(c, [-14 + i * 2.5, -54, -16 + i * 2.8 + sw, -16], i % 2 ? '#d9c08a' : '#c4a66a', 2.5);
+    furBall(c, 0, -56, 14, 6, '#c4a66a', 12, 3);
+    L(c, [12, -52, 20, -40 - sw], '#5a3a1a', 3.5);
+    for (let i = 0; i < 5; i++) feather(c, -8 + i * 4, -96, 12, i % 2 ? '#d62828' : '#2b2b2b', '#fff', (i - 2) * 0.3);
+    c.fillStyle = '#f4f1e6'; c.beginPath(); c.moveTo(4, -96); c.bezierCurveTo(22, -100, 18, -70, 6, -58); c.bezierCurveTo(-8, -70, -14, -100, 4, -96); c.fill();
+    Q(c, -2, -86, 1, -90, 4, -86, '#2b2b2b', 1.6); Q(c, 6, -86, 9, -90, 12, -86, '#2b2b2b', 1.6);
+    E(c, 1, -84, 2, 1, '#2b2b2b'); E(c, 9, -84, 2, 1, '#2b2b2b');
+    L(c, [5, -88, 5, -72], '#c9c2b0', 2); E(c, 5, -66, 2.5, 1.5, '#2b2b2b');
+  },
+  r5dobuffalo(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -24, -28, -32, -24, -32, -14, '#3a2e2a', 2.5); furBall(c, -32, -12, 3, 3, '#1d1410', 6, 2);
+    for (const [x, d] of [[-16, 1], [-7, -1], [10, 1], [18, -1]]) R(c, x - 4 + s * d * 0.4, -14, 8, 14, 3, '#2b2220');
+    E(c, -2, -28, 24, 15, '#3a2e2a'); E(c, 6, -36, 14, 10, '#4a3a34');
+    E(c, 24, -30, 11, 10, '#3a2e2a'); E(c, 32, -24, 6, 5, '#5a4a44');
+    Q(c, 18, -38, 0, -46, 4, -58, '#d9cbb0', 6); Q(c, 26, -38, 44, -44, 40, -56, '#d9cbb0', 6);
+    furBall(c, 22, -38, 7, 4, '#1d1410', 8, 3);
+    Ci(c, 24, -32, 3, '#d62828'); Ci(c, 24, -32, 1.3, '#ffd23f'); Ci(c, 35, -24, 1.3, '#111');
+    for (let i = 0; i < 3; i++) { const p = (t * 1.2 + i / 3) % 1; c.globalAlpha = 0.5 * (1 - p); Ci(c, 38 + p * 8, -22 + p * 4, 2 + p * 3, '#ddd'); c.globalAlpha = 1; }
+  },
+  r5antaeus(c, t, w) {
+    const s = Math.sin(w) * 3;
+    for (let i = 0; i < 4; i++) { const p = (t * 0.9 + i / 4) % 1; Ci(c, -14 + i * 9, -2 - p * 30, 2.2, `rgba(255,214,90,${1 - p})`); }
+    L(c, [-7, -26, -8 + s, -3], '#b5652e', 8); L(c, [7, -26, 8 - s, -3], '#b5652e', 8);
+    E(c, -8 + s, -2, 6, 3, '#6b3e1f'); E(c, 8 - s, -2, 6, 3, '#6b3e1f');
+    P(c, [-14, -34, 14, -34, 16, -20, -16, -20], '#f2e6c8');
+    E(c, 0, -52, 20, 20, '#c8743a'); E(c, -7, -58, 7, 6, '#d9874a'); E(c, 7, -58, 7, 6, '#d9874a');
+    Ci(c, -24, -60, 8, '#c8743a'); Ci(c, 24, -60, 8, '#c8743a');
+    L(c, [-24, -58, -30, -38 + s], '#c8743a', 8); L(c, [24, -58, 30, -40 - s], '#c8743a', 8);
+    Ci(c, -30, -36 + s, 4.5, '#b5652e'); Ci(c, 30, -38 - s, 4.5, '#b5652e');
+    E(c, 2, -80, 11, 11, '#c8743a');
+    furBall(c, 4, -72, 9, 5, '#2b1d10', 10, 3); furBall(c, 1, -88, 11, 5, '#2b1d10', 10, 3);
+    eyes(c, 3, -81, 4, 2.4, '#3a2210'); L(c, [-3, -86, 1, -85], '#2b1d10', 2); L(c, [5, -85, 10, -86], '#2b1d10', 2);
+  },
+  r5mapiko(c, t, w) {
+    const s = Math.sin(w) * 3, sw = Math.sin(t * 7) * 3;
+    L(c, [-5, -18, -6 + s, -2], '#4a2c1a', 4); L(c, [5, -18, 6 - s, -2], '#4a2c1a', 4);
+    for (let i = 0; i < 10; i++) L(c, [-12 + i * 2.6, -56, -14 + i * 3 + sw * 0.5, -16], ['#d62828', '#f4c430', '#2a9d48', '#2f6db3', '#f4a261'][i % 5], 3);
+    L(c, [-12, -52, -22, -44 + sw], '#d62828', 4); L(c, [12, -52, 22, -60 - sw], '#2a9d48', 4);
+    for (const [x, y] of [[-22, -44 + sw], [22, -60 - sw]]) for (let i = 0; i < 4; i++) L(c, [x, y, x + (i - 1.5) * 3, y + 7], '#f4c430', 1.5);
+    E(c, 2, -68, 13, 14, '#d9a441'); for (const x of [-6, 10]) { L(c, [x - 3, -66, x + 3, -66], '#d62828', 1.5); L(c, [x - 3, -63, x + 3, -63], '#fff', 1.5); }
+    E(c, -11, -68, 3, 5, '#c98f3a'); E(c, 15, -68, 3, 5, '#c98f3a');
+    furBall(c, 2, -82, 12, 4, '#1d1410', 12, 4);
+    E(c, -3, -71, 3.5, 2.5, '#fff'); E(c, 8, -71, 3.5, 2.5, '#fff'); Ci(c, -2, -71, 1.5, '#111'); Ci(c, 9, -71, 1.5, '#111');
+    L(c, [-6, -76, -1, -74], '#4a2810', 1.5); L(c, [6, -74, 11, -76], '#4a2810', 1.5);
+    P(c, [2, -70, 6, -62, 0, -63], '#b8822b'); R(c, -3, -59, 11, 4, 2, '#7a1010'); teeth(c, 2.5, -59, 5, 4);
+  },
+  r5ossobo(c, t, w) {
+    const s = Math.sin(w) * 3;
+    c.save(); c.translate(Math.sin(t * 1.5) * 3, 0); for (const [x, r] of [[-8, 7], [0, 9], [9, 7]]) Ci(c, x, -66, r, '#c9d6e3'); for (let i = 0; i < 3; i++) { const p = (t * 1.5 + i / 3) % 1; L(c, [-6 + i * 6, -58 + p * 10, -7 + i * 6, -55 + p * 10], `rgba(70,160,240,${1 - p})`, 1.6); } c.restore();
+    L(c, [-3, -12, -4 + s, -2], '#7a6a5a', 2.5); L(c, [3, -12, 4 - s, -2], '#7a6a5a', 2.5);
+    P(c, [-10, -22, -28, -26, -28, -20, -10, -16], '#1f8a5a');
+    E(c, 0, -22, 13, 11, '#22a06b'); E(c, 4, -18, 8, 7, '#ffe14d');
+    E(c, -4, -24, 9, 6, '#167a4a', 0.3);
+    Ci(c, 10, -36, 8, '#22a06b');
+    P(c, [17, -38, 24, -35, 17, -33], '#5a5a5a'); eye(c, 12, -38, 2.6, '#c0392b');
+    L(c, [8, -42, 12, -44], '#167a4a', 1.5);
+  },
+  r5boussaadia(c, t, w) {
+    const s = Math.sin(w) * 3, k = Math.sin(t * 12) > 0 ? 2 : 0;
+    L(c, [-5, -20, -6 + s, -2], '#3a2a1a', 5); L(c, [5, -20, 6 - s, -2], '#3a2a1a', 5);
+    for (let i = 0; i < 8; i++) P(c, [-16 + i * 4, -58, -12 + i * 4, -58, -13 + i * 4 + (i % 2 ? 2 : -2), -16], ['#d62828', '#f4c430', '#2a9d48', '#8e44ad', '#ff9f1c', '#2f6db3', '#e63946', '#7cc45a'][i]);
+    furBall(c, 0, -56, 15, 6, '#8b6a4a', 12, 4);
+    L(c, [-14, -52, -22, -40 + s], '#8b6a4a', 4); L(c, [14, -52, 22, -42 - s], '#8b6a4a', 4);
+    for (const [x, y] of [[-22, -40 + s], [22, -42 - s]]) { E(c, x - k, y, 3, 2, '#9aa0a6'); E(c, x + k, y, 3, 2, '#c0c6cc'); }
+    furBall(c, 2, -70, 11, 12, '#8b6a4a', 14, 3);
+    E(c, 4, -70, 8, 9, '#d9c9a3'); P(c, [-4, -76, -8, -84, 0, -78], '#e8dcc0'); P(c, [10, -78, 14, -86, 12, -76], '#e8dcc0');
+    eyes(c, 5, -72, 3.5, 2.6, '#111'); E(c, 6, -66, 2.5, 1.8, '#8b6a4a'); grin(c, 6, -63, 3, '#5a3a1a', 1.5);
+    R(c, -8, -94, 20, 14, 3, '#d62828');
+    for (let i = 0; i < 4; i++) for (let k2 = 0; k2 < 2; k2++) E(c, -5 + i * 5, -90 + k2 * 6, 1.8, 1.2, '#fff6e0');
+    feather(c, 8, -94, 12, '#2b2b2b', '#fff', 0.3); feather(c, -2, -94, 12, '#f4c430', '#fff', -0.3);
+  },
+  r5shaggybear(c, t, w) {
+    const s = Math.sin(w) * 3, sw = Math.sin(t * 5) * 2;
+    L(c, [-5, -14, -6 + s, -2], '#3a2a1a', 4.5); L(c, [5, -14, 6 - s, -2], '#3a2a1a', 4.5);
+    for (let i = 0; i < 14; i++) { const x = -20 + i * 3; L(c, [x * 0.7, -64 + Math.abs(i - 6.5) * 2, x + sw * (i % 2 ? 1 : -1), -12], i % 3 === 0 ? '#9a8a4a' : i % 3 === 1 ? '#c9b47a' : '#7a8f3a', 4); }
+    furBall(c, 2, -66, 14, 10, '#b8a060', 14, 4);
+    E(c, 6, -66, 8, 7, '#7a8f3a');
+    eyes(c, 6, -68, 3.5, 2.4, '#3a2a1a');
+    grin(c, 7, -63, 3, '#3a4a1a', 1.4);
+    furBall(c, -8, -78, 4, 4, '#b8a060', 6, 3); furBall(c, 12, -78, 4, 4, '#b8a060', 6, 3);
+  },
+  r5gigantona(c, t, w) {
+    const s = Math.sin(w) * 2, sp = Math.sin(t * 3) * 3;
+    c.fillStyle = '#e63946'; c.beginPath(); c.moveTo(-6, -64); c.lineTo(6, -64); c.lineTo(22 + sp, -4); c.lineTo(-22 + sp, -4); c.closePath(); c.fill();
+    for (let i = 0; i < 3; i++) L(c, [-18 + i * 2 + sp, -12 - i * 14, 18 - i * 2 + sp, -12 - i * 14], ['#f4c430', '#fff', '#2a9d48'][i], 2.5);
+    E(c, -6 + s, -2, 5, 2.5, '#2b2b2b'); E(c, 6 - s, -2, 5, 2.5, '#2b2b2b');
+    R(c, -7, -80, 14, 18, 3, '#fff'); L(c, [-7, -76, -14, -60 + sp], '#f5d0b0', 3.5); L(c, [7, -76, 14, -62 - sp], '#f5d0b0', 3.5);
+    Ci(c, 0, -90, 10, '#f8dcc4');
+    furBall(c, -1, -98, 11, 5, '#f4c430', 12, 3); Q(c, -9, -92, -14, -80, -12, -70, '#f4c430', 4); Q(c, 9, -92, 13, -82, 12, -74, '#f4c430', 4);
+    eyes(c, 2, -91, 3.5, 2.3, '#2f6db3'); Ci(c, -4, -86, 2, '#f7a1c4'); Ci(c, 9, -86, 2, '#f7a1c4'); grin(c, 2, -85, 2.5, '#c0392b', 1.4);
+    Ci(c, 1, -104, 3, '#d62828');
+  },
+  r5bakru(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-3, -12, -4 + s, -2], '#6b4423', 3.5); L(c, [3, -12, 4 - s, -2], '#7cc45a', 3.5);
+    R(c, -7, -24, 14, 14, 3, '#d62828'); R(c, -7, -26, 7, 8, 2, '#8b5a2b'); R(c, 0, -26, 7, 8, 2, '#7cc45a');
+    L(c, [-6, -24, -12, -14 + s], '#8b5a2b', 3); L(c, [6, -24, 12, -16 - s], '#7cc45a', 3);
+    Ci(c, 1, -40, 15, '#b07a45');
+    c.strokeStyle = '#8b5a2b'; c.lineWidth = 1.2; for (const r of [4, 8, 12]) { c.beginPath(); c.arc(-4, -44, r, 0.8, 3.6); c.stroke(); }
+    eyes(c, 5, -42, 4.5, 3.2, '#3a2210'); grin(c, 7, -34, 4, '#4a2810', 1.8);
+    L(c, [0, -55, -2, -60], '#6b4423', 2); E(c, 2, -60, 4, 2, '#5f8f4a', 0.4);
+  },
+  r5cuca(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -10, -16, -26, -12, -32, -2, '#3f8a3a', 6);
+    L(c, [-5, -14, -6 + s, -2], '#3f8a3a', 5); L(c, [5, -14, 6 - s, -2], '#3f8a3a', 5);
+    P(c, [-14, -54, 14, -54, 20, -12, -20, -12], '#7b3fa0'); for (let i = 0; i < 4; i++) Ci(c, -10 + i * 7, -20, 2, '#f4c430');
+    L(c, [-12, -50, -20, -32 + s], '#4f9a3a', 5); L(c, [12, -50, 24, -40 - s], '#4f9a3a', 5);
+    for (const [x, y] of [[-20, -32 + s], [24, -40 - s]]) for (let i = -1; i <= 1; i++) L(c, [x, y, x + i * 3, y + 4], '#e8f0d0', 1.5);
+    E(c, 2, -64, 12, 11, '#4f9a3a');
+    R(c, 6, -66, 28, 9, 4, '#4f9a3a'); L(c, [12, -57, 32, -58], '#2f6a2a', 1.5); for (let i = 0; i < 5; i++) P(c, [12 + i * 4.5, -58, 14 + i * 4.5, -55, 16 + i * 4.5, -58], '#fff');
+    Ci(c, 30, -65, 1.3, '#1d3a1a');
+    for (let i = 0; i < 3; i++) Ci(c, -4 + i * 6, -73, 3, '#3f8a3a');
+    Ci(c, 8, -72, 4, '#ffd23f'); E(c, 9, -72, 1.2, 3, '#111');
+    furBall(c, -6, -72, 7, 7, '#f4d03f', 10, 3); Q(c, -10, -62, -16, -48, -12, -40, '#f4d03f', 4);
+  },
+  r5jasyjatere(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 3;
+    c.save(); c.translate(0, -s);
+    L(c, [-3, -12, -4, -2], '#e0b07a', 3); L(c, [3, -12, 4, -2], '#e0b07a', 3);
+    P(c, [-8, -28, 8, -28, 10, -12, -10, -12], '#2a9d48'); R(c, -9, -16, 18, 2, 1, '#f4c430');
+    L(c, [-7, -26, -12, -18], '#e0b07a', 3);
+    L(c, [7, -26, 13, -22], '#e0b07a', 3); L(c, [14, -40, 14, -6], '#e0a91b', 2.5);
+    c.save(); c.globalAlpha = 0.4 + 0.3 * Math.sin(t * 6); Ci(c, 14, -42, 5, '#fff3b0'); c.restore(); Ci(c, 14, -42, 2.5, '#f4c430');
+    Ci(c, 0, -36, 9, '#f2c998');
+    furBall(c, -2, -42, 10, 6, '#ffd23f', 12, 4); Q(c, -8, -40, -12, -32, -9, -26, '#ffd23f', 3);
+    eyes(c, 3, -36, 3.2, 2.2, '#2f6db3'); grin(c, 4, -31, 2.5, '#7a3a1a', 1.3); Ci(c, -3, -33, 1.6, '#f7a1c4');
+    c.restore();
+  },
+  r5ukuku(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-5, -18, -6 + s, -2], '#2b211c', 6); L(c, [5, -18, 6 - s, -2], '#2b211c', 6);
+    furBall(c, 0, -40, 16, 22, '#3a2c24', 18, 4);
+    L(c, [-14, -50, -22, -34 + s], '#3a2c24', 7); L(c, [14, -50, 22, -38 - s], '#3a2c24', 7);
+    L(c, [22, -38 - s, 28, -50, 32, -44], '#c9822b', 1.5);
+    Ci(c, -10, -36, 4, '#f4c430'); Ci(c, 8, -32, 4, '#e63946'); Ci(c, 0, -26, 3, '#2f6db3');
+    furBall(c, 2, -68, 12, 11, '#3a2c24', 14, 3);
+    E(c, 5, -68, 9, 9, '#f2ede2');
+    E(c, 2, -70, 2.5, 3, '#111'); E(c, 9, -70, 2.5, 3, '#111'); E(c, 6, -63, 2, 2, '#111');
+    L(c, [0, -75, 4, -74], '#d62828', 1.5); L(c, [7, -74, 11, -75], '#d62828', 1.5);
+    E(c, -6, -79, 3.5, 4, '#3a2c24'); E(c, 10, -80, 3.5, 4, '#3a2c24');
+  },
+  r5nanmadol(c, t) {
+    const f = Math.sin(t * 6) * 0.4, wv = Math.sin(t * 3);
+    c.strokeStyle = '#e8902a'; c.lineWidth = 10; c.lineCap = 'round'; c.beginPath(); c.moveTo(-40, -40 + wv * 3); c.bezierCurveTo(-26, -24 - wv * 4, -10, -52 + wv * 4, 8, -36); c.stroke();
+    for (let i = 0; i < 6; i++) P(c, [-36 + i * 7, -42 + Math.sin(i * 0.9) * 6, -33 + i * 7, -50 + Math.sin(i * 0.9) * 6, -30 + i * 7, -42 + Math.sin(i * 0.9) * 6], '#f4c430');
+    for (const sg of [-1, 1]) { c.save(); c.translate(-6, -42); c.scale(sg, 1); c.rotate(-0.3 + f); P(c, [0, 0, 18, -16, 22, -4, 14, -2, 12, 4], sg > 0 ? '#2a9d8f' : '#1f7a6f'); c.restore(); }
+    R(c, -12, -20, 30, 8, 1, '#3a3a40'); for (const x of [-4, 6]) L(c, [x, -20, x, -12], '#55555e', 1.5);
+    L(c, [-6, -36, -4, -20], '#e8902a', 2.5); L(c, [8, -36, 10, -20], '#e8902a', 2.5);
+    E(c, 18, -40, 11, 8, '#f0a040', 0.15); E(c, 27, -37, 5, 4, '#f4b860');
+    Q(c, 14, -46, 10, -54, 4, -56, '#f4c430', 2.5); Q(c, 20, -47, 20, -56, 14, -60, '#f4c430', 2.5);
+    eye(c, 19, -42, 2.8, '#1d3557'); grin(c, 26, -34, 3, '#7a3e10', 1.4);
+  },
+  r5ponaturi(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-4, -16, -5 + s, -2], '#4a3f8a', 4); L(c, [4, -16, 5 - s, -2], '#4a3f8a', 4);
+    P(c, [-5 + s, 0, -11 + s, 0, -8 + s, -4], '#6a5fb5'); P(c, [5 - s, 0, 11 - s, 0, 8 - s, -4], '#6a5fb5');
+    E(c, 0, -28, 11, 14, '#5a4fa0'); E(c, 2, -26, 6, 9, '#8a80d0');
+    L(c, [-9, -34, -16, -24 + s], '#5a4fa0', 3.5); L(c, [9, -34, 16, -26 - s], '#5a4fa0', 3.5);
+    for (const [x, y] of [[-16, -24 + s], [16, -26 - s]]) for (let i = -1; i <= 1; i++) L(c, [x, y, x + i * 3, y + 5], '#3a2f70', 1.2);
+    for (let i = 0; i < 4; i++) Q(c, -8 + i * 2, -40, -12 + i * 2, -30, -10 + i * 3, -20, '#2e7d32', 1.6);
+    E(c, 3, -48, 12, 10, '#6a5fb5');
+    P(c, [-8, -50, -18, -60, -10, -44], '#3fb5a8'); P(c, [12, -54, 18, -64, 14, -50], '#3fb5a8');
+    eyes(c, 5, -50, 5, 4, '#ffd23f', '#e8f0ff'); grin(c, 6, -42, 4, '#2b2050', 1.5); teeth(c, 6, -42, 3, 3);
+  },
+  r5golem(c, t, w) {
+    const s = Math.sin(w) * 2;
+    R(c, -13 + s, -26, 11, 26, 3, '#9a7a5a'); R(c, 2 - s, -26, 11, 26, 3, '#9a7a5a');
+    R(c, -19, -66, 38, 44, 9, '#b08a64'); L(c, [-10, -60, -6, -50, -10, -42], '#8a6a4a', 1.5); L(c, [12, -40, 8, -32], '#8a6a4a', 1.5);
+    L(c, [-18, -60, -27, -34 + s], '#b08a64', 10); L(c, [18, -60, 27, -36 - s], '#b08a64', 10);
+    Ci(c, -27, -32 + s, 6, '#a07a55'); Ci(c, 27, -34 - s, 6, '#a07a55');
+    R(c, -5, -52, 12, 8, 1, '#f2e6c8'); E(c, -5, -48, 2, 4, '#e0d2b0'); E(c, 7, -48, 2, 4, '#e0d2b0'); L(c, [-2, -50, 4, -50], '#c9b48a', 1); L(c, [-2, -47, 4, -47], '#c9b48a', 1);
+    R(c, -11, -92, 25, 25, 8, '#b08a64');
+    L(c, [-5, -88, 9, -88], '#8a6a4a', 1.5);
+    eyes(c, 2, -80, 5.5, 3.4, '#5a3a1a'); Ci(c, -6, -74, 2, '#d99a7a'); Ci(c, 10, -74, 2, '#d99a7a'); grin(c, 2, -73, 5, '#5a3a1a', 2);
+  },
+  r5gyrat(c, t, w) {
+    const s = Math.sin(w) * 4;
+    Q(c, -20, -34, -32, -30, -30, -12, '#2f8fbf', 5); Q(c, -20, -32, -28, -22, -24, -10, '#7cd0e8', 3);
+    for (const [x, d] of [[-14, 1], [-8, -1], [10, 1], [16, -1]]) { L(c, [x, -26, x + s * d * 0.6, -13, x + s * d * 0.6, -3], '#c9922b', 4); E(c, x + s * d * 0.6, -1.5, 3, 2, '#4a3018'); }
+    E(c, 0, -32, 21, 10, '#e0b04a'); E(c, -2, -36, 15, 3, '#f7d77a');
+    R(c, -7, -43, 13, 8, 2, '#c0392b'); for (const x of [-5, -1, 3]) Ci(c, x, -36, 1.2, '#f4c430');
+    Q(c, 12, -36, 18, -48, 21, -54, '#e0b04a', 9);
+    E(c, 27, -56, 9, 5.5, '#e0b04a', 0.4); E(c, 33, -52, 3.5, 3, '#c9922b');
+    P(c, [19, -60, 19, -68, 23, -61], '#e0b04a');
+    for (let i = 0; i < 4; i++) { const wv = Math.sin(t * 5 + i) * 2; Q(c, 18 - i * 3, -60 + i * 5, 10 - i * 3 + wv, -58 + i * 5, 12 - i * 3, -50 + i * 5, i % 2 ? '#7cd0e8' : '#2f8fbf', 3); }
+    eye(c, 25, -58, 2.2, '#1d3557'); Ci(c, 34, -52, 1, '#5a3a1a');
+  },
+  r5cipitio(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    L(c, [-3, -14, -4 + s, -3], '#c98a5a', 3.2); L(c, [3, -14, 4 - s, -3], '#c98a5a', 3.2);
+    E(c, -7 + s, -1.5, 4.5, 2, '#b8784a'); E(c, 0 - s, -1.5, 4.5, 2, '#b8784a');
+    R(c, -8, -18, 16, 6, 2, '#2f6db3');
+    E(c, 1, -24, 10, 9, '#d9965f'); Ci(c, 3, -22, 1, '#a0603a');
+    L(c, [-8, -28, -13, -20 + s], '#d9965f', 3); L(c, [9, -28, 14, -22 - s], '#d9965f', 3);
+    Ci(c, 2, -38, 8, '#d9965f');
+    eyes(c, 4, -38, 3, 2.2, '#3a2210'); grin(c, 6, -34, 2.5, '#6b2a10', 1.3);
+    E(c, 2, -45, 20, 4.5, '#e8c66a'); E(c, 2, -50, 9, 6, '#d9b04a'); R(c, -7, -48, 18, 3, 1, '#d62828');
+    for (let i = -3; i <= 3; i++) L(c, [2 + i * 5, -47, 2 + i * 5.5, -42], '#c9a04a', 0.8);
+  },
+  r5mamadlo(c, t, w) {
+    const s = Math.sin(w + t) * 3;
+    Q(c, -22, -6, -34, -10 + s, -36, -20, '#3a7a3a', 5);
+    E(c, -6, -5, 20, 6, '#3a7a3a'); E(c, -2, -12, 15, 5, '#4a8f4a');
+    for (let i = -2; i <= 2; i++) Ci(c, -6 + i * 7, -5, 1.8, '#c9a43a');
+    E(c, 2, -26, 8, 11, '#6fc27a'); for (let i = 0; i < 4; i++) E(c, -4 + i * 3, -20, 2.5, 5, '#2e7d32', (i - 1.5) * 0.3);
+    L(c, [-5, -32, -12, -24 + s], '#6fc27a', 3); L(c, [8, -32, 14, -40], '#6fc27a', 3); Ci(c, 14, -41, 2.4, '#6fc27a');
+    for (let i = 0; i < 5; i++) Q(c, -4 + i * 2, -54, -12 + i * 2 + Math.sin(t * 3 + i) * 2, -44, -10 + i * 2, -26, i % 2 ? '#2f8fbf' : '#3fa8d8', 3);
+    Ci(c, 3, -46, 8, '#6fc27a');
+    furBall(c, 1, -53, 8, 3, '#2f8fbf', 10, 2);
+    eyes(c, 5, -47, 3, 2.2, '#1d3557'); grin(c, 6, -42, 2.5, '#1d4a1d', 1.3);
+    Ci(c, -4, -54, 3, '#f7a1c4'); Ci(c, -4, -54, 1.2, '#ffd23f');
+    for (let i = 0; i < 3; i++) { const p = (t + i / 3) % 1; Ci(c, -18 + i * 14, -2 - p * 10, 1.6, `rgba(120,200,255,${1 - p})`); }
+  },
+  r5songox(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -20, -30, -28, -26, -28, -12, '#f2efe6', 2.5); furBall(c, -28, -10, 3, 3, '#2b2b2b', 6, 2);
+    for (const [x, d] of [[-14, 1], [-6, -1], [8, 1], [15, -1]]) { R(c, x - 3 + s * d * 0.4, -16, 6, 16, 2, '#e6e1d4'); R(c, x - 3 + s * d * 0.4, -3, 6, 3, 1, '#3a3a3a'); }
+    E(c, 0, -28, 21, 12, '#f2efe6'); E(c, -8, -30, 7, 6, '#2b2b2b'); E(c, 6, -22, 5, 4, '#2b2b2b');
+    E(c, 12, -40, 8, 6, '#e6e1d4');
+    E(c, 24, -36, 7, 9, '#f2efe6'); E(c, 28, -29, 4.5, 4, '#e6c8b8');
+    Q(c, 26, -44, 38, -54, 40, -66, '#d9cbb0', 4); Q(c, 21, -44, 8, -56, -4, -54, '#d9cbb0', 4);
+    furBall(c, 40, -67, 3, 3, '#d62828', 6, 2); furBall(c, -5, -54, 3, 3, '#f4c430', 6, 2);
+    for (let i = 0; i < 4; i++) Ci(c, 18 + i * 3, -28 + i * 0.5, 1.6, ['#d62828', '#f4c430', '#2f6db3', '#fff'][i]);
+    eye(c, 25, -38, 2.4, '#3a2210'); Ci(c, 29, -28, 0.9, '#3a2210');
+  },
+  r5tuimalila(c, t, w) {
+    const s = Math.sin(w) * 2;
+    for (const [x, d] of [[-14, 1], [-5, -1], [8, 1], [16, -1]]) E(c, x + s * d * 0.5, -4, 4.5, 5, '#8a7a5a');
+    Q(c, 18, -10, 24, -14, 28, -18 - Math.sin(t * 2), '#9a8a6a', 6);
+    E(c, 31, -20 - Math.sin(t * 2), 6.5, 5, '#9a8a6a');
+    eye(c, 32, -22 - Math.sin(t * 2), 2, '#2b2b1a'); grin(c, 35, -17 - Math.sin(t * 2), 2.5, '#4a3a20', 1.2);
+    c.fillStyle = '#3a2c18'; c.beginPath(); c.ellipse(0, -8, 24, 22, 0, Math.PI, 0); c.closePath(); c.fill();
+    R(c, -24, -10, 48, 4, 2, '#5a4a2a');
+    for (const [x, y] of [[-14, -14], [0, -18], [14, -14], [-7, -25], [7, -25]]) { Ci(c, x, y, 2, '#f4c430'); for (let k = 0; k < 6; k++) { const a = k * TAU / 6; L(c, [x, y, x + Math.cos(a) * 5, y + Math.sin(a) * 4], '#e0b84a', 1); } }
+    for (let i = 0; i < 5; i++) Ci(c, 28 + Math.cos(i * TAU / 5) * 2.4, -27 + Math.sin(i * TAU / 5) * 2.4 - Math.sin(t * 2), 2, '#e63946');
+  },
+  r5dilmunsnake(c, t, w) {
+    const s = Math.sin(w) * 3;
+    c.save(); c.globalAlpha = 0.35; Q(c, -30, -4, -20, -14, -12, -2, '#f2e6c8', 5); c.restore();
+    E(c, -2, -6, 20, 7, '#c9a46b'); E(c, 1, -15, 14, 6, '#d9b47a');
+    for (let i = -2; i <= 2; i++) P(c, [-2 + i * 7, -9, 1 + i * 7, -6, -2 + i * 7, -3, -5 + i * 7, -6], '#8b6a3a');
+    Q(c, 6, -18, 14, -30 + s, 12, -40, '#d9b47a', 8);
+    E(c, 16, -44, 9, 6.5, '#d9b47a', 0.15);
+    eye(c, 17, -46, 2.5, '#2a9d48');
+    c.save(); c.globalAlpha = 0.35 + 0.25 * Math.sin(t * 5); Ci(c, 29, -42, 7, '#fff3b0'); c.restore();
+    L(c, [23, -42, 28, -42], '#2a7a3a', 1.5);
+    for (let i = 0; i < 5; i++) Ci(c, 30 + Math.cos(i * TAU / 5) * 2.6, -42 + Math.sin(i * TAU / 5) * 2.6, 2.2, '#f28bb0');
+    Ci(c, 30, -42, 1.4, '#ffd23f');
+  },
+});
+
+const MONSTERS5 = [
+  // Europe
+  { id: 'r5lesavik', cont: 'europe', name: 'Lesavik', place: 'Belarus', map: 'Belarus', fact: 'The Belarusian forest spirit can grow as tall as the trees or as small as a blade of grass, and loves to make travellers walk in circles.', tr: 'r5straw', trName: 'Straw star', box: [60, 104], sp: 60 },
+  { id: 'r5golem', cont: 'europe', name: 'Golem of Prague', place: 'Czechia (Prague)', map: 'Czechia', fact: 'A giant made of river clay by Rabbi Loew to protect the people of Prague. Legend says he still rests in the attic of an old synagogue.', tr: 'r5marionette', trName: 'Czech marionette', box: [66, 94], sp: 45 },
+  { id: 'r5turul', cont: 'europe', name: 'Turul', place: 'Hungary', map: 'Hungary', fact: 'A giant falcon from the old legends of the Magyars. It is said to have guided the Hungarians to their new homeland.', tr: 'r5paprika', trName: 'Paprika pepper', box: [92, 72], sp: 75, fly: true },
+  { id: 'r5aitvaras', cont: 'europe', name: 'Aitvaras', place: 'Lithuania', map: 'Lithuania', fact: 'A Lithuanian house spirit that looks like a rooster indoors and flies like a fiery dragon outside, bringing grain and coins to its owner.', tr: 'r5sakotis', trName: 'Šakotis tree cake', box: [72, 70], sp: 80 },
+  { id: 'r5devotadove', cont: 'europe', name: "Saint Devota's Dove", place: 'Monaco (local legend)', map: 'Monaco', fact: 'Legend says a white dove guided the boat of Saint Devota, Monaco\'s patron saint, through a storm to Monaco. Every January a boat is burned in her honour.', tr: 'r5boat', trName: 'Little wooden boat', box: [80, 56], sp: 75, fly: true },
+  { id: 'r5adamastor', cont: 'europe', name: 'Adamastor', place: 'Portugal', map: 'Portugal', fact: 'A gigantic storm giant from The Lusiads, Portugal\'s great poem. He guards the stormy Cape of Good Hope and roars at passing sailors.', tr: 'r5azulejo', trName: 'Azulejo tile', box: [86, 104], sp: 45 },
+  { id: 'r5zlatorog', cont: 'europe', name: 'Zlatorog', place: 'Slovenia', map: 'Slovenia', fact: 'A white chamois with golden horns that lives on Mount Triglav. Where drops of its blood fell, magical Triglav roses grew.', tr: 'r5triglavrose', trName: 'Triglav rose', box: [66, 78], sp: 85 },
+  { id: 'r5basilisk', cont: 'europe', name: 'Basilisk', place: 'Vatican City (Rome legend)', map: 'Vatican', fact: 'The crowned king of snakes. Legend says Pope Leo IV, who built walls around the Vatican hill, chased a basilisk out of Rome in the year 847.', tr: 'r5guardhat', trName: 'Swiss Guard helmet', box: [64, 62], sp: 50 },
+  // Asia
+  { id: 'r5dilmunsnake', cont: 'asia', name: 'Snake of Dilmun', place: 'Bahrain (ancient Dilmun)', map: 'Bahrain', fact: 'Bahrain was ancient Dilmun. In the Epic of Gilgamesh, the hero dived for a magic flower of youth, but a snake stole it while he bathed!', tr: 'r5dilmunseal', trName: 'Dilmun stone seal', box: [66, 54], sp: 55 },
+  { id: 'r5reachsey', cont: 'asia', name: 'Reachsey', place: 'Cambodia', map: 'Cambodia', fact: 'The Khmer guardian lion. Its stone statues stand on the steps of Angkor\'s ancient temples to protect them.', tr: 'r5krama', trName: 'Krama scarf', box: [72, 66], sp: 55 },
+  { id: 'r5tulpar', cont: 'asia', name: 'Tulpar', place: 'Kazakhstan', map: 'Kazakhstan', fact: 'A winged horse from Kazakh legends that carries heroes faster than the wind. Winged horses even appear on Kazakhstan\'s national emblem.', tr: 'r5baursak', trName: 'Baursak bread', box: [82, 72], sp: 85, fly: true },
+  { id: 'r5beirutdragon', cont: 'asia', name: 'Dragon of Beirut', place: 'Lebanon', map: 'Lebanon', fact: 'Legends say Saint George defeated a dragon near Beirut, by the bay that is still called Saint George Bay.', tr: 'r5cedar', trName: 'Cedar branch', box: [100, 62], sp: 50 },
+  { id: 'r5bulgasari', cont: 'asia', name: 'Bulgasari', place: 'North Korea (Korean folk tale)', map: 'North Korea', fact: 'Made from grains of rice, this creature from Korean folk tales ate iron: needles, spoons, even swords, and grew bigger with every bite!', tr: 'r5riceball', trName: 'Rice ball', box: [90, 56], sp: 45 },
+  { id: 'r5hmargayla', cont: 'asia', name: 'Hmar al-Gayla', place: 'Qatar (Gulf folklore)', map: 'Qatar', fact: '"The donkey of the midday heat". Children in Qatar were told it roams at noon, so they would stay in the shade instead of the scorching sun.', tr: 'r5waterjar', trName: 'Clay water jar', box: [72, 76], sp: 70 },
+  { id: 'r5lotan', cont: 'asia', name: 'Lotan', place: 'Syria (ancient Ugarit)', map: 'Syria', fact: 'A seven-headed sea serpent from the stories of Ugarit, an ancient city in Syria. Its tale was written on clay tablets over 3,000 years ago.', tr: 'r5soap', trName: 'Aleppo soap', box: [80, 76], sp: 45 },
+  { id: 'r5gyrat', cont: 'asia', name: 'Gyrat', place: 'Turkmenistan (Görogly epic)', map: 'Turkmenistan', fact: 'The wonder horse of the hero Görogly in Turkmen legends, faster than any other. Stories say its father was a magic stallion that came out of the sea.', tr: 'r5melon', trName: 'Turkmen melon', box: [72, 70], sp: 85 },
+  { id: 'r5nasnas', cont: 'asia', name: 'Nasnas', place: 'Yemen', map: 'Yemen', fact: 'Old Arabian tales say this odd creature lived in Yemen: it has half a head, one arm and one leg, and hops around very fast!', tr: 'r5dragontree', trName: "Dragon's blood tree", box: [44, 84], sp: 90 },
+  // Africa
+  { id: 'r5aziza', cont: 'africa', name: 'Aziza', place: 'Benin (Fon stories)', map: 'Benin', fact: 'Tiny forest folk from Fon stories who live in anthills and silk-cotton trees, and share their forest wisdom with hunters.', tr: 'r5kapok', trName: 'Silk-cotton pod', box: [34, 54], sp: 95 },
+  { id: 'r5nholobo', cont: 'africa', name: 'Nhô Lobo', place: 'Cabo Verde', map: 'Cabo Verde', fact: 'Uncle Wolf, the greedy wolf of Cape Verdean folk tales, is always tricked by his clever nephew Chibinho. There are no real wolves on Cabo Verde!', tr: 'r5cachupa', trName: 'Cachupa pot', box: [56, 80], sp: 70 },
+  { id: 'r5gombessa', cont: 'africa', name: 'Gombessa', place: 'Comoros', map: 'Comoros', fact: 'Comoros fishermen knew this big "gombessa" fish (a coelacanth) for ages, while scientists thought it died out with the dinosaurs!', tr: 'r5ylang', trName: 'Ylang-ylang flower', box: [80, 50], sp: 55, fly: true },
+  { id: 'r5ngil', cont: 'africa', name: 'Ngil', place: 'Equatorial Guinea (Fang)', map: 'Eq. Guinea', fact: 'A tall masked figure of the Fang people with a long white face. Long ago the Ngil visited villages at night to keep order and chase away wrongdoers.', tr: 'r5raffia', trName: 'Raffia fly whisk', box: [46, 110], sp: 60 },
+  { id: 'r5dobuffalo', cont: 'africa', name: 'Buffalo of Do', place: 'Guinea (Sundiata epic)', map: 'Guinea', fact: 'In the epic of Sundiata, a magical buffalo ran wild in the land of Do, until two hunter brothers outwitted it.', tr: 'r5balafon', trName: 'Balafon', box: [86, 62], sp: 60 },
+  { id: 'r5antaeus', cont: 'africa', name: 'Antaeus', place: 'Libya (Greek myth)', map: 'Libya', fact: 'A giant of Libya in Greek myths who grew stronger every time he touched the ground. Heracles beat him by lifting him into the air!', tr: 'r5silphium', trName: 'Silphium coin', box: [70, 98], sp: 45 },
+  { id: 'r5mapiko', cont: 'africa', name: 'Mapiko', place: 'Mozambique (Makonde)', map: 'Mozambique', fact: 'Masked dancers of the Makonde people of northern Mozambique. The mapiko wears a carved wooden helmet mask and dances wildly to the drums.', tr: 'r5ebony', trName: 'Makonde wood carving', box: [58, 94], sp: 70 },
+  { id: 'r5ossobo', cont: 'africa', name: 'Ossobó', place: 'São Tomé and Príncipe', map: 'São Tomé and Principe', fact: 'A shiny green cuckoo of São Tomé. People say that when the ossobó sings, rain is on its way!', tr: 'r5raindrop', trName: 'Raindrop', box: [62, 78], sp: 80 },
+  { id: 'r5songox', cont: 'africa', name: 'Song Ox', place: 'South Sudan (Dinka and Nuer)', map: 'S. Sudan', fact: 'Dinka and Nuer herders each have a favourite "song ox". They shape its horns into special curves and make up poems and songs about it!', tr: 'r5sorghum', trName: 'Sorghum', box: [84, 72], sp: 55 },
+  { id: 'r5boussaadia', cont: 'africa', name: 'Boussaadia', place: 'Tunisia', map: 'Tunisia', fact: 'A costumed dancer of Tunisian folklore, dressed in rags, skins and shells, who dances to clacking iron castanets. The story says he is searching for his lost daughter.', tr: 'r5jasmine', trName: 'Jasmine posy', box: [52, 110], sp: 65 },
+  // North America
+  { id: 'r5shaggybear', cont: 'namerica', name: 'Shaggy Bear', place: 'Barbados', map: 'Barbados', fact: 'A Barbados folk character who dances with the tuk bands, covered from head to toe in shaggy rags or dried leaves.', tr: 'r5tukdrum', trName: 'Tuk band drum', box: [52, 84], sp: 65 },
+  { id: 'r5cipitio', cont: 'namerica', name: 'El Cipitío', place: 'El Salvador', map: 'El Salvador', fact: 'A little boy spirit with a big round belly, a huge hat and backwards feet. He eats ashes from kitchen stoves and loves to play tricks!', tr: 'r5pupusa', trName: 'Pupusa', box: [44, 56], sp: 90 },
+  { id: 'r5gigantona', cont: 'namerica', name: 'La Gigantona', place: 'Nicaragua (León)', map: 'Nicaragua', fact: 'A giant dancing puppet from León. She dances through the streets to drums with her tiny partner, Pepe Cabezón, who has a huge head.', tr: 'r5hammock', trName: 'Woven hammock', box: [50, 110], sp: 50 },
+  { id: 'r5mamadlo', cont: 'namerica', name: 'Mama Dlo', place: 'Saint Vincent and the Grenadines', map: 'St. Vin. and Gren.', fact: 'In stories from the Windward Islands, Mama Dlo is the "mother of the water", half woman and half snake, who protects rivers from people who make them dirty.', tr: 'r5arrowroot', trName: 'Arrowroot', box: [62, 60], sp: 60 },
+  // South America
+  { id: 'r5bakru', cont: 'samerica', name: 'Bakru', place: 'Suriname', map: 'Suriname', fact: 'A little imp from Surinamese folklore with a big wooden head. People say a bakru is half made of wood, and often runs about in pairs.', tr: 'r5kotomisi', trName: 'Koto headscarf', box: [36, 62], sp: 90 },
+  { id: 'r5cuca', cont: 'samerica', name: 'Cuca', place: 'Brazil', map: 'Brazil', fact: 'An alligator witch with blonde hair, made famous by Monteiro Lobato\'s stories. Brazilian lullabies say: go to sleep, or the Cuca will come!', tr: 'r5brigadeiro', trName: 'Brigadeiro sweet', box: [74, 86], sp: 55 },
+  { id: 'r5jasyjatere', cont: 'samerica', name: 'Jasy Jatere', place: 'Paraguay (Guaraní)', map: 'Paraguay', fact: 'A little blond spirit who wanders at siesta time with a golden wand. Take away his wand, and he loses his magic!', tr: 'r5goldwand', trName: 'Golden wand', box: [36, 58], sp: 90 },
+  { id: 'r5ukuku', cont: 'samerica', name: 'Ukuku', place: 'Peru (Andes)', map: 'Peru', fact: 'The bear-man of Andean stories. At the Qoyllur Rit\'i festival, woolly ukuku dancers climb the glacier and talk in squeaky voices.', tr: 'r5quipu', trName: 'Quipu knot cords', box: [60, 88], sp: 60 },
+  // Oceania
+  { id: 'r5nanmadol', cont: 'oceania', name: 'Nan Madol Dragon', place: 'Micronesia (Pohnpei)', map: 'Micronesia', fact: 'Pohnpei legends say two magicians built the stone city of Nan Madol by flying huge stone logs through the air, and some tell of a dragon that helped.', tr: 'r5raistone', trName: 'Rai stone money', box: [96, 60], sp: 65, fly: true },
+  { id: 'r5tuimalila', cont: 'oceania', name: "Tu'i Malila", place: 'Tonga', map: 'Tonga', fact: 'A real-life legend: a tortoise said to be a gift from Captain Cook in 1777. It lived with Tonga\'s royal family for about 188 years!', tr: 'r5kavabowl', trName: 'Kava bowl', box: [76, 40], sp: 40 },
+  { id: 'r5ponaturi', cont: 'oceania', name: 'Ponaturi', place: 'New Zealand (Māori stories)', map: 'New Zealand', fact: 'Sea goblins from Māori stories who sleep under the sea by day and come ashore at night. Sunlight is their great fear!', tr: 'r5paua', trName: 'Pāua shell', box: [44, 66], sp: 80 },
+].map(m => Object.assign(m, { round: 5 }));
+MONSTERS.push(...MONSTERS5);
+// ---------------------------------------------------------------- round 6
+// ---------------------------------------------------------------- round 6 treasures
+Object.assign(TREASURE, {
+  r6waffle(c) { R(c, -13, -11, 26, 22, 3, '#d99a45'); for (let i = -1; i <= 1; i++) { L(c, [i * 6.5, -10, i * 6.5, 10], '#a8692a', 2); L(c, [-12, i * 6.5, 12, i * 6.5], '#a8692a', 2); } for (let i = 0; i < 6; i++) Ci(c, -9 + i * 3.6, -8 + (i % 3) * 7, 1.2, '#fff'); },
+  r6porridge(c) { E(c, 0, 4, 15, 10, '#2f6db3'); E(c, 0, -2, 14, 5, '#f6efd9'); R(c, -3, -6, 7, 4, 1, '#f7d24b'); for (let i = 0; i < 5; i++) Ci(c, -9 + i * 4.5, -1 + (i % 2), 0.9, '#a0602d'); L(c, [6, -4, 16, -14], '#c49a5a', 2.5); E(c, 0, 8, 10, 2, '#5a8fd6'); },
+  r6stocking(c) { P(c, [-8, -12, 4, -12, 4, 4, 12, 6, 12, 14, -4, 14, -8, 8], '#c0392b'); R(c, -10, -16, 16, 6, 2, '#fff'); Ci(c, -4, -18, 3, '#2b2b2b'); P(c, [0, -22, 4, -16, -2, -17], '#f7a1c4'); Ci(c, 4, -19, 2.5, '#2a9d48'); for (let i = 0; i < 3; i++) Ci(c, -4 + i * 4, 0 + i * 3, 1.3, '#ffd23f'); },
+  r6needle(c) { R(c, -13, -10, 22, 20, 2, '#f3ecdc'); for (let i = 0; i < 4; i++) L(c, [-10 + i * 5, 4, -7 + i * 5, 4], '#2f6db3', 1.5); L(c, [-10, -6, 6, -6], '#e0d6c0', 1); L(c, [2, 4, 16, -12], '#b8c4cc', 2); Ci(c, 15, -11, 1, '#fff'); Q(c, 16, -12, 20, 0, 6, 8, '#2f6db3', 1); },
+  r6gusle(c) { E(c, -4, 6, 9, 10, '#8b5a2b'); E(c, -4, 6, 7, 8, '#e8d8b0'); R(c, -6, -18, 4, 18, 1, '#6b4423'); P(c, [-8, -18, -4, -26, 0, -18], '#5a3a1a'); P(c, [-3, -26, 2, -30, 0, -24], '#5a3a1a'); L(c, [-4, -18, -4, 14], '#ddd', 0.8); Q(c, 4, -8, 14, 0, 14, 14, '#a0703f', 2); L(c, [6, -8, 14, 14], '#eee', 0.8); },
+  r6towers(c) { P(c, [-16, 14, -6, 0, 4, 4, 16, 14], '#4f8a3a'); for (const [x, y] of [[-9, 0], [0, -4], [9, 2]]) { R(c, x - 3, y - 10, 6, 10, 1, '#d9d4c8'); P(c, [x - 4, y - 10, x, y - 15, x + 4, y - 10], '#8a8a96'); L(c, [x, y - 15, x, y - 19], '#555', 1); E(c, x + 1.5, y - 19, 2, 1.2, '#7cc7f2'); } },
+  r6dalahorse(c) { P(c, [-12, 14, -10, -2, -14, -4, -12, -8, -4, -6, 6, -6, 8, -14, 14, -14, 16, -8, 12, -4, 10, 4, 12, 14, 7, 14, 6, 4, -6, 4, -7, 14], '#d62828'); R(c, -4, -6, 10, 4, 1, '#2f6db3'); for (let i = 0; i < 3; i++) Ci(c, -2 + i * 4, -1, 1.3, '#fff'); L(c, [10, -14, 6, -6], '#ffd23f', 1.5); Ci(c, 12, -11, 1, '#fff'); },
+  r6hilsa(c) { E(c, -2, 0, 14, 7, '#cdd6de'); E(c, -2, -3, 12, 3, '#7a92b0'); P(c, [10, 0, 18, -8, 16, 0, 18, 8], '#9aa8b8'); Ci(c, -10, -1, 2, '#222'); Ci(c, -10.5, -1.5, 0.7, '#fff'); for (let i = 0; i < 3; i++) Ci(c, -4 + i * 4, -2, 1.1, '#4a5a70'); L(c, [-14, 2, -10, 3], '#888', 1); },
+  r6loukoumades(c) { E(c, 0, 8, 16, 5, '#fff'); E(c, 0, 8, 12, 3, '#e8eef2'); for (const [x, y] of [[-7, 3], [1, 4], [8, 3], [-3, -3], [5, -3]]) { Ci(c, x, y, 4.5, '#d99a2b'); Ci(c, x - 1.5, y - 1.5, 1.5, '#f7d27a'); } Q(c, -10, 0, 0, -10, 10, 0, 'rgba(240,170,40,.8)', 1.5); for (let i = 0; i < 5; i++) Ci(c, -6 + i * 3, -6 + (i % 2) * 2, 0.7, '#6b3e1f'); },
+  r6dhow(c) { P(c, [-16, 4, 14, 4, 10, 12, -12, 12], '#8b5a2b'); R(c, -14, 4, 28, 2, 1, '#c49a6c'); L(c, [0, 4, 0, -16], '#5a3a1a', 2); P(c, [-12, -2, 2, -18, 12, 2], '#f6efd9'); L(c, [-12, -2, 2, -18], '#c9b98f', 1); Q(c, -18, 14, 0, 18, 18, 14, '#7cc7f2', 2); },
+  r6lotus(c) { E(c, 0, 9, 16, 5, '#3f8f3a'); for (const [a, l] of [[-1.1, 12], [-0.55, 14], [0, 15], [0.55, 14], [1.1, 12]]) { c.save(); c.translate(0, 6); c.rotate(a); E(c, 0, -l / 2, 4.5, l / 2, '#f7a1c4'); E(c, 0, -l / 2, 2, l / 2 - 2, '#fbd0e0'); c.restore(); } Ci(c, 0, 3, 3, '#f4c430'); },
+  r6rocegg(c) { E(c, 0, 0, 12, 16, '#f3ead2'); E(c, -4, -6, 3, 5, '#fffaf0'); for (const [x, y] of [[4, -8], [-6, 4], [6, 6], [0, 10], [-2, -12], [8, -2]]) Ci(c, x, y, 1.4, '#b89a6a'); L(c, [-11, 2, -6, -2, -2, 3, 3, -2, 7, 3, 11, -1], '#8a7a5a', 1.2); },
+  r6rose(c) { L(c, [0, 4, 0, 18], '#3f8f3a', 2); E(c, -5, 12, 5, 2.5, '#3f8f3a', 0.5); Ci(c, 0, -4, 11, '#e8628a'); for (let i = 0; i < 6; i++) { const a = i / 6 * TAU; E(c, Math.cos(a) * 7, -4 + Math.sin(a) * 7, 5, 3.5, '#f07aa0', a); } Ci(c, 0, -4, 5, '#c83a6a'); Q(c, -3, -4, 0, -8, 3, -4, '#f7a1c4', 1.5); },
+  r6apricot(c) { for (const [x, y] of [[-7, 4], [6, 5], [0, -4]]) { Ci(c, x, y, 8, '#f4a020'); E(c, x - 3, y - 2, 2.5, 3.5, '#ffd27a'); Q(c, x, y - 8, x + 2, y, x, y + 7, '#d9801a', 1); Ci(c, x + 3, y + 3, 2.5, 'rgba(230,90,40,.45)'); } L(c, [0, -12, 3, -16], '#6b4423', 1.6); E(c, 8, -15, 5, 2.5, '#3f8f3a', -0.4); },
+  r6falconhood(c) { c.fillStyle = '#8b4a2a'; c.beginPath(); c.moveTo(-12, 12); c.quadraticCurveTo(-14, -12, 2, -12); c.quadraticCurveTo(16, -10, 14, 12); c.closePath(); c.fill(); R(c, -12, 6, 26, 5, 2, '#e0a91b'); Ci(c, 4, -4, 4, '#f4c430'); Ci(c, 4, -4, 2, '#d62828'); L(c, [2, -12, 2, -18], '#e0a91b', 2); for (let i = -1; i <= 1; i++) L(c, [2, -18, 2 + i * 5, -24], '#d62828', 1.5); },
+  r6basket(c) { c.fillStyle = '#e8d3a0'; c.beginPath(); c.moveTo(-15, -6); c.quadraticCurveTo(-16, 14, 0, 14); c.quadraticCurveTo(16, 14, 15, -6); c.closePath(); c.fill(); E(c, 0, -6, 15, 4, '#c9b07a'); E(c, 0, -6, 12, 2.5, '#6b4423'); L(c, [-14, 0, -9, 6, -4, 0, 1, 6, 6, 0, 11, 6, 14, 1], '#6b3a1a', 2.2); L(c, [-10, 10, -5, 7, 0, 10, 5, 7, 10, 10], '#6b3a1a', 1.5); },
+  r6drum(c) { P(c, [-10, -14, 10, -14, 3, 0, 10, 14, -10, 14, -3, 0], '#8b5a2b'); E(c, 0, -14, 10, 3, '#e8d8b0'); E(c, 0, 14, 10, 3, '#c9b07a'); for (let i = -3; i <= 3; i++) L(c, [i * 3, -13, i * 1, 0, i * 3, 13], '#d9c9a3', 0.8); Q(c, 10, -12, 18, -20, 16, -4, '#5a3a1a', 2); },
+  r6kubacloth(c) { R(c, -14, -14, 28, 28, 2, '#e8d3a0'); for (let i = 0; i < 3; i++) { L(c, [-12, -8 + i * 8, -6, -12 + i * 8, 0, -8 + i * 8, 6, -12 + i * 8, 12, -8 + i * 8], '#4a2a10', 2.5); } for (let i = 0; i < 3; i++) P(c, [-8 + i * 8, 10, -5 + i * 8, 6, -2 + i * 8, 10, -5 + i * 8, 13], '#a0522d'); },
+  r6injera(c) { E(c, 0, 4, 17, 9, '#c9a46a'); E(c, 0, 2, 16, 8, '#e8d3a0'); for (let i = 0; i < 14; i++) Ci(c, -12 + (i * 7) % 24, -2 + (i * 5) % 9, 0.8, '#c9b07a'); E(c, -6, 0, 4, 2.5, '#c0392b'); E(c, 5, 1, 4, 2.5, '#e0a91b'); E(c, 0, 5, 4, 2.2, '#5a8a3a'); P(c, [6, -10, 16, -6, 14, -2, 4, -6], '#e8d3a0'); },
+  r6canoe(c) { P(c, [-17, -2, 17, -2, 12, 6, -12, 6], '#6b4423'); P(c, [-17, -2, -12, -2, -14, -6], '#6b4423'); P(c, [17, -2, 12, -2, 15, -7], '#6b4423'); R(c, -14, -3, 28, 2, 1, '#a0703f'); for (let i = 0; i < 3; i++) Ci(c, -8 + i * 8, 1.5, 1.4, ['#d62828', '#f4c430', '#fff'][i]); L(c, [4, -14, 10, 8], '#8b5a2b', 2); E(c, 10, 9, 2, 4, '#8b5a2b'); Q(c, -18, 9, 0, 13, 18, 9, '#7cc7f2', 2); },
+  r6cichlid(c) { E(c, -2, 0, 13, 8, '#2f6db3'); P(c, [9, 0, 17, -8, 17, 8], '#ffd23f'); P(c, [-6, -7, 4, -13, 8, -6], '#ffd23f'); for (let i = 0; i < 4; i++) L(c, [-8 + i * 5, -6, -8 + i * 5, 6], '#1d3a6b', 1.8); Ci(c, -10, -1, 2, '#fff'); Ci(c, -10, -1, 1, '#111'); },
+  r6ostrichbeads(c) { for (let i = 0; i < 18; i++) { const a = i / 18 * TAU; E(c, Math.cos(a) * 12, Math.sin(a) * 12, 2.6, 2.6, i % 6 === 0 ? '#a0522d' : '#f3ead2'); Ci(c, Math.cos(a) * 12, Math.sin(a) * 12, 0.7, '#8a7a5a'); } Ci(c, 0, 14, 0, '#000'); },
+  r6baobab(c) { L(c, [6, -14, 10, -18], '#6b4423', 2); E(c, 0, -2, 9, 13, '#9aa36a', 0.3); E(c, -2, -5, 3, 6, '#b8c088', 0.3); E(c, 10, 10, 6, 4, '#7a8a4a'); E(c, 10, 9, 4.5, 2.5, '#f6efd9'); for (let i = 0; i < 3; i++) Ci(c, 7 + i * 3, 9, 0.9, '#c9b07a'); },
+  r6hibiscus(c) { for (let i = 0; i < 5; i++) { const a = i / 5 * TAU - 1.57; E(c, Math.cos(a) * 8, Math.sin(a) * 8, 7, 5, '#c0182c', a); } Ci(c, 0, 0, 4, '#7a0a18'); L(c, [0, 0, 6, -10], '#f4c430', 1.5); Ci(c, 6, -10, 1.6, '#ffd23f'); },
+  r6barkcloth(c) { P(c, [-14, -10, 12, -12, 16, 8, -12, 12], '#a0522d'); P(c, [-14, -10, 12, -12, 10, -4, -12, -2], '#b8683a'); for (let i = 0; i < 5; i++) L(c, [-12, -6 + i * 4, 13, -8 + i * 4], '#7a3a1a', 0.8); L(c, [-4, -11, -2, 11], '#c97a4a', 1.2); },
+  r6carreta(c) { Ci(c, 0, 0, 15, '#d62828'); Ci(c, 0, 0, 12, '#f4c430'); for (let i = 0; i < 8; i++) { const a = i / 8 * TAU; P(c, [0, 0, Math.cos(a - 0.2) * 12, Math.sin(a - 0.2) * 12, Math.cos(a + 0.2) * 12, Math.sin(a + 0.2) * 12], ['#2f6db3', '#d62828'][i % 2]); } Ci(c, 0, 0, 4, '#2a9d48'); Ci(c, 0, 0, 1.6, '#fff'); },
+  r6nutmeg(c) { E(c, 0, 2, 10, 12, '#7a4a24'); E(c, -3, -2, 3, 5, '#9a6a3a'); for (let i = 0; i < 4; i++) Q(c, -9 + i * 6, 12, -12 + i * 6, 0, -6 + i * 6, -10, '#d62828', 2); L(c, [-2, 10, 3, -10], '#b84a2a', 1); },
+  r6mola(c) { R(c, -15, -12, 30, 24, 2, '#d62828'); R(c, -12, -9, 24, 18, 1, '#111'); R(c, -9, -6, 18, 12, 1, '#f47b20'); P(c, [-6, 2, 0, -4, 6, 2, 0, 0], '#111'); Ci(c, 2, -2, 1.3, '#fff'); L(c, [-7, 4, 7, 4], '#2f6db3', 1.5); },
+  r6cranberries(c) { E(c, 0, 9, 16, 5, '#2f6db3'); for (const [x, y] of [[-9, 4], [-3, 5], [3, 4], [9, 5], [-6, -1], [0, -1], [6, 0], [-2, -6], [4, -5]]) { Ci(c, x, y, 3.6, '#b0102a'); Ci(c, x - 1, y - 1.2, 1, '#ff6a7a'); } E(c, 9, -10, 5, 2.5, '#2a7a3a', 0.5); },
+  r6alfajor(c) { E(c, 0, 6, 14, 5, '#e8c890'); R(c, -13, -2, 26, 6, 3, '#8b4a1a'); E(c, 0, -3, 14, 5, '#f0d8a8'); for (let i = 0; i < 9; i++) Ci(c, -12 + i * 3, 1 + (i % 2), 0.9, '#fff'); Ci(c, -3, -4, 1.5, '#fff8e0'); },
+  r6comb(c) { R(c, -14, -10, 28, 7, 3, '#f4c430'); for (let i = 0; i < 9; i++) R(c, -13 + i * 3.1, -4, 2, 13, 1, '#e0a91b'); Ci(c, 0, -7, 2, '#2fb5c7'); Ci(c, -8, -7, 1.3, '#fff'); Ci(c, 8, -7, 1.3, '#fff'); },
+  r6orchid(c) { for (const a of [-2.2, -0.9, 0.4, 1.7, 3]) E(c, Math.cos(a) * 8, Math.sin(a) * 8, 6, 3.5, '#c879d6', a); E(c, 0, 5, 6, 7, '#8a2a9a'); E(c, 0, 4, 2.5, 3, '#ffd23f'); L(c, [0, 12, 0, 18], '#3f8f3a', 2); },
+  r6mussel(c) { c.fillStyle = '#1d2a4a'; c.beginPath(); c.moveTo(-14, 8); c.quadraticCurveTo(-4, -16, 14, -8); c.quadraticCurveTo(10, 10, -14, 8); c.fill(); c.fillStyle = '#f08a4a'; c.beginPath(); c.moveTo(-10, 6); c.quadraticCurveTo(-2, -10, 10, -6); c.quadraticCurveTo(6, 6, -10, 6); c.fill(); Ci(c, 0, 0, 1.6, '#ffd0a0'); Q(c, -12, 8, 0, 12, 14, -6, '#3a4a7a', 1.5); },
+  r6clam(c) { c.fillStyle = '#f3ead2'; c.beginPath(); c.moveTo(-15, 4); for (let i = 0; i <= 6; i++) c.lineTo(-15 + i * 5, 4 + (i % 2 ? 5 : 0)); c.quadraticCurveTo(14, 16, 0, 16); c.quadraticCurveTo(-14, 16, -15, 4); c.fill(); E(c, 0, 4, 13, 4, '#2fb5c7'); c.fillStyle = '#e8dcc0'; c.beginPath(); c.moveTo(-15, 2); for (let i = 0; i <= 6; i++) c.lineTo(-15 + i * 5, 2 - (i % 2 ? 5 : 0)); c.quadraticCurveTo(10, -16, 0, -14); c.quadraticCurveTo(-12, -14, -15, 2); c.fill(); Ci(c, 0, 4, 2.2, '#fff'); },
+  r6islandstones(c) { E(c, 0, 8, 17, 6, '#f3e2b0'); for (let i = 0; i < 8; i++) { const a = i / 8 * TAU; E(c, Math.cos(a) * 11, 1 + Math.sin(a) * 6, 4, 3, ['#8a8a96', '#a8a8b4', '#6a7a8a', '#9a9aa6'][i % 4]); Ci(c, Math.cos(a) * 11 - 1, Math.sin(a) * 6, 1, '#d8d8e0'); } Ci(c, 0, 1, 3, '#2fb5c7'); },
+  r6shellmoney(c) { for (let s = 0; s < 3; s++) for (let i = 0; i < 9; i++) E(c, -10 + s * 10, -14 + i * 3, 3, 1.4, (i + s) % 3 === 0 ? '#f3ead2' : (s === 1 ? '#2b2b2b' : '#c0392b')); R(c, -13, -17, 26, 3, 1, '#8b5a2b'); for (let i = 0; i < 5; i++) L(c, [-6 + i * 3, 13, -7 + i * 3, 18], '#c0392b', 1.2); },
+});
+
+// ---------------------------------------------------------------- round 6 monsters
+Object.assign(DRAW, {
+  r6langewapper(c, t, w) {
+    const s = Math.sin(w) * 4; c.save(); c.scale(0.84, 0.84 * (1 + Math.sin(t * 2) * 0.03));
+    L(c, [-4, -44, -6 + s, -3], '#3a5a8c', 5); L(c, [4, -44, 6 - s, -3], '#3a5a8c', 5);
+    E(c, -6 + s, -1, 6, 3, '#4a2a10'); E(c, 7 - s, -1, 6, 3, '#4a2a10');
+    P(c, [-10, -80, 10, -80, 13, -42, -13, -42], '#8b4a2a'); R(c, -13, -52, 26, 4, 1, '#2b2b2b'); R(c, -3, -53, 6, 6, 1, '#e0a91b');
+    L(c, [-9, -76, -16, -54 + s], '#8b4a2a', 5); L(c, [9, -76, 17, -54 - s], '#8b4a2a', 5); Ci(c, -16, -53 + s, 3, '#f0c9a0'); Ci(c, 17, -53 - s, 3, '#f0c9a0');
+    E(c, 1, -89, 8, 10, '#f0c9a0'); E(c, 10, -87, 4.5, 3, '#e8a080');
+    Ci(c, 4, -92, 1.6, '#222'); L(c, [1, -95, 6, -96], '#5a3a1f', 1.2); Q(c, 2, -82, 5, -80, 8, -82, '#7a2a0c', 1.5);
+    E(c, 0, -98, 12, 3, '#5a3a1f'); P(c, [-7, -99, 7, -99, 3, -111, -4, -109], '#5a3a1f'); feather(c, -6, -100, 10, '#d62828', '#fff', -0.6);
+    c.restore();
+  },
+  r6nisse(c, t, w) {
+    const s = Math.sin(w) * 2, b = Math.sin(t * 2) * 2;
+    R(c, -7 + s, -12, 5, 11, 2, '#6d6d78'); R(c, 2 - s, -12, 5, 11, 2, '#6d6d78');
+    E(c, -5 + s, -1, 5, 2.5, '#c49a5a'); E(c, 6 - s, -1, 5, 2.5, '#c49a5a');
+    E(c, 0, -20, 12, 11, '#8a8a96'); R(c, -12, -17, 24, 3, 1, '#5a3a1f');
+    L(c, [-10, -24, -14, -14], '#8a8a96', 4); L(c, [10, -24, 14, -14], '#8a8a96', 4);
+    Ci(c, 1, -35, 9, '#f5c9a0');
+    P(c, [-7, -32, 11, -32, 8, -20, 2, -15, -4, -21], '#f3f3f3');
+    E(c, 6, -33, 3, 2.5, '#ec9a8a'); Ci(c, 1, -37, 1.5, '#222'); Ci(c, 7, -37, 1.5, '#222');
+    E(c, 1, -41, 11, 3, '#d62828'); P(c, [-9, -42, 10, -42, -8 - b, -64], '#d62828'); Ci(c, -8 - b, -64, 2.5, '#fff');
+  },
+  r6befana(c, t, w) {
+    const b = Math.sin(t * 3) * 1.5;
+    c.save(); c.translate(0, b);
+    L(c, [-30, -12, 30, -18], '#8b5a2b', 3); for (let i = 0; i < 6; i++) L(c, [-28, -12, -42, -20 + i * 3], '#d9b25a', 2);
+    Ci(c, -15, -30, 9, '#a0703f'); L(c, [-15, -39, -12, -42], '#6b4423', 2);
+    P(c, [-10, -14, 12, -16, 8, -40, -6, -40], '#5a3a7a'); R(c, -4, -28, 6, 6, 1, '#3a8a5a'); R(c, 3, -22, 4, 4, 1, '#e0a91b');
+    L(c, [4, -16, 9, -6], '#5a3a7a', 4); E(c, 11, -5, 4, 2.5, '#2b2b2b');
+    L(c, [6, -34, 16, -20], '#5a3a7a', 4); Ci(c, 16, -19, 2.5, '#f0c9a0');
+    E(c, 0, -50, 10, 10, '#2b2b44'); P(c, [-8, -46, -14, -36, -4, -42], '#2b2b44');
+    Ci(c, 4, -47, 7, '#f0c9a0'); E(c, 11, -46, 3, 2.5, '#e8a888'); Ci(c, 7, -49, 1.4, '#222'); grin(c, 7, -43, 2.5, '#7a2a0c', 1.3);
+    E(c, 2, -53, 8, 3, '#2b2b44'); Ci(c, -6, -50, 2, '#ddd');
+    c.restore();
+  },
+  r6melusina(c, t, w) {
+    const s = Math.sin(t * 2) * 3;
+    c.strokeStyle = '#2a8a8a'; c.lineWidth = 12; c.lineCap = 'round'; c.beginPath(); c.moveTo(-3, -30); c.quadraticCurveTo(-10, -6, 8, -6); c.quadraticCurveTo(22, -6, 22, -16 + s); c.stroke();
+    P(c, [22, -16 + s, 30, -28 + s, 32, -13 + s], '#5fc7b0');
+    for (let i = 0; i < 4; i++) Ci(c, -5 + i * 7, -7, 1.8, '#7ee0c8');
+    E(c, -3, -58, 12, 14, '#6b2a1a'); L(c, [-12, -56, -14, -34], '#6b2a1a', 5);
+    P(c, [-10, -50, 6, -50, 6, -28, -12, -28], '#3a6fb0'); R(c, -11, -36, 18, 3, 1, '#e0a91b');
+    L(c, [4, -46, 13, -38], '#bfe3d0', 3.5); L(c, [13, -38, 20, -46], '#ccc', 1.2); Q(c, 20, -46, 24, -38, 18, -32, '#e84a6a', 0.8);
+    Ci(c, 0, -59, 8, '#bfe3d0'); Ci(c, 3, -61, 1.5, '#222'); grin(c, 3, -56, 2.5, '#7a2a3a', 1.2);
+    E(c, -2, -66, 9, 4, '#6b2a1a'); Ci(c, -2, -68, 2, '#ffd23f');
+  },
+  r6vila(c, t, w) {
+    const f = Math.sin(t * 6) * 0.25;
+    for (const sg of [-1, 1]) { c.save(); c.translate(-4, -44); c.scale(sg, 1); c.rotate(-0.3 + f); c.globalAlpha = 0.7; E(c, 12, -10, 13, 7, '#cfeaff', -0.5); E(c, 10, 2, 9, 5, '#e6f4ff', 0.3); c.globalAlpha = 1; c.restore(); }
+    P(c, [-6, -48, 6, -48, 14, -8, -14, -8], '#fafafa'); P(c, [-14, -8, -10, -4, -6, -8, -2, -4, 2, -8, 6, -4, 10, -8, 14, -8], '#e6eef5');
+    L(c, [5, -44, 14, -36], '#f5e0c8', 3); Ci(c, 15, -35, 2.5, '#f7a1c4');
+    E(c, -3, -54, 10, 12, '#f4d03f'); Q(c, -10, -52, -16, -32, -10 + Math.sin(t * 3) * 2, -18, '#f4d03f', 5);
+    Ci(c, 1, -56, 7.5, '#f5e0c8'); Ci(c, 4, -58, 1.5, '#2f6db3'); grin(c, 4, -53, 2.3, '#a04a5a', 1.2); Ci(c, 6, -55, 1.5, 'rgba(240,120,140,.5)');
+    for (let i = 0; i < 4; i++) Ci(c, -6 + i * 4, -63 + Math.abs(i - 1.5), 2, ['#d62828', '#fff', '#9b6dd6', '#ffd23f'][i]);
+  },
+  r6marinusbear(c, t, w) {
+    const s = Math.sin(w) * 3;
+    for (const [x, d] of [[-18, 1], [-8, -1], [10, 1], [18, -1]]) R(c, x - 4 + s * d * 0.4, -14, 8, 14, 3, '#6b4423');
+    E(c, 0, -24, 26, 14, '#7a5030');
+    R(c, -14, -40, 22, 14, 3, '#c0392b'); R(c, -16, -30, 8, 12, 2, '#a0703f'); R(c, 0, -30, 8, 12, 2, '#a0703f'); L(c, [-4, -40, -4, -14], '#e0a91b', 2);
+    Ci(c, 26, -30, 11, '#7a5030'); Ci(c, 20, -40, 4, '#7a5030'); Ci(c, 29, -40, 4, '#7a5030'); Ci(c, 20, -40, 2, '#a0703f');
+    E(c, 33, -27, 6, 5, '#c49a6c'); Ci(c, 37, -29, 2, '#222'); eye(c, 28, -33, 2.4); grin(c, 33, -23, 3, '#3a2210', 1.3);
+    for (let i = 0; i < 3; i++) Ci(c, -20 + i * 4, -44 + Math.sin(t * 2 + i), 1.8, '#5a2a7a');
+  },
+  r6backahast(c, t, w) {
+    const s = Math.sin(w) * 4;
+    Q(c, -26, -40, -38, -36, -34, -16 + Math.sin(t * 3) * 2, '#7a9a7a', 5);
+    for (const [x, d] of [[-18, 1], [-9, -1], [12, 1], [20, -1]]) { L(c, [x, -26, x + s * d * 0.5, -3], '#f3f6f8', 6); E(c, x + s * d * 0.5, -1, 4, 2, '#8a8a96'); }
+    E(c, 0, -34, 26, 13, '#f3f6f8');
+    P(c, [16, -38, 26, -62, 34, -58, 24, -34], '#f3f6f8');
+    E(c, 34, -58, 7, 12, '#f3f6f8', 1.1); E(c, 42, -54, 5, 4, '#dfe6ea');
+    for (let i = 0; i < 5; i++) Q(c, 22 + i * 2, -62 + i * 5, 14 + i, -58 + i * 5, 16 + i, -50 + i * 5, '#5a8a6a', 2.5);
+    eye(c, 34, -62, 2.6, '#2f6db3'); Ci(c, 45, -54, 1, '#555'); P(c, [28, -66, 30, -74, 33, -66], '#e6eef2');
+    c.globalAlpha = 0.55; E(c, 0, -2, 34, 4, '#7cc7f2'); c.globalAlpha = 1;
+    for (let i = 0; i < 3; i++) Ci(c, -20 + i * 18 + Math.sin(t * 2 + i) * 3, -4, 1.3, '#fff');
+  },
+  r6mechhobhoot(c, t, w) {
+    const b = Math.sin(t * 2.5) * 2;
+    c.save(); c.translate(0, b);
+    c.fillStyle = '#eaf2fb'; c.beginPath(); c.moveTo(-18, -4); c.quadraticCurveTo(-22, -60, 0, -64); c.quadraticCurveTo(22, -60, 18, -4);
+    for (let i = 0; i < 4; i++) c.quadraticCurveTo(13 - i * 9, -12 + Math.sin(t * 5 + i) * 3, 9 - i * 9, -4); c.closePath(); c.fill();
+    E(c, -4, -48, 6, 10, '#ffffff');
+    Ci(c, 2, -46, 4, '#222'); Ci(c, 11, -46, 4, '#222'); Ci(c, 3, -47, 1.3, '#fff'); Ci(c, 12, -47, 1.3, '#fff');
+    E(c, 8, -34, 7, 5, '#3a3a5a'); E(c, 8, -32, 4, 2.5, '#e86a6a');
+    L(c, [14, -30, 22, -24], '#eaf2fb', 4);
+    c.save(); c.translate(26, -20); c.rotate(1.3); E(c, 0, 0, 10, 4.5, '#cdd6de'); E(c, 0, -2, 8, 2, '#7a92b0'); P(c, [8, 0, 14, -5, 14, 5], '#9aa8b8'); Ci(c, -6, -1, 1.2, '#222'); c.restore();
+    c.restore();
+  },
+  r6filikoteras(c, t, w) {
+    const s = Math.sin(t * 2) * 2, f = Math.sin(t * 4) * 0.3;
+    Q(c, -26, -10, -40, -12, -42, -22 + s, '#2fa59a', 6); P(c, [-42, -22 + s, -48, -28 + s, -40, -28 + s], '#f47b20');
+    c.save(); c.translate(-16, -8); c.rotate(f); P(c, [0, 0, -10, 8, 2, 6], '#24887e'); c.restore();
+    c.save(); c.translate(10, -8); c.rotate(-f); P(c, [0, 0, 12, 8, 2, 6], '#24887e'); c.restore();
+    E(c, -6, -14, 24, 12, '#2fa59a'); E(c, -4, -9, 18, 5, '#8ee0c8');
+    for (const [x, y] of [[-18, -18], [-8, -22], [2, -20], [-12, -14]]) Ci(c, x, y, 2.3, '#1f7a70');
+    L(c, [10, -18, 16, -36, 20, -46 + s], '#2fa59a', 9);
+    for (let i = 0; i < 4; i++) P(c, [10 + i * 2.5, -22 - i * 7, 6 + i * 2.5, -28 - i * 7, 12 + i * 2.5, -27 - i * 7], '#f47b20');
+    E(c, 25, -50 + s, 11, 8, '#2fa59a'); E(c, 33, -47 + s, 6, 5, '#4fc4b4');
+    eye(c, 25, -53 + s, 3, '#1f4a7a'); Ci(c, 37, -48 + s, 1.1, '#123'); grin(c, 31, -44 + s, 4, '#123', 1.5); Ci(c, 30, -46 + s, 1.6, 'rgba(240,120,140,.6)');
+    c.globalAlpha = 0.6; E(c, 0, -2, 42, 5, '#3a8ac0'); c.globalAlpha = 1;
+    for (let i = 0; i < 3; i++) { const q = (t * 0.9 + i / 3) % 1; c.globalAlpha = 1 - q; Ci(c, -30 + i * 6, -4 - q * 8, 1.6, '#e6f6ff'); c.globalAlpha = 1; }
+  },
+  r6tantal(c, t, w) {
+    const s = Math.sin(w) * 4, a = Math.sin(t * 2) * 3;
+    L(c, [-4, -40, -6 + s, -3], '#4a4560', 4); L(c, [4, -40, 6 - s, -3], '#4a4560', 4);
+    E(c, -7 + s, -1, 5, 2.5, '#2b2838'); E(c, 7 - s, -1, 5, 2.5, '#2b2838');
+    P(c, [-8, -74, 8, -74, 12, -36, -12, -36], '#5d577a'); P(c, [-12, -37, -9, -32, -6, -37, -3, -32, 0, -37, 3, -32, 6, -37, 9, -32, 12, -37], '#5d577a');
+    L(c, [-7, -70, -16, -48, -18 + a, -22], '#5d577a', 4); L(c, [7, -70, 16, -48, 20 - a, -24], '#5d577a', 4);
+    for (const [x, y] of [[-18 + a, -22], [20 - a, -24]]) for (let k = -1; k <= 1; k++) L(c, [x, y, x + k * 3, y + 6], '#5d577a', 1.6);
+    E(c, 2, -86, 14, 13, '#6e6890'); furBall(c, 0, -96, 14, 6, '#2b2838', 12, 6);
+    Ci(c, -3, -87, 4, '#fff'); Ci(c, 8, -87, 4, '#fff'); Ci(c, -2, -87, 2, '#ffb03f'); Ci(c, 9, -87, 2, '#ffb03f'); Ci(c, -1.8, -87, 0.9, '#111'); Ci(c, 9.2, -87, 0.9, '#111');
+    grin(c, 3, -78, 4, '#2b2838', 1.8);
+  },
+  r6naga(c, t, w) {
+    const s = Math.sin(t * 2) * 3;
+    c.strokeStyle = '#2e8b57'; c.lineWidth = 12; c.lineCap = 'round'; c.beginPath(); c.moveTo(-36, -6); c.bezierCurveTo(-26, -24, -14, 4, -2, -14); c.bezierCurveTo(8, -30, 4, -50, 16, -58 + s); c.stroke();
+    for (let i = 0; i < 5; i++) Ci(c, -30 + i * 9, -12 + Math.sin(i * 1.4) * 5, 2, '#f4c430');
+    E(c, 22, -62 + s, 13, 9, '#2e8b57', 0.15); E(c, 31, -58 + s, 6, 5, '#3fae6f');
+    P(c, [12, -68 + s, 14, -82 + s, 18, -70 + s, 22, -84 + s, 24, -70 + s, 30, -80 + s, 28, -66 + s], '#f4c430'); Ci(c, 22, -74 + s, 2, '#d62828');
+    eye(c, 24, -64 + s, 3, '#d62828'); Ci(c, 35, -59 + s, 1.2, '#123');
+    Q(c, 33, -55 + s, 40, -54 + s, 44, -60 + s, '#f4c430', 1.5); Q(c, 33, -55 + s, 38, -50 + s, 44, -48 + s, '#f4c430', 1.5);
+    c.globalAlpha = 0.6; E(c, -6, -2, 40, 5, '#5ab8e0'); c.globalAlpha = 1;
+    E(c, -26, -4, 6, 2, '#f7a1c4'); E(c, 12, -3, 5, 2, '#f7a1c4');
+  },
+  r6roc(c, t, w) {
+    const f = Math.sin(t * 5) * 0.35;
+    for (const sg of [-1, 1]) { c.save(); c.translate(-2, -42); c.scale(sg, 1); c.rotate(-0.2 + f); P(c, [0, 0, 18, -16, 40, -20, 46, -12, 36, -8, 42, -2, 30, 0, 34, 6, 18, 6], sg > 0 ? '#7a4a24' : '#5a3418'); c.restore(); }
+    P(c, [-14, -36, -30, -30, -30, -40, -24, -44], '#5a3418');
+    E(c, 0, -40, 16, 11, '#8b5a2b'); E(c, 3, -38, 9, 7, '#c49a6c');
+    E(c, 16, -50, 9, 8, '#8b5a2b'); P(c, [22, -54, 34, -50, 24, -44], '#f4c430'); P(c, [24, -48, 34, -50, 26, -45], '#d9a41b');
+    eye(c, 17, -52, 2.6, '#d62828'); L(c, [12, -56, 20, -56], '#5a3418', 1.8);
+    L(c, [-4, -30, -4, -20], '#e0a91b', 2.5); L(c, [4, -30, 4, -20], '#e0a91b', 2.5);
+    E(c, 0, -12, 10, 7, '#9aa0aa'); Ci(c, 9, -14, 5, '#9aa0aa'); Q(c, 13, -12, 16, -6, 13, -2, '#9aa0aa', 2.5); E(c, 5, -15, 3, 4, '#aab0ba'); Ci(c, 10, -15, 1, '#222');
+    for (const x of [-6, -1, 4]) L(c, [x, -6, x, -1], '#9aa0aa', 2.5);
+  },
+  r6abufanous(c, t, w) {
+    const s = Math.sin(w) * 3, g = 0.45 + Math.sin(t * 5) * 0.15;
+    E(c, -5 + s, -1, 4, 2, '#5a4a3a'); E(c, 6 - s, -1, 4, 2, '#5a4a3a');
+    P(c, [-14, -3, 14, -3, 8, -44, -8, -44], '#3a5a8c'); P(c, [-14, -3, -10, 1, -6, -3, -2, 1, 2, -3, 6, 1, 10, -3, 14, -3], '#3a5a8c');
+    L(c, [-10, -14, 10, -14], '#a8865a', 2); L(c, [-8, -36, -14, -24], '#b8935a', 4);
+    E(c, 0, -50, 12, 13, '#b8935a'); P(c, [-6, -60, -10, -68, 2, -62], '#b8935a'); E(c, 4, -48, 8, 9, '#a8c8f0'); Ci(c, -2, -55, 0, '#000');
+    eye(c, 1, -50, 2.6, '#2a6b8a'); eye(c, 7, -50, 2.6, '#2a6b8a'); E(c, 9, -46, 3, 2, '#88a8d8'); grin(c, 4, -43, 2.5, '#2a3a6a', 1.3);
+    L(c, [6, -34, 18, -30], '#b8935a', 4); L(c, [19, -30, 20, -25], '#555', 1.2);
+    c.globalAlpha = g; Ci(c, 20, -18, 12, '#ffe48a'); c.globalAlpha = 1;
+    R(c, 16, -25, 8, 11, 2, '#e0a91b'); R(c, 17.5, -23, 5, 7, 1, '#fff3b0'); P(c, [15, -25, 20, -29, 25, -25], '#b8860b'); R(c, 16, -15, 8, 2, 1, '#b8860b');
+    for (let i = 0; i < 3; i++) Ci(c, -18 + i * 4 + Math.sin(t * 2 + i), -3 - i, 1.3, 'rgba(230,200,140,.7)');
+  },
+  r6whitediv(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-7, -24, -8 + s, -3], '#dfe4ea', 9); L(c, [7, -24, 8 - s, -3], '#dfe4ea', 9);
+    E(c, -8 + s, -1, 6, 3, '#6b4423'); E(c, 8 - s, -1, 6, 3, '#6b4423');
+    fur(c, 0, -30, 34, 10, '#c0392b', 7); R(c, -17, -34, 34, 6, 2, '#a02a20');
+    E(c, 0, -50, 20, 20, '#eef1f4');
+    for (const [x, y] of [[-10, -58], [8, -60], [-4, -44], [12, -46], [-14, -46]]) Ci(c, x, y, 2.5, '#5a6a8a');
+    L(c, [-18, -60, -28, -36 + s], '#eef1f4', 8); L(c, [18, -60, 28, -38 - s], '#eef1f4', 8);
+    E(c, 3, -78, 14, 12, '#eef1f4');
+    Q(c, -6, -86, -18, -90, -14, -102, '#3a2a20', 4); Q(c, 10, -88, 22, -92, 18, -104, '#3a2a20', 4);
+    Ci(c, -1, -80, 3, '#ffd23f'); Ci(c, 8, -80, 3, '#ffd23f'); Ci(c, 0, -80, 1.4, '#111'); Ci(c, 9, -80, 1.4, '#111');
+    R(c, -1, -73, 12, 4, 2, '#5a1010'); P(c, [0, -73, 1.5, -68, 3, -73], '#fff'); P(c, [8, -73, 9.5, -68, 11, -73], '#fff');
+  },
+  r6umkarba(c, t, w) {
+    const s = Math.sin(w) * 3, sw = Math.sin(t * 2) * 0.08;
+    L(c, [-5, -6, -9 + s, 0], '#7a4a24', 3); L(c, [0, -6, 1, 0], '#7a4a24', 3); L(c, [5, -6, 9 - s, 0], '#7a4a24', 3);
+    c.save(); c.rotate(sw);
+    P(c, [-9, -6, 9, -6, 7, -70, -6, -70], '#8b5a2b');
+    for (let i = 0; i < 9; i++) L(c, [-8 + (i % 2), -10 - i * 7, 7 - (i % 2), -13 - i * 7], '#6b4423', 2.5);
+    for (let i = 0; i < 7; i++) { const a = -Math.PI + 0.15 + i * 0.47; Q(c, 0, -72, Math.cos(a) * 18, -72 + Math.sin(a) * 22 - 8, Math.cos(a) * 34, -72 + Math.sin(a) * 18 + 8, i % 2 ? '#2a8a3a' : '#3fae4a', 5); }
+    for (const x of [-5, 0, 5]) Ci(c, x, -66, 3, '#c0642a');
+    L(c, [-8, -40, -18, -30], '#8b5a2b', 3); L(c, [8, -42, 18, -32], '#8b5a2b', 3);
+    Ci(c, -1, -52, 3.2, '#fff8d0'); Ci(c, 5, -52, 3.2, '#fff8d0'); Ci(c, -0.5, -52, 1.5, '#111'); Ci(c, 5.5, -52, 1.5, '#111');
+    Q(c, -2, -44, 2, -40, 6, -44, '#3a2210', 1.8);
+    c.restore();
+  },
+  r6dimo(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-7, -22, -8 + s, -3], '#8a5a2a', 8); L(c, [7, -22, 8 - s, -3], '#8a5a2a', 8);
+    E(c, -8 + s, -1, 6, 3, '#4a2c10'); E(c, 9 - s, -1, 6, 3, '#4a2c10');
+    E(c, -18, -44, 12, 15, '#d9c08a'); L(c, [-18, -59, -15, -63], '#8b5a2b', 3); L(c, [-24, -50, -12, -50], '#b8a070', 1.2);
+    for (let i = 0; i < 3; i++) { const a = t * 3 + i * 2.1, bx = -18 + Math.cos(a) * 12, by = -66 + Math.sin(a) * 5; E(c, bx, by, 2.6, 2, '#ffd23f'); L(c, [bx, by - 2, bx, by + 2], '#2b2b2b', 1); E(c, bx - 1, by - 2.5, 1.6, 1, 'rgba(255,255,255,.8)'); }
+    furBall(c, 0, -40, 18, 20, '#b8582d', 16, 4); E(c, 3, -36, 11, 13, '#e0956a');
+    fur(c, 0, -22, 30, 8, '#6b4423', 6);
+    L(c, [14, -50, 24, -32 + s], '#b8582d', 7); Ci(c, 24, -31 + s, 4, '#e0956a');
+    furBall(c, 4, -68, 14, 12, '#b8582d', 12, 4); E(c, 6, -66, 10, 9, '#e0956a');
+    P(c, [-4, -78, -8, -88, 0, -80], '#f3eee0'); P(c, [12, -80, 16, -90, 16, -78], '#f3eee0');
+    eyes(c, 6, -69, 5, 3.2, '#5a1a1a'); L(c, [0, -74, 4, -73], '#5a2a10', 1.5); L(c, [8, -73, 12, -74], '#5a2a10', 1.5);
+    E(c, 8, -60, 7, 3, '#4a1a0a'); P(c, [8, -62, 10, -56, 12, -62], '#fff');
+  },
+  r6olitiau(c, t, w) {
+    const f = Math.sin(t * 7) * 0.4;
+    for (const sg of [-1, 1]) { c.save(); c.translate(0, -32); c.scale(sg, 1); c.rotate(f); c.fillStyle = '#3a2a2a'; c.beginPath(); c.moveTo(4, -4); c.lineTo(40, -14); c.quadraticCurveTo(38, -2, 44, 6); c.quadraticCurveTo(34, 2, 30, 10); c.quadraticCurveTo(22, 4, 16, 12); c.quadraticCurveTo(12, 4, 4, 6); c.fill(); L(c, [4, -2, 40, -14], '#5a4040', 2); L(c, [12, 0, 30, 10], '#5a4040', 1); L(c, [12, 0, 16, 12], '#5a4040', 1); c.restore(); }
+    E(c, 0, -30, 9, 12, '#5a3a2a');
+    Ci(c, 0, -46, 9, '#5a3a2a'); P(c, [-7, -50, -10, -62, -2, -54], '#5a3a2a'); P(c, [7, -50, 10, -62, 2, -54], '#5a3a2a'); P(c, [-7, -52, -8, -59, -4, -54], '#c47a7a');
+    E(c, 2, -42, 5, 4, '#2b1d1d'); Ci(c, -3, -48, 2.4, '#ffb03f'); Ci(c, 5, -48, 2.4, '#ffb03f'); Ci(c, -2.6, -48, 1, '#111'); Ci(c, 5.4, -48, 1, '#111');
+    P(c, [-1, -40, 0, -36, 1, -40], '#fff'); P(c, [3, -40, 4, -36, 5, -40], '#fff');
+    L(c, [-3, -18, -4, -14], '#3a2a2a', 2); L(c, [3, -18, 4, -14], '#3a2a2a', 2);
+  },
+  r6emelantouka(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -26, -18, -44, -14, -46, -4 + Math.sin(t * 2) * 2, '#5a6a5a', 8);
+    for (const [x, d] of [[-18, 1], [-6, -1], [10, 1], [20, -1]]) R(c, x - 5 + s * d * 0.4, -16, 10, 16, 4, '#4a5a4a');
+    E(c, 0, -28, 28, 16, '#6a7a68'); E(c, 2, -22, 20, 7, '#8a9a84');
+    E(c, 30, -32, 13, 11, '#6a7a68'); E(c, 38, -28, 7, 6, '#7a8a76');
+    P(c, [36, -36, 46, -56, 42, -34], '#f3eee0');
+    eye(c, 30, -36, 2.6, '#a0522d'); Ci(c, 43, -28, 1.2, '#222'); grin(c, 37, -24, 3, '#2b2b2b', 1.4);
+    for (let i = 0; i < 5; i++) Ci(c, -18 + i * 9, -40 + Math.abs(i - 2), 2.5, '#5a6a58');
+    c.globalAlpha = 0.5; E(c, 0, -2, 40, 4, '#6ab07a'); c.globalAlpha = 1;
+  },
+  r6zibi(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -24, -28, -34, -30, -34, -18 + Math.sin(t * 6) * 3, '#3a3a3a', 4);
+    for (const [x, d, h] of [[-18, 1, 12], [-10, -1, 12], [10, 1, 18], [18, -1, 18]]) R(c, x - 3 + s * d * 0.4, -h, 6, h, 2, '#9a968a');
+    c.save(); c.translate(0, -26); c.rotate(-0.2); E(c, 0, 0, 24, 12, '#b8b4a6'); c.restore();
+    for (let i = 0; i < 6; i++) L(c, [-18 + i * 6, -30 + i * 0.4, -16 + i * 6, -18 + i * 0.6], '#3a3a3a', 2.2);
+    fur(c, 6, -40, 30, -10, '#3a3a3a', 7);
+    E(c, 26, -38, 11, 10, '#b8b4a6'); E(c, 34, -33, 7, 5, '#8a8678'); Ci(c, 39, -35, 2, '#222');
+    P(c, [18, -44, 16, -58, 24, -46], '#b8b4a6'); P(c, [26, -46, 28, -60, 32, -45], '#b8b4a6'); P(c, [19, -47, 18, -54, 22, -47], '#d9a0a0');
+    eye(c, 27, -41, 2.6, '#5a3a1a'); R(c, 28, -32, 12, 3, 1, '#5a1010'); teeth(c, 34, -32, 5, 4);
+    E(c, 46, -28, 7, 3.5, '#c9a46a'); E(c, 46, -29, 6, 2.5, '#e8d3a0'); Ci(c, 44, -29, 0.8, '#c9b07a'); Ci(c, 48, -30, 0.8, '#c9b07a');
+  },
+  r6vacabruto(c, t, w) {
+    const s = Math.sin(w) * 3, d = Math.sin(t * 4) * 0.08;
+    L(c, [-5, -20, -6 + s, -3], '#4a3a6a', 5); L(c, [5, -20, 6 - s, -3], '#4a3a6a', 5);
+    for (const sg of [-1, 1]) Ci(c, sg * 6 + (sg < 0 ? s : -s), -3, 2, '#f4c430');
+    fur(c, 0, -34, 32, 16, '#d9b25a', 10); fur(c, 0, -36, 28, 10, '#c49a3a', 9);
+    R(c, -10, -52, 20, 18, 4, '#4a3a6a'); R(c, -10, -44, 20, 3, 1, '#f3eee0');
+    L(c, [-9, -50, -16, -36 - s], '#4a3a6a', 4); L(c, [9, -50, 18, -38 + s], '#4a3a6a', 4); Ci(c, 18, -38 + s, 3, '#7a5a3a');
+    c.save(); c.translate(2, -62); c.rotate(d);
+    E(c, 0, 0, 11, 10, '#1d1d24'); E(c, 8, 4, 7, 6, '#2b2b34'); Ci(c, 12, 4, 1.3, '#d62828');
+    Q(c, -4, -6, -16, -10, -14, -24, '#f3eee0', 4); Q(c, 6, -7, 16, -12, 14, -26, '#f3eee0', 4);
+    eye(c, 3, -2, 2.6, '#d62828'); for (let i = 0; i < 3; i++) Ci(c, -6 + i * 3, 6, 1.4, '#fff');
+    L(c, [-8, 8, 0, 12, 10, 10], '#d62828', 1.5);
+    c.restore();
+  },
+  r6napolo(c, t, w) {
+    const s = Math.sin(t * 2) * 3;
+    P(c, [-36, 0, -30, -12, -18, -16, -8, -8, 0, 0], '#8a7a6a'); P(c, [6, 0, 14, -10, 26, -14, 36, -6, 40, 0], '#7a6a5a');
+    L(c, [-24, -10, -20, -4, -16, -9], '#5a4a3a', 1.2);
+    c.strokeStyle = '#b8682a'; c.lineWidth = 13; c.lineCap = 'round'; c.beginPath(); c.moveTo(4, -6); c.bezierCurveTo(-14, -18, 18, -32, 0, -50 + s); c.stroke();
+    for (let i = 0; i < 4; i++) Ci(c, 2 + Math.sin(i * 1.6) * 6, -10 - i * 10, 2.2, '#e8a050');
+    E(c, 6, -56 + s, 12, 9, '#b8682a', 0.2); E(c, 14, -53 + s, 6, 5, '#d08040');
+    eye(c, 6, -59 + s, 3, '#2a6b2a'); Ci(c, 18, -55 + s, 1.2, '#222'); grin(c, 12, -50 + s, 4, '#4a1a0a', 1.6);
+    L(c, [20, -50 + s, 24, -48 + s, 26, -52 + s], '#d62828', 1.2);
+    for (let i = 0; i < 6; i++) { const p = (t * 0.8 + i / 6) % 1; L(c, [-30 + i * 12, -70 + p * 22, -32 + i * 12, -66 + p * 22], '#5ab8e0', 1.8); }
+    E(c, -12, -78, 14, 6, '#8a96a8'); E(c, 6, -80, 16, 7, '#9aa6b8'); E(c, 22, -77, 11, 5, '#8a96a8');
+  },
+  r6gagorib(c, t, w) {
+    const s = Math.sin(w) * 3, th = Math.max(0, Math.sin(t * 2)) * 6;
+    E(c, -10 + s, -3, 7, 4, '#6b4f8a'); E(c, 10 - s, -3, 7, 4, '#6b4f8a');
+    E(c, 0, -26, 22, 22, '#7e5fa8'); E(c, 4, -22, 14, 14, '#a78bd0');
+    for (const [x, y] of [[-14, -36], [-8, -42], [-16, -22], [12, -40]]) Ci(c, x, y, 2.5, '#5f4686');
+    L(c, [18, -32, 26, -40 - th], '#7e5fa8', 7); E(c, 28, -44 - th, 5, 4, '#9a9a9a'); Ci(c, 27, -45 - th, 1.5, '#c8c8c8');
+    L(c, [-18, -30, -26, -18], '#7e5fa8', 7);
+    E(c, 4, -52, 15, 12, '#7e5fa8');
+    eyes(c, 4, -56, 5, 3.5, '#d62828');
+    E(c, 6, -45, 10, 4, '#3a1a3a'); teeth(c, 6, -47, 9, 5);
+    P(c, [-6, -60, -10, -70, -1, -63], '#5f4686'); P(c, [10, -62, 14, -72, 15, -61], '#5f4686');
+  },
+  r6leuk(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 4;
+    c.save(); c.translate(0, -s);
+    E(c, -5, -2, 5, 2.5, '#d9b679'); E(c, 7, -2, 6, 2.5, '#d9b679');
+    E(c, -16, -18, 5, 5, '#fff');
+    P(c, [-12, -5, 12, -5, 8, -38, -8, -38], '#2f6db3'); L(c, [-5, -36, 0, -30, 5, -36], '#ffd23f', 1.8); for (let i = 0; i < 3; i++) Ci(c, 0, -26 + i * 6, 1.2, '#ffd23f');
+    L(c, [17, -50, 17, -2], '#8b5a2b', 2.5); L(c, [7, -34, 16, -28], '#2f6db3', 4); Ci(c, 16, -28, 2.5, '#d9b679');
+    E(c, -2, -64, 3.5, 13, '#d9b679', -0.2); E(c, 6, -64, 3.5, 13, '#d9b679', 0.25); E(c, -2, -64, 1.6, 9, '#f2b4be', -0.2); E(c, 6, -64, 1.6, 9, '#f2b4be', 0.25);
+    E(c, 2, -46, 10, 9, '#d9b679'); E(c, 8, -43, 5, 4, '#efe0c8'); Ci(c, 12, -45, 1.6, '#e86a8a');
+    R(c, -6, -56, 14, 5, 2, '#d62828'); R(c, -6, -53, 14, 1.5, 0.5, '#ffd23f');
+    eye(c, 6, -48, 2.6); L(c, [12, -43, 20, -45], '#999', 0.8); L(c, [12, -42, 20, -41], '#999', 0.8);
+    Q(c, 6, -40, 9, -38, 12, -41, '#5a3a1a', 1.3); P(c, [8, -39.5, 9, -37, 10, -39.5], '#fff');
+    c.restore();
+  },
+  r6abada(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -20, -26, -28, -24, -30, -16, '#5a3a2a', 2); Ci(c, -30, -15, 2.5, '#5a3a2a');
+    for (const [x, d] of [[-14, 1], [-7, -1], [8, 1], [15, -1]]) { L(c, [x, -20, x + s * d * 0.5, -3], '#c99a6a', 4); E(c, x + s * d * 0.5, -1.5, 3, 2, '#3a2a1a'); }
+    E(c, 0, -26, 20, 10, '#d9aa7a'); E(c, 0, -22, 14, 5, '#f0d4b0');
+    P(c, [12, -30, 18, -46, 26, -44, 20, -28], '#d9aa7a');
+    E(c, 26, -46, 9, 7, '#d9aa7a', 0.3); E(c, 32, -42, 5, 4, '#e8c49a');
+    P(c, [30, -50, 40, -64, 33, -48], '#f4c430');
+    Q(c, 20, -52, 16, -60, 20, -64, '#6b4423', 2.5); Q(c, 24, -53, 22, -62, 27, -64, '#6b4423', 2.5);
+    E(c, 19, -50, 3, 5, '#d9aa7a', -0.5); eye(c, 26, -48, 2.4); Ci(c, 35, -42, 1, '#222');
+    for (let i = 0; i < 4; i++) L(c, [14 + i * 2, -44 + i * 4, 10 + i * 2, -42 + i * 4], '#8a5a3a', 2);
+  },
+  r6lukwata(c, t, w) {
+    const s = Math.sin(t * 2) * 3;
+    for (const [x, r] of [[-30, 7], [-14, 10]]) { c.fillStyle = '#2a3440'; c.beginPath(); c.arc(x, -4 + Math.sin(t * 2 + x) * 1.5, r, Math.PI, 0); c.fill(); }
+    c.strokeStyle = '#2a3440'; c.lineWidth = 12; c.lineCap = 'round'; c.beginPath(); c.moveTo(-2, -2); c.quadraticCurveTo(8, -30, 18, -36 + s); c.stroke();
+    Ci(c, 24, -40 + s, 11, '#2a3440'); E(c, 30, -36 + s, 7, 6, '#3a4654');
+    eye(c, 24, -44 + s, 3, '#ffb03f'); Ci(c, 35, -38 + s, 1.2, '#111'); grin(c, 30, -33 + s, 4, '#111', 1.5);
+    for (let i = 0; i < 4; i++) Ci(c, 6 + i * 4, -18 - i * 5, 1.5, '#4a5a6a');
+    c.globalAlpha = 0.65; E(c, 0, -2, 42, 5, '#3a8ac0'); c.globalAlpha = 1;
+    for (let i = 0; i < 4; i++) Q(c, -38 + i * 20, -4, -33 + i * 20, -8 + Math.sin(t * 3 + i) * 2, -28 + i * 20, -4, '#cfeaff', 1.5);
+    R(c, -40, -12, 14, 4, 2, '#8b5a2b'); L(c, [-33, -12, -33, -20], '#6b4423', 1.2);
+  },
+  r6lamona(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -10, -20, -30, -18, -28, -38 + Math.sin(t * 3) * 2, '#5a3a20', 4); Q(c, -28, -38, -24, -44, -22, -38, '#5a3a20', 4);
+    L(c, [-5, -14, -7 + s, -2], '#5a3a20', 5); L(c, [5, -14, 7 - s, -2], '#5a3a20', 5);
+    E(c, -8 + s, -1, 5, 2.5, '#c49a6c'); E(c, 8 - s, -1, 5, 2.5, '#c49a6c');
+    P(c, [-11, -30, 11, -30, 16, -12, -16, -12], '#2a9d8a'); for (let i = 0; i < 5; i++) Ci(c, -10 + i * 5, -16 + (i % 2) * 6, 1.8, i % 2 ? '#ffd23f' : '#fff');
+    E(c, 0, -38, 12, 11, '#6b4423'); E(c, 2, -36, 7, 7, '#c49a6c');
+    L(c, [-10, -44, -20, -24 + s], '#6b4423', 5); L(c, [10, -44, 20, -58 - s], '#6b4423', 5); Ci(c, 20, -59 - s, 3, '#c49a6c');
+    Ci(c, -9, -58, 4.5, '#6b4423'); Ci(c, 13, -58, 4.5, '#6b4423'); Ci(c, -9, -58, 2.2, '#c49a6c'); Ci(c, 13, -58, 2.2, '#c49a6c');
+    Ci(c, 2, -58, 11, '#6b4423'); E(c, 4, -56, 8, 8, '#d9b08a');
+    P(c, [-9, -62, -2, -72, 10, -70, 13, -63, 2, -66], '#f4c430'); Ci(c, 12, -64, 2, '#d62828');
+    eye(c, 1, -59, 2.6); eye(c, 8, -59, 2.6); E(c, 5, -54, 2, 1.2, '#4a2c10'); R(c, 1, -51, 8, 3, 1, '#5a1010'); teeth(c, 5, -51, 4, 3);
+  },
+  r6soucouyant(c, t, w) {
+    const fl = Math.sin(t * 9);
+    for (let i = 0; i < 6; i++) { const p = (t * 1.2 + i / 6) % 1; c.globalAlpha = 0.7 * (1 - p); Ci(c, -18 - p * 24, -26 + Math.sin(i * 2) * 6 + p * 4, 5 - p * 3, i % 2 ? '#ffb03f' : '#ff6a2a'); c.globalAlpha = 1; }
+    P(c, [-18, -16, -26, -40 + fl * 3, -12, -32, -8, -56 - fl * 3, 2, -38, 10, -58 + fl * 3, 14, -36, 24, -44 - fl * 2, 20, -16], '#ff6a2a');
+    Ci(c, 0, -26, 20, '#ff8a2a'); Ci(c, 2, -26, 15, '#ffc23f'); Ci(c, 3, -26, 9, '#fff3b0');
+    Ci(c, -1, -29, 2.6, '#3a1a0a'); Ci(c, 8, -29, 2.6, '#3a1a0a'); Ci(c, -0.5, -30, 0.9, '#fff'); Ci(c, 8.5, -30, 0.9, '#fff');
+    Q(c, 0, -21, 4, -18, 8, -21, '#7a2a0a', 1.6); Ci(c, -3, -24, 1.8, 'rgba(255,90,60,.6)'); Ci(c, 10, -24, 1.8, 'rgba(255,90,60,.6)');
+    for (let i = 0; i < 5; i++) Q(c, -10 + i * 4, -40, -12 + i * 4, -46, -8 + i * 4, -50, '#ddd', 1.2);
+  },
+  r6tulevieja(c, t, w) {
+    const s = Math.sin(w) * 3, f = Math.sin(t * 5) * 0.3;
+    L(c, [-5, -14, -6 + s, -3], '#e0a91b', 2.5); L(c, [5, -14, 6 - s, -3], '#e0a91b', 2.5);
+    for (const [x, d] of [[-6, 1], [6, -1]]) L(c, [x - 4 + s * d, 0, x + s * d, -3, x + 5 + s * d, 0], '#e0a91b', 2);
+    for (const sg of [-1, 1]) { c.save(); c.translate(-4, -46); c.scale(sg, 1); c.rotate(-0.4 + f); P(c, [0, 0, 18, -10, 24, -2, 16, 2, 20, 8, 8, 6], '#6b5a7a'); c.restore(); }
+    P(c, [-8, -50, 8, -50, 16, -12, -16, -12], '#5a7a4a'); P(c, [-16, -12, -11, -8, -6, -13, -1, -8, 4, -13, 9, -8, 16, -12], '#4a6a3a');
+    L(c, [6, -46, 14, -32], '#9ab88a', 3);
+    Ci(c, 1, -57, 8, '#9ab88a'); E(c, 8, -55, 3, 2.5, '#7a9a6a');
+    Ci(c, 0, -59, 1.6, '#222'); Ci(c, 5, -59, 1.6, '#222'); grin(c, 3, -52, 2.5, '#3a2a1a', 1.3);
+    Q(c, -7, -58, -12, -46, -10, -40, '#ddd', 3);
+    E(c, 0, -64, 22, 5, '#d9b25a'); E(c, 0, -67, 9, 6, '#c9a04a'); for (let i = -2; i <= 2; i++) L(c, [i * 8, -62, i * 9.5, -66], '#a8862a', 1);
+  },
+  r6hodag(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -24, -22, -38, -22, -42, -10, '#2a5a2a', 6); P(c, [-42, -10, -50, -8, -42, -4, -40, -8], '#e8e8e0');
+    for (const [x, d] of [[-16, 1], [-6, -1], [8, 1], [16, -1]]) { R(c, x - 4.5 + s * d * 0.4, -14, 9, 14, 3, '#2f6a2f'); for (let k = -1; k <= 1; k++) Ci(c, x + k * 3 + s * d * 0.4, -1, 1.4, '#e8e8e0'); }
+    E(c, 0, -26, 25, 14, '#3a7a3a');
+    for (let i = 0; i < 6; i++) P(c, [-20 + i * 7, -34 + Math.abs(i - 2.5) * 1.5, -17 + i * 7, -46 + Math.abs(i - 2.5) * 1.5, -14 + i * 7, -34 + Math.abs(i - 2.5) * 1.5], '#e8e8e0');
+    E(c, 28, -32, 15, 12, '#3a7a3a'); E(c, 32, -28, 11, 7, '#4a8a4a');
+    P(c, [18, -40, 14, -54, 24, -42], '#e8e8e0'); P(c, [28, -42, 32, -56, 34, -41], '#e8e8e0');
+    eye(c, 27, -38, 3, '#d62828'); Ci(c, 41, -32, 1.3, '#123');
+    R(c, 24, -27, 18, 4, 2, '#5a1010'); teeth(c, 33, -27, 9, 6); Q(c, 22, -24, 32, -18, 43, -25, '#1a3a1a', 1.5);
+  },
+  r6luzmala(c, t, w) {
+    const p = 1 + Math.sin(t * 4) * 0.08;
+    c.globalAlpha = 0.25; Ci(c, 0, -26, 24 * p, '#bff0ff'); c.globalAlpha = 0.45; Ci(c, 0, -26, 17 * p, '#8ee8d8'); c.globalAlpha = 1;
+    Ci(c, 0, -26, 12, '#e8fff4'); Ci(c, -3, -30, 4, '#fff');
+    Ci(c, -2, -27, 2, '#2a7a7a'); Ci(c, 5, -27, 2, '#2a7a7a'); Q(c, -1, -21, 2, -19, 5, -21, '#2a7a7a', 1.3);
+    for (let i = 0; i < 5; i++) { const a = t * 1.5 + i / 5 * TAU; Ci(c, Math.cos(a) * 20, -26 + Math.sin(a) * 9, 1.6, '#d8fff0'); }
+    for (let i = 0; i < 3; i++) { const q = (t * 0.7 + i / 3) % 1; c.globalAlpha = 1 - q; Ci(c, -6 + i * 6, -12 + q * 10, 1.6, '#bff0ff'); c.globalAlpha = 1; }
+  },
+  r6iara(c, t, w) {
+    const s = Math.sin(t * 2) * 3;
+    E(c, 0, -6, 26, 8, '#7a7a6a'); E(c, -4, -9, 18, 4, '#9a9a8a');
+    c.strokeStyle = '#2a9d48'; c.lineWidth = 12; c.lineCap = 'round'; c.beginPath(); c.moveTo(-2, -26); c.quadraticCurveTo(-4, -12, -18, -12); c.quadraticCurveTo(-28, -12, -30, -20 + s); c.stroke();
+    P(c, [-30, -20 + s, -40, -28 + s, -40, -12 + s], '#5ac77a');
+    for (let i = 0; i < 4; i++) Ci(c, -22 + i * 6, -14, 1.6, '#8ae0a0');
+    E(c, -2, -52, 12, 14, '#1d1410'); L(c, [-12, -50, -16, -24], '#1d1410', 6);
+    P(c, [-9, -46, 7, -46, 6, -26, -10, -26], '#e86a8a'); for (let i = 0; i < 3; i++) Ci(c, -6 + i * 5, -36, 1.8, '#ffd23f');
+    L(c, [5, -42, 14, -48], '#a8d8b0', 3.5); R(c, 12, -53, 7, 3, 1, '#f4c430');
+    Ci(c, 1, -55, 8, '#a8d8b0'); Ci(c, 4, -57, 1.6, '#2a5a2a'); grin(c, 4, -51, 2.5, '#6a2a2a', 1.3);
+    E(c, -2, -62, 9, 4, '#1d1410'); Ci(c, -6, -60, 3, '#f7a1c4'); Ci(c, -6, -60, 1.2, '#ffd23f');
+  },
+  r6hojarasquin(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-6, -24, -7 + s, -3], '#5a3a1f', 6); L(c, [6, -24, 7 - s, -3], '#5a3a1f', 6);
+    E(c, -7 + s, -1, 5, 2.5, '#3a2a10'); E(c, 7 - s, -1, 5, 2.5, '#3a2a10');
+    L(c, [22, -70, 22, -2], '#6b4423', 3); for (let i = 0; i < 3; i++) E(c, 24, -66 + i * 5, 4, 2, '#3fae4a', 0.5);
+    E(c, 0, -48, 18, 28, '#3f8f3a');
+    for (let i = 0; i < 18; i++) { const a = i * 2.4, r = 6 + (i % 4) * 3.5; E(c, Math.cos(a) * r, -48 + Math.sin(a) * r * 1.5, 5, 2.5, ['#2a7a2a', '#7ab84a', '#c9a43a', '#4fa64a'][i % 4], a); }
+    L(c, [14, -56, 22, -48 + s * 0.3], '#3f8f3a', 5);
+    E(c, 4, -78, 12, 11, '#6b8a3a');
+    for (let i = 0; i < 7; i++) { const a = -Math.PI + i * 0.52; E(c, 4 + Math.cos(a) * 13, -78 + Math.sin(a) * 12, 5, 2.5, i % 2 ? '#2a7a2a' : '#7ab84a', a); }
+    Ci(c, 2, -80, 2.6, '#fff8d0'); Ci(c, 10, -80, 2.6, '#fff8d0'); Ci(c, 2.6, -80, 1.3, '#3a2a10'); Ci(c, 10.6, -80, 1.3, '#3a2a10');
+    fur(c, 6, -74, 14, 9, '#8ab84a', 5);
+  },
+  r6pincoya(c, t, w) {
+    const d = Math.sin(t * 3), s = Math.sin(w) * 2;
+    L(c, [-4, -24, -6 + s, -3], '#8ac8d8', 4); L(c, [4, -24, 6 - s, -3], '#8ac8d8', 4);
+    P(c, [-7, -50, 7, -50, 16 + d * 3, -18, -16 + d * 3, -18], '#2a7a5a');
+    for (let i = 0; i < 7; i++) L(c, [-14 + i * 5 + d * 3, -20, -15 + i * 5 + d * 4, -12 + (i % 2) * 3], i % 2 ? '#5a8a2a' : '#3a6a3a', 3);
+    L(c, [-6, -46, -16, -60 + d * 4], '#8ac8d8', 3); L(c, [6, -46, 16, -58 - d * 4], '#8ac8d8', 3);
+    E(c, -2, -60, 11, 12, '#f4c430'); for (let i = 0; i < 3; i++) Q(c, -8 + i * 3, -56, -12 + i * 2 + d * 2, -44, -10 + i * 3, -36, '#e0a91b', 3);
+    Ci(c, 1, -59, 7.5, '#a8dcec'); Ci(c, 4, -61, 1.5, '#1d4a6a'); grin(c, 4, -56, 2.5, '#2a4a6a', 1.3);
+    for (let i = 0; i < 3; i++) Ci(c, -6 + i * 4, -67, 1.8, ['#f08a4a', '#fff', '#f7a1c4'][i]);
+    for (let i = 0; i < 3; i++) Ci(c, -18 + i * 4, -2, 2, '#1d2a4a');
+  },
+  r6areopenap(c, t, w) {
+    const s = Math.sin(w) * 3;
+    for (const sg of [-1, 1]) for (let i = 0; i < 4; i++) { const k = (i % 2 ? s : -s) * sg; L(c, [sg * 6, -20, sg * (16 + i * 5), -30 + i * 3, sg * (22 + i * 5) + k, 0], '#4a2a4a', 3); }
+    E(c, -8, -22, 18, 15, '#6b3a6b'); for (const [x, y] of [[-14, -28], [-4, -30], [-10, -18], [0, -20]]) Ci(c, x, y, 2.5, '#9b6d9b');
+    Ci(c, 12, -22, 11, '#7a4a7a'); Ci(c, 12, -32, 0, '#000');
+    for (const [x, y, r] of [[10, -26, 2.8], [17, -26, 2.8], [12, -31, 1.8], [18, -31, 1.8]]) eye(c, x, y, r);
+    for (let i = 0; i < 4; i++) L(c, [6 + i * 3, -34, 4 + i * 4, -38], '#ddd', 1);
+    grin(c, 14, -17, 3, '#2b1d2b', 1.4); P(c, [12, -16, 13, -12, 14, -16], '#fff'); P(c, [16, -16, 17, -12, 18, -16], '#fff');
+  },
+  r6pusi(c, t, w) {
+    const s = Math.sin(t * 3) * 3;
+    c.strokeStyle = '#7a6a2a'; c.lineWidth = 13; c.lineCap = 'round'; c.beginPath(); c.moveTo(-12, -2); c.bezierCurveTo(10, -10, -14, -30, 4, -44 + s * 0.3); c.quadraticCurveTo(14, -54, 6, -62); c.stroke();
+    E(c, -16, -2, 8, 3, '#7a6a2a');
+    for (let i = 0; i < 7; i++) Ci(c, -6 + Math.sin(i * 1.3) * 6, -6 - i * 8, 2, '#e8d070');
+    E(c, 10, -64, 10, 8, '#8a7a3a', 0.3); eye(c, 12, -67, 2.6, '#d62828'); Ci(c, 19, -62, 1, '#222');
+    R(c, 10, -61, 10, 3, 1, '#3a2a10'); P(c, [13, -61, 14, -58, 15, -61], '#fff'); P(c, [16, -61, 17, -58, 18, -61], '#fff');
+    L(c, [0, -50, -10, -72], '#7a6a2a', 4); L(c, [10, -52, 22, -74], '#7a6a2a', 4);
+    E(c, 6, -82 + s, 20, 10, '#8a8a96'); E(c, 0, -86 + s, 8, 4, '#a8a8b4'); L(c, [-4, -78 + s, 4, -84 + s, 10, -76 + s], '#6a6a76', 1.2);
+  },
+  r6kakamora(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 4;
+    c.save(); c.translate(0, -s);
+    L(c, [-4, -8, -5, -2], '#3a2a1a', 3); L(c, [4, -8, 5, -2], '#3a2a1a', 3);
+    c.fillStyle = '#5a3418'; c.beginPath(); c.moveTo(0, -42); c.quadraticCurveTo(-16, -40, -14, -6); c.lineTo(14, -6); c.quadraticCurveTo(16, -40, 0, -42); c.fill();
+    for (let i = 0; i < 7; i++) Q(c, -10 + i * 3.5, -36, -11 + i * 3.5 + Math.sin(t * 4 + i), -20, -12 + i * 3.8, -6, '#7a4a24', 1.5);
+    E(c, 4, -30, 7, 6, '#c49a6c');
+    Ci(c, 2, -31, 2, '#fff'); Ci(c, 7, -31, 2, '#fff'); Ci(c, 2.5, -31, 1, '#111'); Ci(c, 7.5, -31, 1, '#111'); Q(c, 2, -27, 5, -25, 8, -27, '#3a1a0a', 1.2);
+    L(c, [10, -20, 16, -16], '#c49a6c', 2.5); for (let k = 0; k < 3; k++) L(c, [16, -16, 22, -20 + k * 3], '#f3eee0', 1.2);
+    c.restore();
+  },
+});
+
+const MONSTERS6 = [
+  // Europe
+  { id: 'r6langewapper', cont: 'europe', name: 'Lange Wapper', place: 'Belgium (Antwerp)', map: 'Belgium', fact: 'A prankster giant of Antwerp who could make himself as tall as a house or as small as a child. His statue stands by the old Steen castle.', tr: 'r6waffle', trName: 'Belgian waffle', box: [40, 96], sp: 60 },
+  { id: 'r6nisse', cont: 'europe', name: 'Nisse', place: 'Denmark', map: 'Denmark', fact: 'A little farm gnome with a red cap who helps look after the farm. Danish families leave him a bowl of rice porridge with butter at Christmas.', tr: 'r6porridge', trName: 'Christmas rice porridge', box: [32, 66], sp: 90 },
+  { id: 'r6befana', cont: 'europe', name: 'La Befana', place: 'Italy', map: 'Italy', fact: 'A kind old witch who flies on her broom on the night of 5 January, filling good children\'s stockings with sweets and naughty ones with coal.', tr: 'r6stocking', trName: 'Befana stocking', box: [88, 62], sp: 75, fly: true },
+  { id: 'r6melusina', cont: 'europe', name: 'Melusina', place: 'Luxembourg', map: 'Luxembourg', fact: 'A water fairy with a fish tail who married Count Siegfried, founder of Luxembourg. Legend says she still sits in the Bock rock, sewing one stitch a year.', tr: 'r6needle', trName: "Melusina's needle", box: [66, 72], sp: 55 },
+  { id: 'r6vila', cont: 'europe', name: 'Vila', place: 'Montenegro', map: 'Montenegro', fact: 'Vilas are mountain fairies of South Slavic legends. In Montenegrin songs sung to the gusle, they live on peaks like Lovćen and help brave heroes.', tr: 'r6gusle', trName: 'Gusle fiddle', box: [58, 70], sp: 80, fly: true },
+  { id: 'r6marinusbear', cont: 'europe', name: "Saint Marinus' Bear", place: 'San Marino', map: 'San Marino', fact: 'A legend from San Marino: a bear ate the donkey of Saint Marinus, the country\'s founder, so Marinus made the bear do the donkey\'s work instead!', tr: 'r6towers', trName: 'Three Towers', box: [80, 52], sp: 50 },
+  { id: 'r6backahast', cont: 'europe', name: 'Bäckahäst', place: 'Sweden', map: 'Sweden', fact: 'The "brook horse": a shining white horse that appears by rivers on foggy days. Anyone who climbs on its back gets carried off into the water!', tr: 'r6dalahorse', trName: 'Dala horse', box: [90, 76], sp: 70 },
+  // Asia
+  { id: 'r6mechhobhoot', cont: 'asia', name: 'Mechho Bhoot', place: 'Bangladesh (Bengal)', map: 'Bangladesh', fact: 'A Bengali ghost that loves fish! It follows fishermen home from the market and begs for fish in a nasal voice.', tr: 'r6hilsa', trName: 'Hilsa fish', box: [82, 68], sp: 75, fly: true },
+  { id: 'r6filikoteras', cont: 'asia', name: 'Ayia Napa Sea Monster', place: 'Cyprus (Cape Greco)', map: 'Cyprus', fact: 'Fishermen near Ayia Napa tell of a big sea creature they call "to filiko teras", the friendly monster, because it never hurts anyone.', tr: 'r6loukoumades', trName: 'Honey dough balls', box: [96, 62], sp: 55 },
+  { id: 'r6tantal', cont: 'asia', name: 'Tantal', place: 'Kuwait', map: 'Kuwait', fact: 'A super-tall night figure from old Kuwaiti tales, with long arms and a big head. People said waving a long needle made it run away!', tr: 'r6dhow', trName: 'Pearl-diving dhow', box: [48, 110], sp: 60 },
+  { id: 'r6naga', cont: 'asia', name: 'Naga of Tasik Chini', place: 'Malaysia (Pahang)', map: 'Malaysia', fact: 'Legends say a giant dragon-serpent called Sri Gumum lives in Lake Chini, Malaysia\'s lake that blooms with pink lotuses.', tr: 'r6lotus', trName: 'Pink lotus', box: [86, 86], sp: 55 },
+  { id: 'r6roc', cont: 'asia', name: 'Roc', place: 'Oman (Sinbad stories)', map: 'Oman', fact: 'A giant bird from the tales of Sinbad the Sailor, who is said to come from Sohar in Oman. A roc could lift an elephant in its claws!', tr: 'r6rocegg', trName: 'Giant roc egg', box: [100, 66], sp: 70, fly: true },
+  { id: 'r6abufanous', cont: 'asia', name: 'Abu Fanous', place: 'Saudi Arabia (desert tales)', map: 'Saudi Arabia', fact: '"Father of the Lantern": a desert creature that shows a light in the dark to lead travellers off the path, then vanishes and leaves them lost.', tr: 'r6rose', trName: 'Taif rose', box: [64, 72], sp: 75 },
+  { id: 'r6whitediv', cont: 'asia', name: 'White Div', place: 'Tajikistan (Shahnameh)', map: 'Tajikistan', fact: 'A huge spotted giant with horns from the Shahnameh, the Book of Kings loved in Tajikistan. The hero Rostam defeated him in his cave.', tr: 'r6apricot', trName: 'Tajik apricots', box: [64, 108], sp: 45 },
+  { id: 'r6umkarba', cont: 'asia', name: 'Um Karba wa Leef', place: 'United Arab Emirates', map: 'United Arab Emirates', fact: 'An Emirati legend of a palm tree that comes to life and wanders the villages at night. It is more spooky than harmful!', tr: 'r6falconhood', trName: 'Falcon hood', box: [70, 104], sp: 50 },
+  // Africa
+  { id: 'r6dimo', cont: 'africa', name: 'Dimo', place: 'Botswana (Tswana tales)', map: 'Botswana', fact: 'A greedy ogre from the tale "Tselane and the Ogre". He copied her mother\'s song to trick Tselane, but she was saved and his sack was filled with bees!', tr: 'r6basket', trName: 'Woven Botswana basket', box: [72, 92], sp: 55 },
+  { id: 'r6olitiau', cont: 'africa', name: 'Olitiau', place: 'Cameroon', map: 'Cameroon', fact: 'A huge dark bat with big teeth, reported swooping over rivers in the forests of Cameroon in 1932.', tr: 'r6drum', trName: 'Talking drum', box: [90, 64], sp: 75, fly: true },
+  { id: 'r6emelantouka', cont: 'africa', name: 'Emela-ntouka', place: 'DR Congo (Congo Basin)', map: 'Dem. Rep. Congo', fact: 'Its name means "killer of elephants". People of the Congo swamps describe a huge plant-eater with one long horn and a thick tail.', tr: 'r6kubacloth', trName: 'Kuba cloth', box: [96, 58], sp: 45 },
+  { id: 'r6zibi', cont: 'africa', name: 'Zibi the Hyena', place: 'Eritrea (folktales)', map: 'Eritrea', fact: 'In Eritrean animal tales, the greedy striped hyena Zibi is always trying to grab more food, but the clever fox usually tricks him!', tr: 'r6injera', trName: 'Injera with stews', box: [106, 62], sp: 85 },
+  { id: 'r6vacabruto', cont: 'africa', name: 'Vaca Bruto', place: 'Guinea-Bissau (Bijagós)', map: 'Guinea-Bissau', fact: 'The "wild bull": dancers from the Bijagós Islands wear wooden bull heads with real horns and straw skirts, and charge like bulls at festivals.', tr: 'r6canoe', trName: 'Bijagós dugout canoe', box: [44, 92], sp: 80 },
+  { id: 'r6napolo', cont: 'africa', name: 'Napolo', place: 'Malawi', map: 'Malawi', fact: 'A giant serpent that lives under the mountains of Malawi. Legends say floods and landslides happen when Napolo moves to a new home.', tr: 'r6cichlid', trName: 'Lake Malawi cichlid', box: [80, 88], sp: 50 },
+  { id: 'r6gagorib', cont: 'africa', name: 'Ga-gorib', place: 'Namibia (Khoikhoi stories)', map: 'Namibia', fact: 'A monster who sat by a deep pit and dared people to throw stones at him. The stones bounced back! The hero Heitsi-eibib tricked him and won.', tr: 'r6ostrichbeads', trName: 'Ostrich-egg beads', box: [70, 76], sp: 55 },
+  { id: 'r6leuk', cont: 'africa', name: 'Leuk the Hare', place: 'Senegal (Wolof tales)', map: 'Senegal', fact: 'Leuk is the clever little hare of Wolof stories. He outsmarts bigger animals like Bouki the hyena and even becomes a wise adviser to the lion king!', tr: 'r6baobab', trName: 'Baobab fruit', box: [44, 82], sp: 95 },
+  { id: 'r6abada', cont: 'africa', name: 'Abada', place: 'Sudan (Kordofan)', map: 'Sudan', fact: 'A small unicorn-like animal with crooked horns from the stories of Kordofan. People believed its horns could stop poison.', tr: 'r6hibiscus', trName: 'Hibiscus flower', box: [82, 66], sp: 85 },
+  { id: 'r6lukwata', cont: 'africa', name: 'Lukwata', place: 'Uganda (Buganda)', map: 'Uganda', fact: 'A giant dark serpent of Lake Victoria in Baganda legends, said to rise up and splash fishermen\'s canoes.', tr: 'r6barkcloth', trName: 'Barkcloth', box: [90, 54], sp: 55 },
+  // North America
+  { id: 'r6lamona', cont: 'namerica', name: 'La Mona', place: 'Costa Rica', map: 'Costa Rica', fact: 'In a Costa Rican legend, a witch turns herself into a giant monkey at night and leaps from tree to tree, making mischief and scaring people walking home.', tr: 'r6carreta', trName: 'Painted oxcart wheel', box: [60, 76], sp: 85 },
+  { id: 'r6soucouyant', cont: 'namerica', name: 'Soucouyant', place: 'Grenada', map: 'Grenada', fact: 'An old woman who flies through the night as a ball of fire. Scatter rice by the door and she must stop to count every grain!', tr: 'r6nutmeg', trName: 'Nutmeg', box: [80, 62], sp: 80, fly: true },
+  { id: 'r6tulevieja', cont: 'namerica', name: 'La Tulevieja', place: 'Panama', map: 'Panama', fact: 'A wild old woman of the woods with a huge straw hat, bird feet and little wings, said to wander along Panama\'s rivers.', tr: 'r6mola', trName: 'Guna mola', box: [56, 76], sp: 70 },
+  { id: 'r6hodag', cont: 'namerica', name: 'Hodag', place: 'USA (Wisconsin)', map: 'United States of America', fact: 'A horned, spiky, grinning beast "discovered" in 1893 as a famous joke in Rhinelander, Wisconsin. It is now the town\'s mascot!', tr: 'r6cranberries', trName: 'Wisconsin cranberries', box: [100, 58], sp: 55 },
+  // South America
+  { id: 'r6luzmala', cont: 'samerica', name: 'Luz Mala', place: 'Uruguay (countryside tales)', map: 'Uruguay', fact: 'The "bad light": a floating glow seen at night over the fields of Uruguay and Argentina. Old tales say it shows where treasure is buried.', tr: 'r6alfajor', trName: 'Alfajor', box: [48, 52], sp: 80, fly: true },
+  { id: 'r6iara', cont: 'samerica', name: 'Iara', place: 'Brazil (Amazon)', map: 'Brazil', fact: 'A river mermaid of the Amazon with long dark hair. She sits on rocks combing her hair and sings songs so sweet that fishermen forget to go home.', tr: 'r6comb', trName: 'Golden comb', box: [80, 70], sp: 55 },
+  { id: 'r6hojarasquin', cont: 'samerica', name: 'Hojarasquín del Monte', place: 'Colombia', map: 'Colombia', fact: 'A forest guardian covered in leaves and moss. He protects the animals and trees, and gets hunters who harm the forest lost.', tr: 'r6orchid', trName: 'Cattleya orchid', box: [60, 94], sp: 60 },
+  { id: 'r6pincoya', cont: 'samerica', name: 'La Pincoya', place: 'Chile (Chiloé)', map: 'Chile', fact: 'A sea spirit of Chiloé dressed in seaweed. If she dances facing the sea, fishermen will catch plenty of fish and shellfish.', tr: 'r6mussel', trName: 'Chiloé mussel', box: [46, 76], sp: 75 },
+  // Oceania
+  { id: 'r6areopenap', cont: 'oceania', name: 'Areop-Enap', place: 'Nauru', map: 'Nauru', fact: 'In an old Nauruan creation story, the Ancient Spider found a giant clam and, with a little help, opened it, making the sky from the top shell and the sea from the bottom.', tr: 'r6clam', trName: 'Giant clam', box: [82, 44], sp: 65 },
+  { id: 'r6pusi', cont: 'oceania', name: 'Te Pusi', place: 'Tuvalu', map: 'Tuvalu', fact: 'In a Tuvalu legend, the eel Te Pusi and the flounder fought over a heavy stone. The flat flounder became the atolls and the eel became the coconut palm.', tr: 'r6islandstones', trName: 'Eight island stones', box: [56, 96], sp: 60 },
+  { id: 'r6kakamora', cont: 'oceania', name: 'Kakamora', place: 'Solomon Islands (Makira)', map: 'Solomon Is.', fact: 'Tiny, cheeky forest people of Makira island with long hair and sharp nails. They live in caves and love to play tricks.', tr: 'r6shellmoney', trName: 'Shell money', box: [46, 50], sp: 95 },
+].map(m => Object.assign(m, { round: 6 }));
+MONSTERS.push(...MONSTERS6);
 // six rounds: rounds 3-6 are planned (see ROUNDS.md) and open once their monsters are drawn
 const ROUND_COUNT = 6;
 const roundReady = r => MONSTERS.some(m => m.round === r);
@@ -1891,7 +3482,10 @@ function enterArea(id, fromCont) {
     const avoid = [{ x: home.x, y: home.y, r: 200 }].concat(ground.filter(g => g.kind === 'pond').map(g => ({ x: g.x, y: g.y, r: g.rx + 30 })));
     if (id === 'samerica') for (let x = 0; x < world.w; x += 120) avoid.push({ x, y: 520, r: 90 });
     if (id === 'oceania') for (let x = 0; x < world.w; x += 120) avoid.push({ x, y: 60, r: 120 });
+    const lms = LANDMARKS[id] || [];
+    for (const [, , , x, y, rad] of lms) if (rad) avoid.push({ x, y: y - 40, r: rad });
     decor = placeDecor(r, c.decor, avoid);
+    for (const [lm, name, country, x, y] of lms) decor.push({ kind: 'lm', lm, name, country, x, y, v: 0, s: 1 });
     decor.push({ kind: 'signpost', x: home.x - 230, y: home.y + 20, v: 0, s: 1, text: c.name });
     player.x = home.x; player.y = home.y - 190; portalLock = home;
     const defs = roundMons(save.round, id), mk = save.round + ':' + id;
@@ -2241,6 +3835,202 @@ const DECOR = {
   signpost(c, d) { R(c, -3, -40, 6, 40, 2, '#7a4a24'); P(c, [-50, -66, 44, -66, 56, -54, 44, -42, -50, -42], '#c8925a'); c.fillStyle = '#4a2810'; c.font = 'bold 14px "Trebuchet MS", sans-serif'; c.textAlign = 'center'; c.fillText(d.text, 0, -49); },
 };
 
+// ---------------------------------------------------------------- native plants
+Object.assign(DECOR, {
+  birch(c, d) { R(c, -4, -60, 8, 60, 3, '#f3f0e8'); for (let y = -54; y < -4; y += 10) L(c, [-4, y, 0, y + 2], '#333', 1.5); for (const [x, y, r] of [[-12, -64, 13], [10, -66, 13], [0, -80, 15]]) Ci(c, x, y, r, '#8fc548'); Ci(c, -4, -82, 5, '#b5dd6e'); },
+  sunflower(c, d) { L(c, [0, 0, 0, -36], '#4f8f3a', 3); E(c, -6, -18, 7, 3, '#5fa84a', 0.5); for (let i = 0; i < 12; i++) { const a = i / 12 * TAU; E(c, Math.cos(a) * 8, -40 + Math.sin(a) * 8, 5, 2.5, '#ffd23f', a); } Ci(c, 0, -40, 6, '#6b3e1f'); },
+  poppy(c, d) { for (let i = -1; i <= 1; i++) { L(c, [i * 6, 0, i * 7, -14 - Math.abs(i) * 3], '#5f8f4a', 1.5); Ci(c, i * 7, -16 - Math.abs(i) * 3, 4.5, '#e63946'); Ci(c, i * 7, -16 - Math.abs(i) * 3, 1.5, '#222'); } },
+  lavbush(c, d) { for (let i = -3; i <= 3; i++) { L(c, [i * 3, 0, i * 5, -20], '#7a9a6a', 1.5); for (let k = 0; k < 3; k++) E(c, i * 5, -20 - k * 3, 2, 2.5, '#9b6dd6'); } },
+  banyan(c, d) { R(c, -10, -44, 20, 44, 4, '#7a5a3a'); for (const x of [-30, -20, 22, 32]) L(c, [x, -40, x + 2, 0], '#8b6b4a', 2); for (const [x, y, r] of [[-30, -52, 20], [28, -54, 20], [0, -66, 26], [-14, -48, 16], [14, -46, 16]]) Ci(c, x, y, r, '#2f7d32'); Ci(c, -6, -74, 8, '#4caf50'); },
+  aloe(c, d) { for (let i = -3; i <= 3; i++) { c.save(); c.rotate(i * 0.3); P(c, [-3, 0, 3, 0, 0, -20 - (3 - Math.abs(i)) * 3], '#6a9a7a'); c.restore(); } L(c, [0, -10, 2, -34], '#7a5a3a', 1.5); E(c, 2, -36, 2.5, 5, '#e76f51'); },
+  protea(c, d) { L(c, [0, 0, 0, -16], '#4f7a3a', 2); E(c, -6, -8, 6, 2.5, '#5f8f4a', 0.4); for (let i = 0; i < 9; i++) { const a = -Math.PI / 2 + (i - 4) * 0.28; P(c, [0, -20, Math.cos(a) * 12 - 2, -20 + Math.sin(a) * 14, Math.cos(a) * 12 + 2, -20 + Math.sin(a) * 14], i % 2 ? '#e89bb0' : '#f5b7c8'); } Ci(c, 0, -22, 4, '#f7e3c3'); },
+  datepalm(c, d) { for (let y = 0; y > -70; y -= 7) E(c, 0, y - 3, 5, 4, '#8b6b3a'); for (let i = 0; i < 7; i++) { const a = -Math.PI / 2 + (i - 3) * 0.5; Q(c, 0, -72, Math.cos(a) * 22, -80 + Math.sin(a) * 8, Math.cos(a) * 36, -62 + Math.abs(Math.cos(a)) * 10, '#5f8f3a', 5); } for (const x of [-5, 0, 5]) Ci(c, x, -66, 3, '#b5651d'); },
+  saguaro(c, d) { R(c, -7, -76, 14, 76, 7, '#4f9d58'); R(c, -24, -50, 9, 24, 4.5, '#4f9d58'); R(c, -24, -30, 18, 8, 4, '#4f9d58'); R(c, 15, -62, 9, 30, 4.5, '#4f9d58'); R(c, 6, -38, 18, 8, 4, '#4f9d58'); for (let x = -4; x <= 4; x += 4) L(c, [x, -72, x, -4], '#3e8547', 1); Ci(c, 0, -78, 3, '#fff'); },
+  maple(c, d) { R(c, -5, -32, 10, 32, 3, '#6b3e1f'); for (const [x, y, r, col] of [[-16, -44, 17, '#d9481e'], [14, -46, 17, '#e85d04'], [0, -62, 21, '#c1121f'], [-6, -50, 12, '#f48c06']]) Ci(c, x, y, r, col); },
+  redwood(c, d) { R(c, -7, -40, 14, 40, 3, '#8b3a1a'); for (let i = 0; i < 4; i++) P(c, [-22 + i * 3, -32 - i * 26, 22 - i * 3, -32 - i * 26, 0, -70 - i * 26], i % 2 ? '#2e6b3a' : '#24593a'); },
+  pricklypear(c, d) { for (const [x, y, rx, ry, r] of [[0, -12, 9, 12, 0], [-10, -28, 7, 10, -0.4], [9, -30, 7, 10, 0.4], [0, -42, 6, 8, 0]]) { E(c, x, y, rx, ry, '#5f9d4a', r); Ci(c, x - 2, y - 2, 1, '#e8f5c8'); } Ci(c, -12, -38, 3, '#c2185b'); Ci(c, 2, -50, 3, '#ffd23f'); },
+  bromeliad(c, d) { for (let i = -3; i <= 3; i++) { c.save(); c.rotate(i * 0.35); E(c, 0, -12, 3.5, 13, i % 2 ? '#2e8b3e' : '#3fa34d'); c.restore(); } P(c, [-4, -18, 0, -34, 4, -18], '#e63946'); P(c, [-2, -22, -8, -30, 0, -20], '#ff6b3b'); P(c, [2, -22, 8, -30, 0, -20], '#ff6b3b'); },
+  monkeypuzzle(c, d) { R(c, -4, -70, 8, 70, 2, '#7a6a5a'); for (let i = 0; i < 4; i++) { const y = -70 + i * 12, w = 16 + i * 6; L(c, [0, y, -w, y + 8], '#2f5f3a', 5); L(c, [0, y, w, y + 8], '#2f5f3a', 5); } E(c, 0, -74, 10, 6, '#2f5f3a'); },
+  heliconia(c, d) { L(c, [0, 0, 0, -40], '#2e7d32', 2); E(c, -10, -20, 12, 4, '#3fa34d', 0.6); for (let i = 0; i < 4; i++) P(c, [0, -38 + i * 7, (i % 2 ? 10 : -10), -34 + i * 7, 0, -32 + i * 7], i % 2 ? '#e63946' : '#ff6b3b'); for (let i = 0; i < 4; i++) Ci(c, i % 2 ? 9 : -9, -34 + i * 7, 1.2, '#ffd23f'); },
+  treefern(c, d) { R(c, -4, -56, 8, 56, 3, '#5a4632'); for (let i = 0; i < 7; i++) { const a = -Math.PI / 2 + (i - 3) * 0.45; Q(c, 0, -56, Math.cos(a) * 18, -66 + Math.sin(a) * 6, Math.cos(a) * 34, -50 + Math.abs(i - 3) * 4, '#3f9b4a', 4); } Q(c, 0, -56, -2, -70, 4, -74, '#5fbf5a', 2); },
+  kangaroopaw(c, d) { for (let i = -1; i <= 1; i++) { L(c, [0, 0, i * 8, -26], '#c1121f', 2); for (let k = 0; k < 3; k++) E(c, i * 8 + 2, -26 + k * 4, 3, 1.6, '#e63946', 0.5); E(c, i * 8 + 3, -27, 2, 1.2, '#4caf50', 0.5); } E(c, -6, -2, 10, 2.5, '#5f8f4a', -0.2); },
+  banksia(c, d) { L(c, [0, 0, 0, -18], '#6b5a3a', 3); for (const s of [-1, 1]) E(c, s * 9, -16, 9, 3, '#4f7a3a', s * 0.6); E(c, 0, -30, 6, 12, '#f4a300'); for (let y = -40; y < -20; y += 3) L(c, [-5, y, 5, y], '#d98200', 1); },
+});
+
+// ---------------------------------------------------------------- famous places (drawn with their base at 0,0)
+const LANDMARK = {
+  eiffel(c) {
+    const col = '#8a6a4a'; c.fillStyle = col; c.beginPath(); c.moveTo(-64, 0); c.lineTo(-26, -84); c.lineTo(26, -84); c.lineTo(64, 0); c.lineTo(42, 0); c.quadraticCurveTo(0, -62, -42, 0); c.closePath(); c.fill();
+    R(c, -38, -92, 76, 9, 2, '#6b5236');
+    P(c, [-24, -90, 24, -90, 11, -170, -11, -170], col); R(c, -18, -176, 36, 7, 2, '#6b5236');
+    P(c, [-9, -172, 9, -172, 2, -250, -2, -250], col); L(c, [0, -250, 0, -272], '#6b5236', 2);
+    for (let y = -80; y > -165; y -= 14) { L(c, [-20 + (y + 90) * -0.12, y, 20 + (y + 90) * 0.12, y - 12], 'rgba(255,255,255,.25)', 1); L(c, [20 + (y + 90) * 0.12, y, -20 + (y + 90) * -0.12, y - 12], 'rgba(255,255,255,.25)', 1); }
+    for (let y = -10; y > -78; y -= 14) { L(c, [-56 + (-y) * 0.42, y, -38 + (-y) * 0.18, y - 12], 'rgba(255,255,255,.25)', 1); L(c, [56 - (-y) * 0.42, y, 38 - (-y) * 0.18, y - 12], 'rgba(255,255,255,.25)', 1); }
+  },
+  bigben(c) {
+    R(c, -22, -200, 44, 200, 2, '#c9a46b'); for (let x = -16; x <= 16; x += 8) L(c, [x, -8, x, -120], '#b08850', 1.5);
+    R(c, -26, -176, 52, 46, 3, '#d9b77a'); Ci(c, 0, -153, 17, '#fffaf0'); c.strokeStyle = '#3a3a3a'; c.lineWidth = 2.5; c.beginPath(); c.arc(0, -153, 17, 0, TAU); c.stroke();
+    L(c, [0, -153, 0, -164], '#222', 2); L(c, [0, -153, 8, -150], '#222', 2);
+    R(c, -20, -214, 40, 16, 2, '#c9a46b'); P(c, [-22, -214, 22, -214, 0, -262], '#4a5a6a'); L(c, [0, -262, 0, -276], '#d4a017', 2);
+    R(c, -50, -40, 32, 40, 2, '#d9b77a'); R(c, 18, -40, 50, 40, 2, '#d9b77a');
+  },
+  pisa(c) {
+    c.save(); c.rotate(0.1);
+    for (let i = 0; i < 7; i++) { const y = -28 * (i + 1); R(c, -24, y, 48, 28, 2, i % 2 ? '#f6f1e4' : '#ece4cf'); for (let x = -18; x <= 18; x += 9) R(c, x - 2, y + 7, 4, 15, 2, '#b9ad8f'); L(c, [-24, y, 24, y], '#c9bd9f', 2); }
+    R(c, -16, -226, 32, 30, 3, '#f6f1e4'); for (let x = -10; x <= 10; x += 10) R(c, x - 2, -219, 4, 14, 2, '#b9ad8f'); E(c, 0, -226, 16, 4, '#c9bd9f');
+    c.restore();
+  },
+  windmill(c) {
+    P(c, [-26, 0, 26, 0, 16, -96, -16, -96], '#8b5a3a'); R(c, -8, -24, 16, 24, 6, '#5a3a1a'); Ci(c, 0, -60, 6, '#cfe8f5');
+    P(c, [-20, -94, 20, -94, 0, -122], '#3a4a5a');
+    c.save(); c.translate(0, -100); c.rotate(time * 0.6);
+    for (let i = 0; i < 4; i++) { c.save(); c.rotate(i * Math.PI / 2); R(c, -2, -92, 4, 92, 1, '#6b4a2a'); R(c, 2, -90, 16, 70, 1, 'rgba(250,245,230,.85)'); for (let y = -84; y < -22; y += 12) L(c, [2, y, 18, y], '#8b6b4a', 1); c.restore(); }
+    Ci(c, 0, 0, 5, '#3a3a3a'); c.restore();
+    for (let i = 0; i < 5; i++) { const x = -60 + i * 30; L(c, [x, 0, x, -12], '#3f9b3a', 2); E(c, x, -15, 4, 6, ['#e63946', '#ffd23f', '#f7a1c4', '#e63946', '#ffffff'][i]); }
+  },
+  nevsky(c) {
+    R(c, -96, -64, 192, 64, 3, '#efe6d2'); for (let x = -80; x <= 80; x += 20) { R(c, x - 5, -46, 10, 26, 5, '#8a7a62'); }
+    R(c, -16, -30, 32, 30, 14, '#6b5a42');
+    for (const x of [-66, 66]) { R(c, x - 16, -94, 32, 32, 2, '#e6dcc6'); E(c, x, -98, 18, 14, '#4f9a7a'); L(c, [x, -112, x, -122], '#e0a91b', 2); }
+    for (const x of [-34, 34]) { R(c, x - 12, -104, 24, 40, 2, '#e6dcc6'); E(c, x, -108, 14, 12, '#e0a91b'); L(c, [x, -120, x, -128], '#e0a91b', 2); }
+    R(c, -30, -134, 60, 70, 3, '#efe6d2'); for (let x = -20; x <= 20; x += 10) R(c, x - 2, -124, 4, 14, 2, '#8a7a62');
+    E(c, 0, -138, 34, 30, '#e0a91b'); E(c, -10, -148, 8, 14, '#f4d03f'); L(c, [0, -168, 0, -184], '#e0a91b', 3); L(c, [-6, -178, 6, -178], '#e0a91b', 2);
+  },
+  greatwall(c) {
+    E(c, -60, 4, 120, 70, '#6faa58'); E(c, 90, 4, 110, 90, '#5f9a4b');
+    const pts = []; for (let i = 0; i <= 20; i++) { const x = -170 + i * 17; pts.push([x, -40 - Math.sin(i / 20 * Math.PI * 1.6 + 0.3) * 60]); }
+    c.strokeStyle = '#a89a80'; c.lineWidth = 16; c.lineJoin = 'round'; c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.stroke();
+    c.strokeStyle = '#c9bca2'; c.lineWidth = 6; c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p[0], p[1] - 4) : c.moveTo(p[0], p[1] - 4)); c.stroke();
+    for (let i = 0; i < pts.length; i++) R(c, pts[i][0] - 3, pts[i][1] - 14, 6, 6, 1, '#a89a80');
+    for (const i of [4, 13]) { const [x, y] = pts[i]; R(c, x - 14, y - 36, 28, 30, 2, '#9a8c72'); for (let k = -1; k <= 1; k++) R(c, x + k * 9 - 3, y - 42, 6, 7, 1, '#9a8c72'); R(c, x - 4, y - 26, 8, 10, 3, '#5a4a3a'); }
+  },
+  tajmahal(c) {
+    E(c, 0, 18, 120, 14, '#7cc7f2');
+    R(c, -110, -12, 220, 12, 2, '#e8e3d8');
+    for (const x of [-100, 100]) { R(c, x - 5, -130, 10, 118, 3, '#f6f3ec'); for (let y = -120; y < -20; y += 30) R(c, x - 7, y, 14, 3, 1, '#ddd6c8'); E(c, x, -134, 8, 7, '#f6f3ec'); L(c, [x, -140, x, -148], '#d4a017', 1.5); }
+    R(c, -62, -86, 124, 74, 3, '#f8f5ee'); P(c, [-18, -12, -18, -60, 0, -76, 18, -60, 18, -12], '#cfc6b4');
+    for (const x of [-44, 44]) P(c, [x - 9, -16, x - 9, -46, x, -54, x + 9, -46, x + 9, -16], '#ddd6c8');
+    R(c, -24, -106, 48, 22, 3, '#f8f5ee');
+    c.fillStyle = '#fbf9f4'; c.beginPath(); c.moveTo(-28, -104); c.bezierCurveTo(-44, -140, -12, -158, 0, -172); c.bezierCurveTo(12, -158, 44, -140, 28, -104); c.closePath(); c.fill(); L(c, [0, -172, 0, -186], '#d4a017', 2);
+    for (const x of [-44, 44]) { E(c, x, -94, 12, 10, '#f6f3ec'); L(c, [x, -104, x, -110], '#d4a017', 1.5); }
+  },
+  fuji(c) {
+    P(c, [-190, 0, 190, 0, 34, -170, -34, -170], '#6a7fa8'); P(c, [-190, 0, -34, -170, 0, -170, -60, 0], '#7f93ba');
+    P(c, [-34, -170, 34, -170, 64, -130, 40, -138, 20, -122, 0, -140, -22, -122, -44, -138, -64, -130], '#ffffff');
+    c.save(); c.translate(140, 0);
+    R(c, -34, -64, 8, 64, 1, '#d62828'); R(c, 26, -64, 8, 64, 1, '#d62828'); R(c, -44, -72, 88, 9, 3, '#d62828'); R(c, -40, -56, 80, 6, 1, '#d62828'); R(c, -46, -78, 92, 6, 3, '#2b2b2b');
+    c.restore();
+    for (const [x, y] of [[-150, 0], [-110, 6]]) { L(c, [x, y, x, y - 30], '#5d4037', 4); for (const [dx, dy, r] of [[-10, -34, 12], [10, -36, 12], [0, -46, 13]]) Ci(c, x + dx, y + dy, r, '#f7b6c8'); }
+  },
+  angkor(c) {
+    R(c, -150, -14, 300, 14, 2, '#8a7a62'); R(c, -130, -36, 260, 22, 2, '#9a8a70');
+    const tower = (x, h, w) => { P(c, [x - w, -36, x + w, -36, x + w * 0.6, -36 - h * 0.6, x + w * 0.25, -36 - h, x - w * 0.25, -36 - h, x - w * 0.6, -36 - h * 0.6], '#a8987c'); for (let k = 1; k < 6; k++) L(c, [x - w * (1 - k * 0.12), -36 - h * k * 0.16, x + w * (1 - k * 0.12), -36 - h * k * 0.16], '#7a6a52', 1.5); E(c, x, -36 - h, w * 0.25, 4, '#8a7a62'); };
+    tower(-100, 90, 20); tower(100, 90, 20); tower(-50, 120, 24); tower(50, 120, 24); tower(0, 170, 30);
+    for (let x = -120; x <= 120; x += 24) R(c, x - 4, -32, 8, 14, 4, '#5a4a3a');
+    E(c, 0, 16, 150, 10, '#7cc7f2');
+  },
+  pyramids(c) {
+    const pyr = (x, s) => { P(c, [x - s, 0, x + s, 0, x, -s * 0.9], '#d9b46b'); P(c, [x, -s * 0.9, x + s, 0, x + s * 0.2, 0], '#c29a52'); for (let k = 1; k < 6; k++) L(c, [x - s + s * k * 0.16, -s * 0.15 * k, x + s - s * k * 0.16, -s * 0.15 * k], 'rgba(150,110,50,.3)', 1); };
+    pyr(90, 80); pyr(-40, 120); pyr(-150, 60);
+    c.save(); c.translate(150, 34); c.scale(1.7, 1.7);
+    R(c, -40, -18, 56, 18, 6, '#c9a05a'); R(c, 10, -10, 26, 6, 3, '#c9a05a'); E(c, -32, -30, 12, 14, '#c9a05a'); P(c, [-46, -38, -18, -38, -20, -16, -44, -16], '#2f6db3'); E(c, -32, -30, 7, 9, '#c9a05a');
+    for (let i = 0; i < 4; i++) L(c, [-45, -36 + i * 5, -40, -36 + i * 5], '#ffd23f', 1.5);
+    c.restore();
+  },
+  kilimanjaro(c) {
+    P(c, [-210, 0, -60, -150, 70, -150, 210, 0], '#7a6a8a'); P(c, [-210, 0, -60, -150, -20, -150, -100, 0], '#8a7a9a');
+    P(c, [-60, -150, 70, -150, 96, -122, 60, -128, 30, -116, 0, -130, -30, -118, -60, -128, -86, -122], '#ffffff');
+    for (const x of [-150, 140]) { L(c, [x, 0, x - 2, -34, x - 10, -46], '#6d4c2f', 4); E(c, x - 4, -50, 34, 8, '#6b8e23'); }
+  },
+  djenne(c) {
+    R(c, -120, -12, 240, 12, 2, '#a8703f');
+    P(c, [-110, -12, 110, -12, 104, -70, -104, -70], '#b9824f');
+    const tw = (x, h) => { R(c, x - 14, -h, 28, h - 12, 4, '#c08a55'); E(c, x, -h, 14, 8, '#c08a55'); Ci(c, x, -h - 9, 4, '#fffaf0'); for (let y = -h + 14; y < -20; y += 16) { L(c, [x - 20, y, x - 13, y], '#6b4a2a', 2); L(c, [x + 13, y, x + 20, y], '#6b4a2a', 2); } };
+    tw(-60, 110); tw(0, 130); tw(60, 110);
+    for (let x = -96; x <= 96; x += 16) { R(c, x - 3, -80, 6, 12, 3, '#c08a55'); L(c, [x, -50, x, -42], '#6b4a2a', 2); }
+    R(c, -10, -34, 20, 22, 8, '#6b4a2a');
+  },
+  baobaballey(c) {
+    for (const [x, h, w] of [[-120, 120, 18], [-50, 140, 20], [30, 130, 19], [110, 116, 17]]) { P(c, [x - w, 0, x + w, 0, x + w * 0.7, -h, x - w * 0.7, -h], '#a07a58'); for (const a of [-0.9, -0.4, 0.2, 0.7]) L(c, [x, -h, x + Math.sin(a) * 26, -h - Math.cos(a) * 16], '#a07a58', 4); for (const dx of [-18, 0, 18]) E(c, x + dx, -h - 18, 10, 6, '#6b8e23'); }
+    c.fillStyle = '#d9a86a'; c.beginPath(); c.moveTo(-30, 0); c.lineTo(30, 0); c.lineTo(10, -20); c.lineTo(-10, -20); c.fill();
+  },
+  liberty(c) {
+    P(c, [-40, 0, 40, 0, 30, -60, -30, -60], '#a8a29a'); R(c, -26, -74, 52, 14, 2, '#bab4ac');
+    P(c, [-18, -74, 18, -74, 14, -160, -14, -160], '#5fa89a'); for (let k = 0; k < 4; k++) Q(c, -12 + k * 7, -76, -10 + k * 7, -120, -8 + k * 6, -158, '#4f8f82', 1.5);
+    R(c, -24, -150, 10, 20, 2, '#4f8f82');
+    L(c, [12, -152, 22, -196], '#5fa89a', 7); R(c, 18, -204, 9, 10, 2, '#4f8f82'); E(c, 22, -210, 6, 9, '#ffb703'); E(c, 22, -209, 3, 5, '#fff3b0');
+    E(c, 0, -170, 10, 12, '#5fa89a'); for (let i = -3; i <= 3; i++) L(c, [i * 3, -178, i * 8, -194], '#5fa89a', 2.5);
+  },
+  cntower(c) {
+    P(c, [-14, 0, 14, 0, 6, -230, -6, -230], '#c9c4bc'); P(c, [-24, 0, -14, 0, -6, -120], '#b5b0a8'); P(c, [24, 0, 14, 0, 6, -120], '#b5b0a8');
+    E(c, 0, -236, 24, 12, '#9aa3ab'); R(c, -24, -240, 48, 8, 3, '#6b7a88'); E(c, 0, -250, 12, 6, '#9aa3ab');
+    L(c, [0, -254, 0, -320], '#c9c4bc', 4); Ci(c, 0, -322, 3, '#e63946');
+    E(c, 0, -292, 6, 3, '#9aa3ab');
+  },
+  chichenitza(c) {
+    for (let i = 0; i < 9; i++) R(c, -110 + i * 10, -14 - i * 14, 220 - i * 20, 14, 1, i % 2 ? '#b8b09a' : '#c8c0a8');
+    P(c, [-14, 0, 14, 0, 10, -126, -10, -126], '#a8a088'); for (let y = -8; y > -124; y -= 6) L(c, [-12, y, 12, y], '#8a826a', 1);
+    R(c, -24, -160, 48, 34, 2, '#c8c0a8'); R(c, -8, -150, 16, 24, 2, '#5a5040'); R(c, -26, -164, 52, 6, 1, '#a8a088');
+    E(c, -16, -4, 8, 5, '#8a826a'); E(c, 16, -4, 8, 5, '#8a826a');
+  },
+  monumentvalley(c) {
+    const butte = (x, w, h) => { P(c, [x - w - 20, 0, x + w + 20, 0, x + w, -h * 0.4, x + w - 4, -h, x - w + 4, -h, x - w, -h * 0.4], '#c45a2a'); P(c, [x + w * 0.3, -h, x + w - 4, -h, x + w, -h * 0.4, x + w + 20, 0, x + w * 0.5, 0], '#a84a22'); };
+    butte(-90, 34, 130); butte(40, 26, 160); P(c, [110, 0, 160, 0, 146, -90, 132, -110, 126, -90], '#c45a2a');
+  },
+  machupicchu(c) {
+    P(c, [-40, 0, 120, 0, 70, -170, 50, -186, 30, -160], '#4f8a4a'); P(c, [50, -186, 70, -170, 120, 0, 80, 0], '#3f7a3a');
+    for (let i = 0; i < 6; i++) L(c, [-150 + i * 8, -i * 14, -20 - i * 6, -i * 14], '#8fbf6a', 3);
+    for (const [x, w, h] of [[-120, 30, 22], [-80, 24, 30], [-44, 28, 20]]) { R(c, x, -60 - h, w, h, 1, '#a8a08a'); P(c, [x - 3, -60 - h, x + w + 3, -60 - h, x + w / 2, -74 - h], '#c9a46b'); }
+    R(c, -150, -60, 140, 6, 1, '#9a927c');
+    c.save(); c.translate(-90, 0); E(c, 0, -14, 12, 8, '#f3eee0'); L(c, [-6, -8, -7, 0], '#f3eee0', 3); L(c, [6, -8, 7, 0], '#f3eee0', 3); L(c, [10, -18, 14, -34], '#f3eee0', 5); E(c, 16, -36, 5, 4, '#f3eee0'); P(c, [12, -40, 13, -46, 15, -40], '#f3eee0'); Ci(c, 17, -37, 1, '#222'); c.restore();
+  },
+  christ(c) {
+    P(c, [-130, 0, 130, 0, 30, -150, -20, -150], '#3f8a4a'); P(c, [30, -150, 130, 0, 60, 0], '#2f7a3a');
+    R(c, -6, -168, 12, 18, 1, '#e8e4dc');
+    P(c, [-7, -168, 7, -168, 5, -214, -5, -214], '#f3efe6'); R(c, -40, -210, 80, 7, 3, '#f3efe6'); Ci(c, 0, -220, 6, '#f3efe6');
+  },
+  angelfalls(c) {
+    R(c, -130, -200, 200, 200, 6, '#6b5a4a'); R(c, -130, -206, 200, 16, 6, '#3f8a4a'); for (let x = -120; x < 70; x += 20) Ci(c, x, -208, 10, '#4caf50');
+    R(c, -40, -192, 12, 186, 4, '#cfeefc'); for (let y = -186; y < -10; y += 22) L(c, [-37, y, -31, y + 12], '#ffffff', 2);
+    E(c, -34, -2, 40, 10, '#7cc7f2'); for (let i = 0; i < 4; i++) Ci(c, -50 + i * 11, -12 - Math.sin(time * 3 + i) * 3, 5, 'rgba(255,255,255,.6)');
+  },
+  moai(c) {
+    R(c, -110, -16, 220, 16, 2, '#8a8478');
+    for (const [x, h] of [[-70, 96], [0, 110], [70, 92]]) { R(c, x - 18, -16 - h, 36, h, 6, '#7a746a'); R(c, x - 22, -16 - h, 44, 16, 4, '#6a645a'); P(c, [x + 4, -16 - h + 28, x + 16, -16 - h + 56, x + 4, -16 - h + 60], '#6a645a'); R(c, x - 12, -16 - h + 26, 24, 5, 2, '#5a544a'); R(c, x - 8, -16 - h + 70, 16, 4, 2, '#5a544a'); }
+  },
+  opera(c) {
+    R(c, -150, -24, 300, 24, 2, '#e8dcc8');
+    const sail = (x, w, h, k) => { c.fillStyle = k ? '#ffffff' : '#f1efe8'; c.beginPath(); c.moveTo(x - w, -24); c.quadraticCurveTo(x - w * 0.2, -24 - h * 1.1, x + w * 0.6, -24 - h); c.quadraticCurveTo(x + w * 0.2, -24 - h * 0.4, x + w * 0.4, -24); c.closePath(); c.fill(); L(c, [x - w * 0.5, -24, x + w * 0.3, -24 - h * 0.8], '#d9d4c8', 1.5); };
+    sail(-90, 40, 70, 0); sail(-50, 50, 110, 1); sail(0, 40, 80, 0); sail(50, 50, 120, 1); sail(100, 40, 80, 0);
+    E(c, 0, 12, 170, 14, '#3fa7d6');
+  },
+  uluru(c) {
+    c.fillStyle = '#b5552a'; c.beginPath(); c.moveTo(-200, 0); c.quadraticCurveTo(-196, -84, -120, -100); c.quadraticCurveTo(0, -112, 130, -96); c.quadraticCurveTo(200, -80, 204, 0); c.closePath(); c.fill();
+    for (let x = -150; x < 160; x += 40) Q(c, x, -96, x + 6, -50, x - 4, -4, '#9a4422', 2.5);
+    E(c, -20, -100, 90, 8, '#cf6a3a');
+  },
+  reef(c) {
+    const cols = ['#f7a1c4', '#ff8f6b', '#ffd23f', '#9b6dd6', '#e63946'];
+    for (let i = 0; i < 14; i++) { const x = -260 + i * 40, col = cols[i % 5]; if (i % 3 === 0) { for (let k = -2; k <= 2; k++) L(c, [x, 0, x + k * 8, -18 - Math.abs(k) * -4], col, 4); } else if (i % 3 === 1) E(c, x, -8, 14, 10, col); else { L(c, [x, 0, x, -22], col, 4); L(c, [x, -12, x - 10, -22], col, 3); L(c, [x, -8, x + 10, -18], col, 3); } }
+    for (let i = 0; i < 4; i++) { const x = -200 + ((time * 30 + i * 140) % 420); E(c, x, -30 - i * 6, 7, 4, ['#ff9f1c', '#ffd23f', '#3a86c8', '#fff'][i]); P(c, [x - 7, -30 - i * 6, x - 12, -34 - i * 6, x - 12, -26 - i * 6], ['#ff9f1c', '#ffd23f', '#3a86c8', '#fff'][i]); }
+  },
+  milford(c) {
+    P(c, [-180, 0, -40, -200, 20, -150, 80, -210, 200, 0], '#4a6a7a'); P(c, [-40, -200, -10, -175, -30, -150, -60, -166], '#ffffff'); P(c, [80, -210, 100, -184, 70, -170, 60, -186], '#ffffff');
+    P(c, [-180, 0, -40, -200, -60, 0], '#3a5a6a'); E(c, 0, 4, 190, 16, '#2f7fb0');
+    for (const x of [-150, 140]) { R(c, x - 3, -40, 6, 40, 2, '#5a4632'); for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + (i - 2) * 0.5; Q(c, x, -40, x + Math.cos(a) * 14, -48 + Math.sin(a) * 4, x + Math.cos(a) * 26, -34, '#3f9b4a', 3); } }
+  },
+};
+// [kind, name, country, x, y, keep-clear radius] for each continent
+const LANDMARKS = {
+  europe: [['eiffel', 'Eiffel Tower', 'France', 330, 470, 150], ['bigben', 'Big Ben', 'United Kingdom', 1700, 760, 120], ['pisa', 'Leaning Tower of Pisa', 'Italy', 520, 1060, 110], ['windmill', 'Windmills', 'Netherlands', 1360, 1080, 140], ['nevsky', 'Alexander Nevsky Cathedral', 'Bulgaria', 980, 300, 160]],
+  asia: [['greatwall', 'Great Wall', 'China', 1420, 330, 200], ['tajmahal', 'Taj Mahal', 'India', 1000, 640, 150], ['fuji', 'Mount Fuji', 'Japan', 400, 1060, 220], ['angkor', 'Angkor Wat', 'Cambodia', 1560, 1060, 180]],
+  africa: [['pyramids', 'Pyramids of Giza', 'Egypt', 1380, 400, 200], ['kilimanjaro', 'Mount Kilimanjaro', 'Tanzania', 430, 1060, 230], ['djenne', 'Great Mosque of Djenné', 'Mali', 1560, 1060, 150], ['baobaballey', 'Avenue of the Baobabs', 'Madagascar', 950, 640, 150]],
+  namerica: [['liberty', 'Statue of Liberty', 'USA', 330, 460, 100], ['cntower', 'CN Tower', 'Canada', 1720, 920, 90], ['chichenitza', 'Chichén Itzá', 'Mexico', 480, 1080, 150], ['monumentvalley', 'Monument Valley', 'USA', 1330, 1080, 180]],
+  samerica: [['machupicchu', 'Machu Picchu', 'Peru', 380, 1080, 180], ['christ', 'Christ the Redeemer', 'Brazil', 1560, 1080, 150], ['angelfalls', 'Angel Falls', 'Venezuela', 1450, 330, 160], ['moai', 'Moai of Easter Island', 'Chile', 450, 330, 140]],
+  oceania: [['opera', 'Sydney Opera House', 'Australia', 1480, 300, 180], ['uluru', 'Uluru', 'Australia', 430, 1080, 220], ['reef', 'Great Barrier Reef', 'Australia', 950, 82, 0], ['milford', 'Milford Sound', 'New Zealand', 1560, 1080, 200]],
+};
+DECOR.lm = (c, d) => LANDMARK[d.lm](c);
+
 function drawGround() {
   const c = ctx, base = area === 'meadow' ? '#8fd16a' : CONT[area].ground, g2 = area === 'meadow' ? '#82c45d' : CONT[area].g2;
   c.fillStyle = base; c.fillRect(-600, -600, world.w + 1200, world.h + 1200);
@@ -2248,8 +4038,10 @@ function drawGround() {
   const r = rng(hash(area + 'g'));
   for (let i = 0; i < 70; i++) E(c, r() * world.w, r() * world.h, 30 + r() * 60, 12 + r() * 20, g2);
   for (const g of ground) {
-    if (g.kind === 'pond') { E(c, g.x, g.y, g.rx + 8, g.ry + 6, 'rgba(0,0,0,.08)'); E(c, g.x, g.y, g.rx, g.ry, '#4fa3d9'); E(c, g.x - g.rx * 0.2, g.y - g.ry * 0.25, g.rx * 0.5, g.ry * 0.3, '#7cc7f2'); }
-    if (g.kind === 'river') { c.fillStyle = '#3d8fc6'; c.beginPath(); c.moveTo(0, g.y - 40); for (let x = 0; x <= world.w; x += 50) c.lineTo(x, g.y - 40 + Math.sin(x / 160) * 30); for (let x = world.w; x >= 0; x -= 50) c.lineTo(x, g.y + 40 + Math.sin(x / 160) * 30); c.fill(); for (let x = 30; x < world.w; x += 140) L(c, [x, g.y + Math.sin(x / 160) * 30, x + 30, g.y + Math.sin(x / 160) * 30], 'rgba(255,255,255,.4)', 3); }
+    if (g.kind === 'pond') { E(c, g.x, g.y, g.rx + 8, g.ry + 6, 'rgba(0,0,0,.08)'); E(c, g.x, g.y, g.rx, g.ry, '#4fa3d9'); E(c, g.x - g.rx * 0.2, g.y - g.ry * 0.25, g.rx * 0.5, g.ry * 0.3, '#7cc7f2');
+      if (area === 'asia' || area === 'africa') for (let i = 0; i < 6; i++) { const lx = g.x + Math.cos(i * 2.1) * g.rx * 0.6, ly = g.y + Math.sin(i * 2.1) * g.ry * 0.55; E(c, lx, ly, 12, 5, '#3e8e2b'); if (i % 2 === 0) { for (let k = 0; k < 5; k++) E(c, lx + Math.cos(k * 1.26) * 4, ly - 5 + Math.sin(k * 1.26) * 2, 4, 2.5, area === 'asia' ? '#f7a1c4' : '#9bb7ff', k * 1.26); Ci(c, lx, ly - 5, 2, '#ffd23f'); } } }
+    if (g.kind === 'river') { c.fillStyle = '#3d8fc6'; c.beginPath(); c.moveTo(0, g.y - 40); for (let x = 0; x <= world.w; x += 50) c.lineTo(x, g.y - 40 + Math.sin(x / 160) * 30); for (let x = world.w; x >= 0; x -= 50) c.lineTo(x, g.y + 40 + Math.sin(x / 160) * 30); c.fill(); for (let x = 30; x < world.w; x += 140) L(c, [x, g.y + Math.sin(x / 160) * 30, x + 30, g.y + Math.sin(x / 160) * 30], 'rgba(255,255,255,.4)', 3);
+      for (let x = 90; x < world.w; x += 230) { const ly = g.y + Math.sin(x / 160) * 30 + (x % 3 - 1) * 14; E(c, x, ly, 24, 10, '#4f8f3a'); E(c, x, ly, 21, 8, '#6aab4f'); L(c, [x, ly, x + 20, ly - 2], '#3f7a2e', 1.5); if (x % 2) { E(c, x + 6, ly - 4, 6, 4, '#fff'); E(c, x + 6, ly - 5, 3, 2, '#f7a1c4'); } } }
     if (g.kind === 'sea') { c.fillStyle = '#f2d59a'; c.fillRect(-600, -600, world.w + 1200, 760); c.fillStyle = '#3fa7d6'; c.beginPath(); c.moveTo(-600, -600); c.lineTo(world.w + 600, -600); c.lineTo(world.w + 600, 90); for (let x = world.w + 600; x >= -600; x -= 40) c.lineTo(x, 100 + Math.sin(x / 90 + time) * 8); c.fill(); }
   }
 }
@@ -2367,6 +4159,12 @@ function draw() {
   if (startDone) items.push({ y: player.y, f: drawPlayer });
   items.sort((a, b) => a.y - b.y); for (const it of items) it.f();
   for (const p of portals) drawPortalLabel(p);
+  for (const d of decor) if (d.kind === 'lm') {
+    c.save(); c.font = 'bold 13px "Trebuchet MS", sans-serif'; c.textAlign = 'center';
+    const t1 = d.name, t2 = d.country, w = Math.max(c.measureText(t1).width, c.measureText(t2).width) + 18, ly = d.y + (d.lm === 'reef' ? 10 : 14);
+    R(c, d.x - w / 2, ly, w, 34, 8, 'rgba(255,248,230,.92)'); c.fillStyle = '#5a3a1a'; c.fillText(t1, d.x, ly + 15);
+    c.font = '12px "Trebuchet MS", sans-serif'; c.fillStyle = '#8a5a2a'; c.fillText('📍 ' + t2, d.x, ly + 29); c.restore();
+  }
   for (const m of monsters) { drawMonsterLabel(m); drawMonsterMood(m); }
   for (const p of parts) {
     if (p.kind === 'fly') { const f = Math.abs(Math.sin(time * 14 + p.ph)) * 4 + 1; E(c, p.x - f, p.y, f, 3, p.col); E(c, p.x + f, p.y, f, 3, p.col); continue; }
