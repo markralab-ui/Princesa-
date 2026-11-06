@@ -141,7 +141,7 @@
   <div class="panel" style="max-width:520px">
     <h1>❄️ Myth Monster Freeze ⚔️</h1>
     <p>You are in a sunny meadow with magic portals to every continent.</p>
-    <p>Step into a portal, find monsters from real myths and legends, and <b>freeze them with your frost sword</b>!</p>
+    <p>Step into a portal, find monsters from real myths and legends, and <b>freeze them with your frost sword</b>! They run away, so be quick. When they get tired they stop to catch their breath.</p>
     <p>Each frozen monster tells you its name and where it comes from, and leaves a treasure to collect.</p>
     <p style="font-size:14px;color:#34506e">Move: arrow keys or WASD · Sword: Space (or click)<br>On a phone: drag on the left to move, tap ⚔️ to swing</p>
     <h2 style="text-align:center">Pick a round</h2>
@@ -1315,7 +1315,7 @@ function enterArea(id, fromCont) {
       areaMemory[mk] = { monsters, drops };
     }
     if (isCleared(id)) showBanner(c.name + ' ⭐', 'Cleared! Every monster here stays frozen');
-    else showBanner(c.name, `Round ${save.round} · ${defs.length} myth monsters live here`);
+    else showBanner(c.name, `${defs.length} monsters here. They run away, so chase them!`);
   }
   updateHud();
 }
@@ -1586,10 +1586,21 @@ function update(dt) {
     let tx, ty, s;
     if (m.stun > 0) { m.stun -= dt; m.x += m.vx * dt; m.y += m.vy * dt; m.vx *= 0.92; m.vy *= 0.92; }
     else {
-      if (pd < 240 && fade === 0) { tx = player.x; ty = player.y; s = sp * 0.75; }
-      else { m.wt -= dt; if (m.wt <= 0 || Math.hypot(m.tx - m.x, m.ty - m.y) < 10) { m.tx = clamp(m.x + (Math.random() - 0.5) * 500, 80, world.w - 80); m.ty = clamp(m.y + (Math.random() - 0.5) * 400, 100, world.h - 260); m.wt = 2 + Math.random() * 3; } tx = m.tx; ty = m.ty; s = sp * 0.5; }
+      if (m.rest > 0) { m.rest -= dt; tx = m.x; ty = m.y; s = 0; }
+      else if (pd < 230 && fade === 0) {
+        // run away from the hero, sliding along walls instead of getting stuck, with a little zig-zag
+        if (!m.run) m.alarm = 0.7;
+        m.run = (m.run || 0) + dt; if (m.run > 2.4 + (m.def.sp % 7) * 0.1) { m.run = 0; m.rest = 1.3; }
+        let ax = (m.x - player.x) / (pd || 1), ay = (m.y - player.y) / (pd || 1); const mg = 160;
+        if (m.x < mg) ax += (mg - m.x) / mg * 1.6; if (m.x > world.w - mg) ax -= (m.x - world.w + mg) / mg * 1.6;
+        if (m.y < 100 + mg) ay += (100 + mg - m.y) / mg * 1.6; if (m.y > world.h - 60 - mg) ay -= (m.y - world.h + 60 + mg) / mg * 1.6;
+        const za = Math.atan2(ay, ax) + Math.sin(time * 3 + m.walk) * 0.45;
+        tx = m.x + Math.cos(za) * 100; ty = m.y + Math.sin(za) * 100; s = 70 + sp * 0.9;
+      }
+      else { m.run = 0; m.wt -= dt; if (m.wt <= 0 || Math.hypot(m.tx - m.x, m.ty - m.y) < 10) { m.tx = clamp(m.x + (Math.random() - 0.5) * 500, 80, world.w - 80); m.ty = clamp(m.y + (Math.random() - 0.5) * 400, 100, world.h - 260); m.wt = 2 + Math.random() * 3; } tx = m.tx; ty = m.ty; s = sp * 0.5; }
+      if (m.alarm > 0) m.alarm -= dt;
       const a = Math.atan2(ty - m.y, tx - m.x), l = Math.hypot(tx - m.x, ty - m.y);
-      if (l > 4) { m.x += Math.cos(a) * s * dt; m.y += Math.sin(a) * s * dt; m.walk += dt * s / 6; if (Math.abs(Math.cos(a)) > 0.15) m.face = Math.cos(a) > 0 ? 1 : -1; }
+      if (l > 4 && s > 0) { m.x += Math.cos(a) * s * dt; m.y += Math.sin(a) * s * dt; m.walk += dt * s / 6; if (Math.abs(Math.cos(a)) > 0.15) m.face = Math.cos(a) > 0 ? 1 : -1; }
     }
     for (const o of monsters) if (o !== m) { const dd = Math.hypot(o.x - m.x, o.y - m.y); if (dd < 60 && dd > 0) { m.x -= (o.x - m.x) / dd * 40 * dt; m.y -= (o.y - m.y) / dd * 40 * dt; } }
     m.x = clamp(m.x, 40, world.w - 40); m.y = clamp(m.y, 80, world.h - 30);
@@ -1727,6 +1738,11 @@ function drawMonster(m) {
   }
   c.restore();
 }
+function drawMonsterMood(m) {
+  if (m.frozen > 0) return; const c = ctx, d = m.def, y = m.y - d.box[1] - (d.fly ? 18 : 0) - 10;
+  if (m.alarm > 0) { c.save(); c.font = 'bold 22px "Trebuchet MS", sans-serif'; c.textAlign = 'center'; c.fillStyle = '#fff'; c.strokeStyle = '#c0392b'; c.lineWidth = 4; c.strokeText('!', m.x, y); c.fillText('!', m.x, y); c.restore(); }
+  else if (m.rest > 0) { for (let i = 0; i < 2; i++) { const p = (time * 1.5 + i * 0.5) % 1; c.globalAlpha = 1 - p; Ci(c, m.x + m.face * (14 + p * 14), y + 18 - p * 10, 3 + p * 3, '#fff'); c.globalAlpha = 1; } }
+}
 function drawMonsterLabel(m) {
   if (m.frozen <= 0) return; const c = ctx, d = m.def;
   const y = m.y - d.box[1] - (d.fly ? 18 : 0) - 16;
@@ -1761,7 +1777,7 @@ function draw() {
   if (startDone) items.push({ y: player.y, f: drawPlayer });
   items.sort((a, b) => a.y - b.y); for (const it of items) it.f();
   for (const p of portals) drawPortalLabel(p);
-  for (const m of monsters) drawMonsterLabel(m);
+  for (const m of monsters) { drawMonsterLabel(m); drawMonsterMood(m); }
   for (const p of parts) {
     if (p.kind === 'fly') { const f = Math.abs(Math.sin(time * 14 + p.ph)) * 4 + 1; E(c, p.x - f, p.y, f, 3, p.col); E(c, p.x + f, p.y, f, 3, p.col); continue; }
     c.globalAlpha = Math.max(0, p.life / p.max);
