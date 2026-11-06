@@ -88,9 +88,23 @@
     font-size: 40px; line-height: 82px; text-align: center; box-shadow: 0 4px 0 rgba(0,0,0,.2);
   }
   body.touch #swordBtn { display: block; }
-  body.touch #card { bottom: auto; top: 96px; transform: translateX(-50%) translateY(-30px) scale(0.9); }
-  body.touch #card.show { transform: translateX(-50%) translateY(0) scale(1); }
-  body.touch #card .fact { font-size: 13px; }
+  /* phones: small pop-ups tucked under the top bar so the play area stays clear */
+  body.touch #hud { gap: 5px; padding: 4px 6px; }
+  body.touch .pill { font-size: 13px; padding: 3px 9px; border-width: 2px; }
+  body.touch #card { bottom: auto; top: calc(var(--hudH, 60px) + 4px); left: 12px; right: 12px; margin: 0 auto; width: fit-content; max-width: none; padding: 4px 12px 5px; border-width: 3px; border-radius: 14px; transform: translateY(-20px) scale(0.9); }
+  body.touch #card.show { transform: none; }
+  body.touch #card .row > div { text-align: left; }
+  body.touch #card .new { font-size: 11px; }
+  body.touch #card .frz, body.touch #card .fact { display: none; }
+  body.touch #card .row { gap: 6px; }
+  body.touch #card canvas { width: 40px !important; height: 40px !important; }
+  body.touch #card .name { font-size: 19px; }
+  body.touch #card .place { font-size: 14px; margin: 0; }
+  body.touch #card .tr { font-size: 12px; margin-top: 1px; }
+  body.touch #toast { top: auto; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 12px; transform: none; font-size: 14px; padding: 4px 10px; }
+  body.touch #banner { top: 22%; font-size: 30px; letter-spacing: 2px; }
+  body.touch #banner small { font-size: 14px; }
+  .cell .fx { font-size: 11.5px; color: #34506e; margin-top: 3px; text-align: left; }
 </style>
 </head>
 <body>
@@ -409,14 +423,25 @@ const DRAW = {
     Ci(c, 8, -52, 2.5, '#ffd23f'); Ci(c, 8.5, -52, 1.2, '#111'); Ci(c, 18, -46, 1, '#222');
   },
   chupacabra(c, t, w) {
-    const s = Math.sin(w) * 3;
-    L(c, [-10, -14, -14 + s, 0], '#56664c', 3); L(c, [-2, -14, 0 - s, 0], '#56664c', 3); L(c, [8, -14, 6 + s, 0], '#56664c', 3); L(c, [14, -16, 18 - s, 0], '#56664c', 3);
-    Q(c, -16, -20, -30, -18, -34, -8, '#6e7f63', 4);
-    E(c, 0, -22, 18, 12, '#6e7f63'); E(c, 2, -18, 12, 6, '#94a688');
-    for (let i = 0; i < 6; i++) P(c, [-16 + i * 6, -30 + Math.abs(i - 2.5), -13 + i * 6, -42 + Math.abs(i - 2.5) * 2, -10 + i * 6, -30 + Math.abs(i - 2.5)], i % 2 ? '#8e44ad' : '#c0392b');
-    E(c, 20, -32, 11, 10, '#7d8f71'); E(c, 28, -29, 6, 4, '#7d8f71');
-    E(c, 20, -35, 5, 6, '#111', 0.3); Ci(c, 19, -37, 1.5, '#fff');
-    P(c, [26, -26, 28, -22, 30, -26], '#fff');
+    const hop = Math.abs(Math.sin(w)) * 6;
+    c.save(); c.translate(0, -hop);
+    Q(c, -6, -18, -22, -16, -30, -2, '#56634d', 4);
+    E(c, -3, -18, 9, 11, '#667559');
+    L(c, [-1, -10, -7, -2], '#56634d', 5); L(c, [-9, -1, 8, 0], '#46523f', 4);
+    for (let i = 0; i < 9; i++) {
+      const k = i / 8, x = 2 - k * 14, y = -66 + k * 50, h = 13 - Math.abs(k - 0.35) * 10;
+      P(c, [x + 2, y - 3, x - h, y - 1, x + 1, y + 4], i % 2 ? '#6a2c91' : '#8e44ad');
+    }
+    E(c, 4, -38, 11, 18, '#74846a', 0.25); E(c, 8, -35, 6, 12, '#9fae8f', 0.25);
+    L(c, [11, -46, 19, -38, 24, -42], '#667559', 3);
+    for (const a of [-0.9, -0.3, 0.3]) L(c, [24, -42, 24 + Math.cos(a) * 5, -42 + Math.sin(a) * 5], '#2d2d2d', 1.5);
+    E(c, 12, -64, 13, 14, '#84947a');
+    E(c, 16, -54, 7, 5, '#84947a');
+    E(c, 7, -66, 4.5, 7.5, '#0d0d0d', 0.55); E(c, 18, -65, 4, 7, '#0d0d0d', -0.55);
+    Ci(c, 6, -68, 1.4, 'rgba(255,80,80,.9)'); Ci(c, 17, -67, 1.3, 'rgba(255,80,80,.9)');
+    L(c, [12, -51, 21, -52], '#2d2d2d', 1.5);
+    P(c, [14, -51.5, 15, -47, 16, -51.5], '#fff'); P(c, [18, -52, 19, -47.5, 20, -52], '#fff');
+    c.restore();
   },
   alux(c, t, w) {
     const s = Math.sin(w) * 2.5;
@@ -584,7 +609,7 @@ const MONSTERS = [
   // North America
   { id: 'sasquatch', cont: 'namerica', name: 'Sasquatch (Bigfoot)', place: 'Canada & USA', fact: 'A tall, hairy forest giant of the Pacific Northwest. People search the woods for its huge footprints.', tr: 'pinecone', trName: 'Giant pine cone', box: [60, 84], sp: 55 },
   { id: 'jerseydevil', cont: 'namerica', name: 'Jersey Devil', place: 'USA (New Jersey)', fact: 'A winged creature with hooves and horns, said to fly over the Pine Barrens forest at night.', tr: 'oldlantern', trName: 'Old lantern', box: [70, 74], sp: 75, fly: true },
-  { id: 'chupacabra', cont: 'namerica', name: 'Chupacabra', place: 'Puerto Rico', fact: 'First reported in Puerto Rico in 1995. Its name means "goat-sucker" and it has spikes all down its back.', tr: 'pear', trName: 'Prickly pear', box: [74, 54], sp: 80 },
+  { id: 'chupacabra', cont: 'namerica', name: 'Chupacabra', place: 'Puerto Rico', fact: 'First reported in Puerto Rico in 1995. Its name means "goat-sucker" and it stands up like a little kangaroo, with huge dark eyes and spikes all down its back.', tr: 'pear', trName: 'Prickly pear', box: [56, 82], sp: 80 },
   { id: 'alux', cont: 'namerica', name: 'Alux', place: 'Mexico (Maya stories)', fact: 'Aluxes are tiny sprites of the Yucatán. Farmers leave them gifts so they will guard the cornfields.', tr: 'corn', trName: 'Golden corn', box: [40, 64], sp: 85 },
   { id: 'ogopogo', cont: 'namerica', name: 'Ogopogo', place: 'Canada', fact: 'A long, humpy lake serpent said to swim in Okanagan Lake in British Columbia.', tr: 'pearl', trName: 'Lake pearl', box: [92, 64], sp: 45 },
   // South America
@@ -643,7 +668,9 @@ function speak(text) {
 // ---------------------------------------------------------------- canvas
 const cv = document.getElementById('game'), ctx = cv.getContext('2d');
 let W = 0, H = 0, DPR = 1, zoom = 1;
+function isTouch() { return document.body.classList.contains('touch'); }
 function resize() {
+  const hud = document.getElementById('hud'); if (hud) document.documentElement.style.setProperty('--hudH', hud.offsetHeight + 'px');
   DPR = Math.min(2, window.devicePixelRatio || 1); W = innerWidth; H = innerHeight;
   cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); cv.style.width = W + 'px'; cv.style.height = H + 'px';
   zoom = Math.max(0.64, Math.min(W / 950, H / 700, 1.4));
@@ -703,7 +730,7 @@ function enterArea(id, fromCont) {
     if (id === 'oceania') for (let x = 0; x < world.w; x += 120) avoid.push({ x, y: 60, r: 120 });
     decor = placeDecor(r, c.decor, avoid);
     decor.push({ kind: 'signpost', x: home.x - 230, y: home.y + 20, v: 0, s: 1, text: c.name });
-    player.x = home.x; player.y = home.y - 100; portalLock = home;
+    player.x = home.x; player.y = home.y - 190; portalLock = home;
     const defs = MONSTERS.filter(m => m.cont === id);
     defs.forEach((d, i) => {
       let x, y, tries = 0;
@@ -732,7 +759,7 @@ addEventListener('keyup', e => { keys[e.code] = false; });
 cv.addEventListener('pointerdown', e => {
   if (!startDone) return;
   if (e.pointerType === 'touch') {
-    document.body.classList.add('touch');
+    if (!isTouch()) { document.body.classList.add('touch'); resize(); }
     if (e.clientX < W * 0.6 && !joy) { joy = { id: e.pointerId, ox: e.clientX, oy: e.clientY, dx: 0, dy: 0 }; return; }
     swing(); return;
   }
@@ -744,7 +771,7 @@ function endJoy(e) { if (joy && e.pointerId === joy.id) joy = null; }
 cv.addEventListener('pointerup', endJoy); cv.addEventListener('pointercancel', endJoy);
 const swordBtn = document.getElementById('swordBtn');
 swordBtn.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); swing(); });
-if (matchMedia && matchMedia('(pointer: coarse)').matches) document.body.classList.add('touch');
+if (matchMedia && matchMedia('(pointer: coarse)').matches) { document.body.classList.add('touch'); resize(); }
 
 // ---------------------------------------------------------------- HUD
 const $ = id => document.getElementById(id);
@@ -758,9 +785,10 @@ function updateHud() {
   else $('count').textContent = `❄ Frozen ${monsters.filter(m => m.frozen > 0).length}/${monsters.length}`;
   $('bookBtn').textContent = `🎒 Treasures ${total}`;
   $('soundBtn').textContent = save.sound ? '🔊' : '🔇';
+  document.documentElement.style.setProperty('--hudH', $('hud').offsetHeight + 'px');
 }
 let bannerT = 0;
-function showBanner(t, sub) { const b = $('banner'); b.innerHTML = t.toUpperCase() + (sub ? `<small>${sub}</small>` : ''); b.classList.add('show'); clearTimeout(bannerT); bannerT = setTimeout(() => b.classList.remove('show'), 2200); }
+function showBanner(t, sub) { const b = $('banner'); b.innerHTML = t.toUpperCase() + (sub ? `<small>${sub}</small>` : ''); b.classList.add('show'); clearTimeout(bannerT); bannerT = setTimeout(() => b.classList.remove('show'), isTouch() ? 1500 : 2200); }
 function iconCanvas(draw, size, scale, oy) {
   const c = document.createElement('canvas'), d = Math.min(2, window.devicePixelRatio || 1);
   c.width = size * d; c.height = size * d; c.style.width = size + 'px'; c.style.height = size + 'px';
@@ -782,7 +810,7 @@ function showCard(def, isNew) {
   txt.innerHTML = `<div class="name">${def.name}${isNew ? '<span class="new">NEW!</span>' : ''}</div><div class="place">📍 ${def.place} · ${c.name}</div>`;
   row.appendChild(txt); card.appendChild(row);
   card.insertAdjacentHTML('beforeend', `<div class="fact">${def.fact}</div><div class="tr">Treasure dropped: ${def.trName}</div>`);
-  card.classList.add('show'); clearTimeout(cardT); cardT = setTimeout(() => card.classList.remove('show'), 6500);
+  card.classList.add('show'); clearTimeout(cardT); cardT = setTimeout(() => card.classList.remove('show'), isTouch() ? 3500 : 6500);
 }
 let toastT = 0;
 function toast(def, text) {
@@ -809,6 +837,7 @@ function openBook() {
         cell.insertAdjacentHTML('beforeend', `<b>${m.name}</b><div class="pl">${m.place}</div>`);
         const tc = document.createElement('div'); tc.className = 'tc'; tc.appendChild(treasureIcon(m, 26));
         tc.insertAdjacentHTML('beforeend', `<span>${m.trName} × ${save.counts[m.id] || 0}</span>`); cell.appendChild(tc);
+        cell.insertAdjacentHTML('beforeend', `<div class="fx">${m.fact}</div>`);
       } else {
         cell.insertAdjacentHTML('beforeend', `<div style="font-size:52px;line-height:84px;color:#b9d6ea">?</div><b>???</b><div class="pl">Somewhere in ${c.name}</div>`);
       }
@@ -847,7 +876,7 @@ function swing(aim) {
   for (let i = 0; i < 8; i++) { const a = aim - 1 + i * 0.28; parts.push({ kind: 'ice', x: px + Math.cos(a) * 70, y: py + Math.sin(a) * 70, vx: Math.cos(a) * 60, vy: Math.sin(a) * 60, life: 0.4, max: 0.4, r: 3 }); }
 }
 function freeze(m) {
-  m.frozen = 30; m.vx = m.vy = 0;
+  m.frozen = 120; m.vx = m.vy = 0;
   const d = m.def, isNew = !save.seen[d.id];
   save.seen[d.id] = true; persist();
   for (let i = 0; i < 26; i++) { const a = Math.random() * TAU, s = 40 + Math.random() * 140; parts.push({ kind: 'ice', x: m.x, y: m.y - d.box[1] / 2, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 40, life: 0.9, max: 0.9, r: 2 + Math.random() * 3 }); }
@@ -1046,7 +1075,7 @@ function drawMonster(m) {
   DRAW[d.id](c, tt, m.frozen > 0 ? 0 : m.walk);
   c.restore();
   if (m.frozen > 0) {
-    const [bw, bh] = d.box; const shake = m.frozen < 3 ? Math.sin(time * 40) * 1.5 : 0;
+    const [bw, bh] = d.box; const shake = m.frozen < 5 ? Math.sin(time * 40) * 1.5 : 0;
     c.translate(shake, 0);
     R(c, -bw / 2 - 6, -bh - 6, bw + 12, bh + 10, 10, 'rgba(170,220,255,.55)');
     c.strokeStyle = 'rgba(235,250,255,.95)'; c.lineWidth = 3; c.beginPath(); if (c.roundRect) c.roundRect(-bw / 2 - 6, -bh - 6, bw + 12, bh + 10, 10); else c.rect(-bw / 2 - 6, -bh - 6, bw + 12, bh + 10); c.stroke();
