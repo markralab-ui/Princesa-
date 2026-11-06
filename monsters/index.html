@@ -111,6 +111,13 @@
   .rbtn.cur { background: #e3f4ff; border-color: #2f8fd0; }
   .rbtn.done { border-color: #e0a91b; }
   .rbtn:disabled { opacity: .55; cursor: default; box-shadow: none; }
+  .hook { font-size: 18px; color: #13406b; }
+  .stats { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .stats span { background: #fff7d6; border: 2px solid #e0a91b; border-radius: 999px; padding: 3px 12px; font-weight: bold; color: #6b3e00; font-size: 15px; }
+  .startmap { position: relative; }
+  #startPins canvas { position: absolute; transform: translate(-50%, -88%); animation: bob 2.4s ease-in-out infinite; pointer-events: none; filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); }
+  @keyframes bob { 0%, 100% { margin-top: 0; } 50% { margin-top: -6px; } }
+  @media (prefers-reduced-motion: reduce) { #startPins canvas { animation: none; } }
   .mapbox { background: #cfe9f7; border-radius: 14px; padding: 4px; margin: 6px 0 2px; }
   .mapbox svg { display: block; width: 100%; height: auto; }
   .mapbox path, .mapbox circle { stroke: #fff; stroke-width: .6; cursor: pointer; }
@@ -138,12 +145,13 @@
 <div id="swordBtn">⚔️</div>
 
 <div class="overlay" id="start">
-  <div class="panel" style="max-width:520px">
+  <div class="panel" style="max-width:680px">
     <h1>❄️ Myth Monster Freeze ⚔️</h1>
-    <p>You are in a sunny meadow with magic portals to every continent.</p>
-    <p>Step into a portal, find monsters from real myths and legends, and <b>freeze them with your frost sword</b>! They run away, so be quick. When they get tired they stop to catch their breath.</p>
-    <p>Each frozen monster tells you its name and where it comes from, and leaves a treasure to collect.</p>
-    <p style="font-size:14px;color:#34506e">Move: arrow keys or WASD · Sword: Space (or click)<br>On a phone: drag on the left to move, tap ⚔️ to swing</p>
+    <p class="hook">These monsters are <b>real</b>! Not made up for a game: people all over the world have told stories about them for hundreds of years.</p>
+    <div class="mapbox startmap"><svg id="startMap" viewBox="0 0 1000 400" role="img" aria-label="World map with myth monsters on their home countries"></svg><div id="startPins"></div></div>
+    <p class="stats"><span>👹 220 monsters</span><span>🌍 195 countries</span><span>⭐ 6 rounds</span></p>
+    <p>Jump through magic portals, <b>freeze monsters with your frost sword</b>, and find out where each one comes from. Grab their treasures, from Bulgarian kuker bells to a leprechaun's pot of gold. <b>Can you light up the whole world?</b></p>
+    <p style="font-size:13px;color:#34506e">Move: arrow keys or WASD · Sword: Space (or click) · On a phone: drag on the left to move, tap ⚔️</p>
     <h2 style="text-align:center">Pick a round</h2>
     <div class="rounds" id="roundList"></div>
   </div>
@@ -3589,9 +3597,10 @@ const NICE = { 'Bosnia and Herz.': 'Bosnia and Herzegovina', 'Macedonia': 'North
 const nice = n => NICE[n] || n;
 const mapNames = m => [].concat(m.map || []);
 function litCountries() { const s = new Set(); for (const m of MONSTERS) if (save.seen[m.id]) for (const n of mapNames(m)) s.add(n); return s; }
-function drawWorldMap() {
-  const svg = $('worldMap'), lit = litCountries(), has = new Set(); for (const m of MONSTERS) for (const n of mapNames(m)) has.add(n);
-  const fill = n => lit.has(n) ? CONT[CONT_OF[n] || 'namerica'].portal : has.has(n) ? '#9fbfd6' : '#dfe8ee';
+function drawWorldMap(id = 'worldMap', preview = false) {
+  const svg = $(id), lit = litCountries(), has = new Set(); for (const m of MONSTERS) for (const n of mapNames(m)) has.add(n);
+  // the start screen shows every continent in its colour (paler where nothing is frozen yet)
+  const fill = n => lit.has(n) ? CONT[CONT_OF[n] || 'namerica'].portal : preview && CONT_OF[n] ? CONT[CONT_OF[n]].portal + '88' : has.has(n) ? '#9fbfd6' : '#dfe8ee';
   let out = '', dots = '';
   for (const [n, x, y, small, d] of WORLD) {
     if (d) out += `<path d="${d}" fill="${fill(n)}" data-n="${n}"/>`;
@@ -3663,7 +3672,18 @@ function renderRounds() {
     list.appendChild(b);
   }
 }
-function openMenu() { if (fade > 0) return; menuOpen = true; renderRounds(); $('start').classList.remove('hidden'); }
+// a few monsters standing on their home countries on the start-screen map
+const START_PINS = [['kuker', 'Bulgaria'], ['troll', 'Norway'], ['kappa', 'Japan'], ['yeti', 'Nepal'], ['minotaur', 'Greece'], ['grootslang', 'South Africa'], ['ammit', 'Egypt'], ['sasquatch', 'Canada'], ['alux', 'Mexico'], ['saci', 'Brazil'], ['tunche', 'Peru'], ['bunyip', 'Australia'], ['tikbalang', 'Philippines'], ['kongamato', 'Zambia']];
+function renderStartMap() {
+  drawWorldMap('startMap', true);
+  const box = $('startPins'); box.innerHTML = '';
+  START_PINS.forEach(([id, country], i) => {
+    const w = WORLD.find(c => c[0] === country), def = MON[id]; if (!w || !def) return;
+    const cv = monsterIcon(def, 46); cv.style.left = (w[1] / 10) + '%'; cv.style.top = (w[2] / 4) + '%'; cv.style.animationDelay = (i * 0.37 % 2.4) + 's'; cv.title = def.name + ' · ' + def.place;
+    box.appendChild(cv);
+  });
+}
+function openMenu() { if (fade > 0) return; menuOpen = true; renderRounds(); renderStartMap(); $('start').classList.remove('hidden'); }
 function begin(r) {
   menuOpen = false; $('start').classList.add('hidden'); audio();
   const changed = !startDone || r !== save.round; save.round = r; persist(); startDone = true;
@@ -3671,7 +3691,7 @@ function begin(r) {
   updateHud();
 }
 $('roundBtn').addEventListener('click', openMenu);
-renderRounds();
+renderRounds(); renderStartMap();
 function celebrate() {
   for (let i = 0; i < 80; i++) { const a = Math.random() * TAU, sp = 80 + Math.random() * 260; parts.push({ kind: 'spark', x: player.x, y: player.y - 40, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 1.6, max: 1.6, r: 2 + Math.random() * 3 }); }
   [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.4, 'triangle', 0.08, 0, i * 0.15));
