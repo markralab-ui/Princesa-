@@ -104,6 +104,21 @@
   body.touch #toast { top: auto; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 12px; transform: none; font-size: 14px; padding: 4px 10px; }
   body.touch #banner { top: 22%; font-size: 30px; letter-spacing: 2px; }
   body.touch #banner small { font-size: 14px; }
+  .rounds { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-top: 6px; }
+  .rbtn { font: inherit; text-align: center; background: #fff; border: 3px solid #7cc7f2; border-radius: 14px; padding: 8px 6px; color: #13406b; cursor: pointer; box-shadow: 0 3px 0 #b9d6ea; }
+  .rbtn b { display: block; font-size: 19px; }
+  .rbtn span { font-size: 13px; color: #34506e; }
+  .rbtn.cur { background: #e3f4ff; border-color: #2f8fd0; }
+  .rbtn.done { border-color: #e0a91b; }
+  .rbtn:disabled { opacity: .55; cursor: default; box-shadow: none; }
+  .mapbox { background: #cfe9f7; border-radius: 14px; padding: 4px; margin: 6px 0 2px; }
+  .mapbox svg { display: block; width: 100%; height: auto; }
+  .mapbox path, .mapbox circle { stroke: #fff; stroke-width: .6; cursor: pointer; }
+  .mapinfo { font-size: 14px; min-height: 20px; color: #13406b; font-weight: bold; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin: 10px 0 0; }
+  .tab { font: inherit; font-size: 14px; font-weight: bold; border: 2px solid #7cc7f2; background: #fff; color: #13406b; border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+  .tab.cur { background: #2f8fd0; color: #fff; border-color: #2f8fd0; }
+  .tab:disabled { opacity: .45; cursor: default; }
   .cell .fx { font-size: 11.5px; color: #34506e; margin-top: 3px; text-align: left; }
 </style>
 </head>
@@ -113,6 +128,7 @@
   <span class="pill" id="hearts"></span>
   <span class="pill" id="where">Meadow</span>
   <span class="pill" id="count"></span>
+  <span class="pill btn" id="roundBtn">🔄 Round 1</span>
   <span class="pill btn" id="bookBtn">🎒 Treasures</span>
   <span class="pill btn" id="soundBtn">🔊</span>
 </div>
@@ -128,13 +144,17 @@
     <p>Step into a portal, find monsters from real myths and legends, and <b>freeze them with your frost sword</b>!</p>
     <p>Each frozen monster tells you its name and where it comes from, and leaves a treasure to collect.</p>
     <p style="font-size:14px;color:#34506e">Move: arrow keys or WASD · Sword: Space (or click)<br>On a phone: drag on the left to move, tap ⚔️ to swing</p>
-    <button class="big" id="playBtn">Play!</button>
+    <h2 style="text-align:center">Pick a round</h2>
+    <div class="rounds" id="roundList"></div>
   </div>
 </div>
 <div class="overlay hidden" id="book">
   <div class="panel">
     <h1>🎒 Treasure Book</h1>
     <p id="bookSum"></p>
+    <div class="mapbox"><svg id="worldMap" viewBox="0 0 1000 400" role="img" aria-label="World map of the countries you have lit"></svg></div>
+    <p class="mapinfo" id="mapInfo">Tap a country to see its monster.</p>
+    <div class="tabs" id="bookTabs"></div>
     <div id="bookBody"></div>
     <button class="big" id="bookClose">Back to the game</button>
   </div>
@@ -625,6 +645,552 @@ const MONSTERS = [
   { id: 'patupaiarehe', cont: 'oceania', name: 'Patupaiarehe', place: 'New Zealand (Māori stories)', fact: 'Fairy folk with pale skin and red-gold hair who live in misty mountains and play flutes.', tr: 'flute', trName: 'Wooden flute', box: [46, 64], sp: 70 },
   { id: 'adaro', cont: 'oceania', name: 'Adaro', place: 'Solomon Islands', fact: 'Sea spirits with fish tails and fins who are said to travel along rainbows and ride waterspouts.', tr: 'fish', trName: 'Flying fish', box: [60, 76], sp: 70, fly: true },
 ];
+const R1MAP = { kuker: 'Bulgaria', troll: 'Norway', krampus: 'Austria', babayaga: 'Russia', nessie: 'United Kingdom', kappa: 'Japan', tengu: 'Japan', nian: 'China', kumiho: 'South Korea', yeti: 'Nepal', grootslang: 'South Africa', ammit: 'Egypt', tokoloshe: 'South Africa', ninkinanka: 'Gambia', mokele: 'Congo', sasquatch: ['Canada', 'United States of America'], jerseydevil: 'United States of America', chupacabra: 'Puerto Rico', alux: 'Mexico', ogopogo: 'Canada', saci: 'Brazil', curupira: 'Brazil', pombero: 'Paraguay', chonchon: 'Chile', tunche: 'Peru', bunyip: 'Australia', yowie: 'Australia', dropbear: 'Australia', patupaiarehe: 'New Zealand', adaro: 'Solomon Is.' };
+MONSTERS.forEach(m => { m.round = 1; m.map = R1MAP[m.id]; });
+// ---------------------------------------------------------------- round 2 treasures
+Object.assign(TREASURE, {
+  thread(c) { Ci(c, 0, 0, 12, '#d62828'); for (let i = -2; i <= 2; i++) Q(c, -11, i * 4, 0, i * 4 + (i % 2 ? 4 : -4), 11, i * 4, '#ff6b6b', 1.5); Q(c, 10, 6, 18, 10, 16, 16, '#d62828', 2); },
+  potgold(c) { for (let i = 0; i < 5; i++) Ci(c, -8 + i * 4, -6 - (i % 2) * 3, 4, '#f4c430'); E(c, 0, 4, 14, 11, '#2b2b2b'); E(c, 0, -5, 14, 4, '#444'); E(c, -5, 2, 3, 6, '#555'); },
+  sweater(c) { P(c, [-8, -12, 8, -12, 16, -6, 12, 0, 9, -3, 9, 13, -9, 13, -9, -3, -12, 0, -16, -6], '#c0392b'); for (let x = -6; x <= 6; x += 6) P(c, [x - 2, 2, x, -2, x + 2, 2, x, 6], '#fff'); R(c, -9, 10, 18, 3, 1, '#fff'); },
+  gingerbread(c) { c.fillStyle = '#a0522d'; c.beginPath(); c.moveTo(0, 14); c.bezierCurveTo(-22, 0, -12, -18, 0, -6); c.bezierCurveTo(12, -18, 22, 0, 0, 14); c.fill(); Q(c, -9, -4, 0, 4, 9, -4, '#fff', 2); Ci(c, -6, 4, 1.8, '#e63946'); Ci(c, 6, 4, 1.8, '#2a9d48'); L(c, [-6, -14, 0, -20, 6, -14], '#d62828', 2); },
+  key(c) { c.strokeStyle = '#e0a91b'; c.lineWidth = 4; c.beginPath(); c.arc(-8, -6, 6, 0, TAU); c.stroke(); L(c, [-3, -2, 13, 12], '#e0a91b', 4); L(c, [8, 7, 4, 11], '#e0a91b', 3); L(c, [11, 10, 7, 14], '#e0a91b', 3); Ci(c, -10, -8, 1.5, '#fff6c9'); },
+  lavender(c) { for (let i = -2; i <= 2; i++) { L(c, [i * 2, 14, i * 5, -6], '#5f8f4a', 1.5); for (let k = 0; k < 4; k++) E(c, i * 5 + (k % 2 ? 1.5 : -1.5), -6 - k * 3, 2, 2.5, '#9b6dd6'); } R(c, -6, 6, 12, 4, 2, '#f7d26b'); },
+  crown(c) { P(c, [-14, 8, -14, -8, -7, 0, 0, -12, 7, 0, 14, -8, 14, 8], '#f4c430'); R(c, -14, 4, 28, 6, 1, '#e0a91b'); Ci(c, 0, 7, 2.5, '#d62828'); Ci(c, -8, 7, 2, '#2f6db3'); Ci(c, 8, 7, 2, '#2a9d48'); },
+  goldapple(c) { Ci(c, -4, 2, 11, '#f4c430'); Ci(c, 4, 2, 11, '#f4c430'); E(c, -5, -2, 4, 6, '#fff3b0'); L(c, [0, -8, 2, -15], '#6b3e1f', 2); E(c, 7, -13, 5, 2.5, '#2a9d48', -0.4); },
+  diya(c) { E(c, 0, 4, 14, 7, '#c9822b'); E(c, 0, 1, 12, 4, '#8b5a2b'); P(c, [10, 0, 18, -3, 12, 3], '#c9822b'); E(c, 16, -8, 3, 6, '#ff9f1c'); E(c, 16, -7, 1.5, 3, '#fff3b0'); },
+  goldhair(c) { for (let i = 0; i < 3; i++) { c.strokeStyle = ['#f4c430', '#ffd966', '#e0a91b'][i]; c.lineWidth = 2; c.beginPath(); c.moveTo(-10 + i * 3, 14); c.bezierCurveTo(-14 + i * 4, 0, 10, 4, 6 + i * 2, -15); c.stroke(); } Ci(c, 8, -14, 2, '#fff'); },
+  durian(c) { E(c, 0, 2, 12, 14, '#9bb03a'); for (let i = 0; i < 14; i++) { const a = i / 14 * TAU; P(c, [Math.cos(a) * 11, 2 + Math.sin(a) * 13, Math.cos(a) * 15, 2 + Math.sin(a) * 17, Math.cos(a + 0.2) * 11, 2 + Math.sin(a + 0.2) * 13], '#7a8f24'); } L(c, [0, -12, 0, -18], '#6b3e1f', 3); },
+  fossil(c) { E(c, 0, 0, 15, 12, '#c9b48a'); E(c, -2, -2, 12, 9, '#dccaa0'); L(c, [-8, 4, 8, 4], '#fff8e6', 2); for (let i = -6; i <= 6; i += 3) L(c, [i, 0, i, 8], '#fff8e6', 1.5); Ci(c, 10, 0, 3, '#fff8e6'); },
+  rainbowfeather(c) { const cols = ['#e63946', '#f4a261', '#ffd23f', '#2a9d48', '#2f6db3', '#8e44ad']; for (let i = 0; i < 6; i++) E(c, 0, -2 + i * 0.5, 7 - i * 0.8, 15 - i * 2, cols[i], 0.3); L(c, [-4, 15, 4, -14], '#fff', 1.2); Ci(c, 1, -4, 2.5, '#1d3557'); },
+  tablet(c) { R(c, -11, -14, 22, 28, 4, '#b07a4a'); R(c, -9, -12, 18, 24, 3, '#c98f5a'); for (let y = -8; y <= 8; y += 4) for (let x = -6; x <= 6; x += 4) P(c, [x, y, x + 2, y - 1, x + 1, y + 2], '#8b5a2b'); },
+  snakebracelet(c) { c.strokeStyle = '#2a9d48'; c.lineWidth = 5; c.beginPath(); c.arc(0, 0, 11, 0.3, TAU - 0.1); c.stroke(); E(c, 11, 3, 5, 3.5, '#2a9d48', 0.6); Ci(c, 12, 2, 1, '#ffd23f'); c.strokeStyle = '#f4c430'; c.lineWidth = 1.5; c.beginPath(); c.arc(0, 0, 11, 0.5, TAU - 0.3); c.stroke(); },
+  dragonstone(c) { P(c, [-6, 16, -9, -4, -4, -16, 4, -16, 9, -4, 6, 16], '#8e9296'); P(c, [-4, -12, 4, -12, 2, -6, -2, -6], '#b0b4b8'); Ci(c, -2, -10, 1.3, '#333'); for (let y = -2; y < 14; y += 4) L(c, [-5, y, 5, y + 2], '#6d7175', 1.2); },
+  churchkhela(c) { L(c, [0, -16, 0, -12], '#6b3e1f', 2); for (let i = 0; i < 6; i++) E(c, 0, -9 + i * 4.5, 5, 3.2, i % 2 ? '#8b1e3f' : '#a52a4f'); Ci(c, -1.5, -10, 1, '#f7c6d4'); },
+  calabash(c) { Ci(c, 0, 4, 12, '#d9a441'); Ci(c, 0, -9, 6, '#d9a441'); L(c, [0, -15, 2, -19], '#6b3e1f', 2); L(c, [-10, 4, 10, 4], '#7a3e10', 1.5); for (let x = -8; x <= 8; x += 4) P(c, [x - 2, 4, x, 0, x + 2, 4], '#7a3e10'); },
+  kente(c) { const cols = ['#f4c430', '#2a9d48', '#d62828', '#1d1d1d']; for (let i = 0; i < 6; i++) { c.fillStyle = cols[i % 4]; c.fillRect(-14 + i * 4.7, -12, 4.7, 24); } for (let y = -10; y < 12; y += 6) { c.fillStyle = 'rgba(244,196,48,.9)'; c.fillRect(-14, y, 28, 2); } },
+  tea(c) { for (const [x, y, r] of [[-5, 0, -0.6], [6, -2, 0.5], [0, 6, 0.1]]) { c.save(); c.translate(x, y); c.rotate(r); E(c, 0, 0, 5, 11, '#2e7d32'); L(c, [0, -10, 0, 10], '#a5d6a7', 1); c.restore(); } },
+  copper(c) { for (let i = 0; i < 5; i++) { const a = -0.8 + i * 0.4; Ci(c, Math.sin(a) * 12, -4 + Math.cos(a) * 10, 4, '#c8743a'); Ci(c, Math.sin(a) * 12 - 1, -5 + Math.cos(a) * 10, 1.5, '#f0b07a'); } },
+  vanilla(c) { c.save(); c.rotate(-0.4); for (let i = -1; i <= 1; i++) R(c, -2 + i * 5, -15, 3.5, 30, 2, '#4a2c1a'); c.restore(); E(c, 6, -12, 5, 3, '#f7f0c4', 0.4); },
+  coffee(c) { for (const [x, y] of [[-6, -4], [6, -5], [0, 6], [-8, 7], [8, 6]]) { E(c, x, y, 5, 6.5, '#5a3418', 0.4); L(c, [x - 1, y - 5, x + 1, y + 5], '#2e1a0b', 1.2); } },
+  bendir(c) { Ci(c, 0, 0, 14, '#a0703f'); Ci(c, 0, 0, 11.5, '#f0dfb8'); L(c, [-10, -2, 10, -2], '#8b5a2b', 0.8); for (let i = 0; i < 6; i++) Ci(c, Math.cos(i) * 12.8, Math.sin(i) * 12.8, 1, '#5a3a1a'); },
+  nugget(c) { P(c, [-12, 4, -9, -8, 0, -12, 10, -6, 13, 6, 4, 12, -6, 11], '#e0a91b'); P(c, [-7, -6, 0, -9, 6, -4, 0, -2], '#ffe680'); Ci(c, 7, 4, 1.6, '#fff6c9'); },
+  frankincense(c) { for (const [x, y, r] of [[-5, 2, 6], [5, 4, 5], [0, -6, 5], [8, -6, 3.5]]) { Ci(c, x, y, r, '#e8c77a'); Ci(c, x - r * 0.3, y - r * 0.3, r * 0.4, '#fbe8b3'); } },
+  ackee(c) { E(c, 0, 2, 13, 12, '#e63946'); P(c, [-11, -2, 0, -13, 11, -2, 0, 6], '#ff8f6b'); for (const x of [-5, 5]) { E(c, x, 2, 4, 3.5, '#fff6c9'); Ci(c, x, -2, 2.5, '#111'); } },
+  horn(c) { c.fillStyle = '#e8d29a'; c.beginPath(); c.moveTo(-14, -6); c.quadraticCurveTo(4, -14, 14, 6); c.lineTo(8, 10); c.quadraticCurveTo(2, -4, -12, 0); c.closePath(); c.fill(); E(c, 11, 8, 4, 3, '#8b6b3a', 0.6); L(c, [-4, -6, -2, -2], '#c9b27a', 1.5); L(c, [2, -6, 3, -1], '#c9b27a', 1.5); },
+  guitar(c) { c.save(); c.rotate(0.6); E(c, 0, 6, 9, 10, '#c9822b'); E(c, 0, -5, 7, 7, '#c9822b'); Ci(c, 0, 2, 3, '#4a2c10'); R(c, -1.5, -24, 3, 22, 1, '#6b3e1f'); R(c, -3, -27, 6, 5, 1, '#4a2c10'); c.restore(); },
+  cacao(c) { E(c, 0, 0, 9, 15, '#d4762c', 0.3); for (let i = -1; i <= 1; i++) Q(c, -4 + i * 4, -13, i * 5, 0, -2 + i * 4, 13, '#a3521b', 1.5); L(c, [4, -14, 6, -18], '#5a3a1a', 2); },
+  sugarcane(c) { for (let i = -1; i <= 1; i++) { R(c, -2 + i * 6, -16, 4, 32, 2, '#b8c94a'); for (let y = -10; y < 16; y += 7) L(c, [-2 + i * 6, y, 2 + i * 6, y], '#7a8f24', 1.5); } E(c, 8, -16, 7, 2, '#5f8f4a', -0.6); },
+  mate(c) { E(c, 0, 4, 11, 12, '#7a4a24'); R(c, -9, -8, 18, 4, 2, '#c0c6cc'); E(c, 0, -6, 7, 2, '#5f8f4a'); L(c, [3, -6, 10, -18], '#c0c6cc', 2.5); for (let x = -6; x <= 6; x += 6) L(c, [x, 2, x, 12], '#5a3418', 1); },
+  tunjo(c) { P(c, [-6, 14, -6, -4, -9, 6, -10, -2, -6, -8, 6, -8, 10, -2, 9, 6, 6, -4, 6, 14], '#e0a91b'); E(c, 0, -12, 6, 5, '#e0a91b'); L(c, [-3, -12, -1, -12], '#7a5200', 1.2); L(c, [1, -12, 3, -12], '#7a5200', 1.2); L(c, [-4, 0, 4, 0], '#ffe680', 1); L(c, [-4, 5, 4, 5], '#ffe680', 1); },
+  banana(c) { for (let i = -1; i <= 1; i++) { c.save(); c.rotate(i * 0.35); c.fillStyle = '#ffd23f'; c.beginPath(); c.moveTo(0, -14); c.quadraticCurveTo(12, -2, 2, 14); c.quadraticCurveTo(6, -2, -2, -12); c.fill(); c.restore(); } R(c, -3, -17, 6, 5, 2, '#6b4423'); },
+  brazilnut(c) { for (const [x, y, r] of [[-6, 0, -0.4], [5, -2, 0.4], [0, 7, 0]]) { c.save(); c.translate(x, y); c.rotate(r); P(c, [0, -11, 6, 0, 0, 9, -6, 0], '#7a4a24'); P(c, [0, -9, 4, 0, 0, 7], '#a0703f'); c.restore(); } },
+  paradise(c) { Q(c, 0, 14, -6, 0, 4, -16, '#ff9f1c', 5); Q(c, 2, 14, 10, 2, 14, -10, '#ffd23f', 3); Q(c, -2, 14, -12, 4, -14, -6, '#e76f51', 2.5); Ci(c, 0, 13, 2.5, '#2a9d48'); },
+  coconut(c) { Ci(c, 0, 2, 13, '#6b4423'); Ci(c, -4, -2, 5, '#8b5a2b'); for (const [x, y] of [[-3, -4], [3, -4], [0, 1]]) Ci(c, x, y, 1.6, '#2e1a0b'); },
+  poi(c) { E(c, 0, 4, 14, 9, '#8b5a2b'); E(c, 0, -2, 13, 4, '#6b3e1f'); E(c, 0, -3, 11, 3, '#b39ddb'); P(c, [-14, 2, 14, 2, 10, 12, -10, 12], '#8b5a2b'); },
+});
+
+// ---------------------------------------------------------------- round 2 monsters
+Object.assign(DRAW, {
+  minotaur(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-6, -22, -7 + s, -3], '#7a4a2a', 7); L(c, [6, -22, 7 - s, -3], '#7a4a2a', 7);
+    E(c, -7 + s, -1, 5, 3, '#2b2b2b'); E(c, 7 - s, -1, 5, 3, '#2b2b2b');
+    P(c, [-13, -30, 13, -30, 15, -16, -15, -16], '#c0392b'); R(c, -14, -32, 28, 4, 2, '#e0a91b');
+    E(c, 0, -46, 17, 16, '#8b5a2b'); E(c, 0, -42, 10, 9, '#a0703f');
+    L(c, [-16, -50, -24, -30 + s], '#8b5a2b', 7); L(c, [16, -50, 24, -30 - s], '#8b5a2b', 7);
+    E(c, 4, -68, 13, 11, '#6b4423'); E(c, 12, -64, 9, 7, '#c49a6c');
+    Q(c, -4, -74, -18, -78, -16, -90, '#f3eee0', 5); Q(c, 10, -76, 22, -84, 20, -94, '#f3eee0', 5);
+    E(c, -8, -70, 5, 3, '#5a3a1a', -0.4);
+    eye(c, 6, -71, 3, '#5a1a1a'); Ci(c, 16, -64, 1.3, '#3a2210'); Ci(c, 12, -64, 1.3, '#3a2210');
+    c.strokeStyle = '#e0a91b'; c.lineWidth = 2; c.beginPath(); c.arc(14, -60, 4, 0.2, Math.PI - 0.2); c.stroke();
+  },
+  leprechaun(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 3;
+    c.save(); c.translate(0, -s);
+    L(c, [-3, -12, -4, -2], '#2a6b2a', 4); L(c, [3, -12, 4, -2], '#2a6b2a', 4);
+    E(c, -5, -1, 5, 2.5, '#2b2b2b'); E(c, 5, -1, 5, 2.5, '#2b2b2b'); R(c, -7, -3, 4, 3, 1, '#f4c430'); R(c, 3, -3, 4, 3, 1, '#f4c430');
+    P(c, [-10, -30, 10, -30, 12, -11, -12, -11], '#2a9d48'); R(c, -11, -18, 22, 3, 1, '#2b2b2b'); R(c, -3, -19, 6, 5, 1, '#f4c430');
+    L(c, [-10, -27, -15, -18], '#2a9d48', 4); L(c, [10, -27, 15, -18], '#2a9d48', 4);
+    Ci(c, 0, -38, 9, '#f5c9a0');
+    furBall(c, 0, -30, 10, 7, '#e86b1f', 10, 3);
+    Ci(c, -3, -40, 1.6, '#222'); Ci(c, 4, -40, 1.6, '#222'); E(c, 0, -36, 2.5, 2, '#f08a7a'); grin(c, 0, -33, 3, '#7a2a0c', 1.5);
+    E(c, 0, -46, 13, 3, '#1f7a36'); R(c, -8, -62, 16, 16, 2, '#2a9d48'); R(c, -8, -50, 16, 3, 1, '#2b2b2b'); R(c, -3, -51, 6, 5, 1, '#f4c430');
+    P(c, [6, -56, 12, -60, 10, -54], '#2b8a3e'); Ci(c, 11, -57, 2, '#7cd85a');
+    c.restore();
+  },
+  yulecat(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -24, -22, -44, -30, -36, -52 + Math.sin(t * 3) * 3, '#1d1d24', 6);
+    for (const [x, d] of [[-16, 1], [-6, -1], [10, 1], [18, -1]]) R(c, x - 3.5 + s * d * 0.4, -14, 7, 14, 3, '#1d1d24');
+    E(c, 0, -24, 26, 14, '#26262e');
+    E(c, 22, -38, 14, 13, '#26262e');
+    P(c, [11, -44, 12, -60, 20, -48], '#26262e'); P(c, [24, -48, 32, -60, 33, -44], '#26262e'); P(c, [13, -47, 14, -55, 18, -48], '#7a3a5a');
+    E(c, 17, -40, 4, 4.5, '#ffd23f'); E(c, 29, -40, 4, 4.5, '#ffd23f'); E(c, 17.5, -40, 1.2, 3.5, '#111'); E(c, 29.5, -40, 1.2, 3.5, '#111');
+    P(c, [22, -34, 26, -34, 24, -31], '#f7a1c4');
+    for (const dy of [-2, 1]) { L(c, [26, -32, 42, -33 + dy * 3], '#ddd', 1); L(c, [20, -32, 6, -33 + dy * 3], '#ddd', 1); }
+    for (let i = 0; i < 5; i++) Ci(c, -18 + i * 9, -42 + Math.sin(t + i) * 3, 1.5, 'rgba(255,255,255,.8)');
+  },
+  wolpertinger(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 6;
+    c.save(); c.translate(0, -s);
+    E(c, -10, -4, 9, 4, '#a0703f'); E(c, 8, -3, 5, 3, '#a0703f');
+    c.save(); c.translate(-6, -22); c.rotate(-0.6 + Math.sin(t * 12) * 0.3); E(c, -8, -4, 12, 6, '#7a5a3a'); E(c, -14, -3, 6, 3, '#5a4a3a'); c.restore();
+    E(c, 0, -16, 15, 12, '#b5875a'); E(c, 4, -12, 8, 7, '#efe0c8');
+    Ci(c, -15, -18, 5, '#fff');
+    E(c, 12, -28, 10, 9, '#b5875a');
+    E(c, 6, -44, 3.5, 11, '#b5875a', -0.2); E(c, 13, -44, 3.5, 11, '#b5875a', 0.15); E(c, 6, -44, 1.6, 8, '#f2c4ce', -0.2);
+    L(c, [3, -36, -4, -52, -10, -56], '#d9c9a3', 2.5); L(c, [-4, -52, -2, -60], '#d9c9a3', 2); L(c, [16, -36, 22, -52, 28, -56], '#d9c9a3', 2.5); L(c, [22, -52, 20, -60], '#d9c9a3', 2);
+    eye(c, 14, -30, 2.6); Ci(c, 21, -27, 1.5, '#d97a8a');
+    P(c, [17, -24, 18, -19, 19, -24], '#fff'); P(c, [20, -24, 21, -20, 22, -24], '#fff');
+    c.restore();
+  },
+  cuelebre(c, t, w) {
+    const s = Math.sin(w) * 4, f = Math.sin(t * 6) * 0.3;
+    c.strokeStyle = '#2e7d4f'; c.lineWidth = 13; c.lineCap = 'round'; c.beginPath(); c.moveTo(-36, -4); c.bezierCurveTo(-22, -16 + s, -10, 6 - s, 6, -14); c.quadraticCurveTo(12, -26, 14, -36); c.stroke();
+    for (let i = 0; i < 6; i++) Ci(c, -30 + i * 7, -8 + Math.sin(i + s) * 3, 2, '#7cc79a');
+    for (const sg of [-1, 1]) { c.save(); c.translate(4, -30); c.scale(sg, 1); c.rotate(-0.4 + f); P(c, [0, 0, 24, -18, 30, -4, 20, -2, 16, 6, 6, 4], '#1f5f3a'); c.restore(); }
+    E(c, 20, -42, 13, 9, '#2e7d4f', 0.2); E(c, 30, -39, 6, 4, '#3f9b62');
+    P(c, [12, -48, 8, -56, 16, -50], '#f4c430'); P(c, [18, -50, 18, -58, 22, -50], '#f4c430');
+    eye(c, 20, -45, 3, '#d62828'); Ci(c, 34, -40, 1.2, '#123'); grin(c, 28, -35, 4, '#123', 1.5);
+  },
+  tarasque(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -26, -16, -42, -12, -44, -2, '#4f7a3a', 6); P(c, [-44, -2, -50, 0, -42, 4], '#c0392b');
+    for (const [x, d] of [[-20, 1], [-10, -1], [0, 1], [10, -1], [18, 1]]) R(c, x - 3.5 + s * d * 0.4, -12, 7, 12, 3, '#6b4f2a');
+    E(c, -2, -24, 28, 16, '#8a6a3a'); E(c, -2, -26, 24, 12, '#a0804a');
+    for (let i = 0; i < 7; i++) { const a = Math.PI + 0.3 + i * 0.4; P(c, [-2 + Math.cos(a) * 20, -26 + Math.sin(a) * 10, -2 + Math.cos(a + 0.1) * 30, -26 + Math.sin(a + 0.1) * 20, -2 + Math.cos(a + 0.2) * 20, -26 + Math.sin(a + 0.2) * 10], '#e8d29a'); }
+    furBall(c, 26, -30, 14, 13, '#c9822b', 12, 4);
+    E(c, 28, -30, 10, 10, '#d9a441');
+    eye(c, 30, -33, 3); E(c, 36, -27, 3, 2.5, '#7a3e10'); R(c, 26, -24, 12, 3, 1, '#7a1010'); teeth(c, 32, -24, 6, 4);
+  },
+  smok(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -18, -12, -36, -8, -40, -22, '#3f8f3a', 7); P(c, [-40, -22, -46, -30, -36, -28], '#3f8f3a');
+    E(c, -9 + s * 0.3, -4, 9, 5, '#2f7a2e'); E(c, 9 - s * 0.3, -4, 9, 5, '#2f7a2e');
+    for (const sg of [-1, 1]) { c.save(); c.translate(0, -40); c.scale(sg, 1); c.rotate(Math.sin(t * 4) * 0.15); P(c, [8, 0, 28, -18, 30, -2, 22, 0, 18, 8], '#2a6a2a'); c.restore(); }
+    E(c, 0, -28, 20, 24, '#3f8f3a'); E(c, 2, -24, 12, 17, '#f2d16b');
+    for (let y = -36; y < -10; y += 6) L(c, [-8, y, 12, y], '#d9b54a', 1.2);
+    E(c, 4, -58, 15, 13, '#3f8f3a'); E(c, 14, -54, 9, 7, '#4fa64a');
+    P(c, [-4, -66, -8, -78, 2, -68], '#f3eee0'); P(c, [8, -68, 10, -80, 14, -68], '#f3eee0');
+    eyes(c, 4, -61, 5, 3.5, '#111');
+    Ci(c, 18, -55, 1.3, '#123'); grin(c, 12, -50, 5, '#123', 1.8);
+    for (let i = 0; i < 3; i++) { const p = (t * 0.8 + i / 3) % 1; c.globalAlpha = 0.6 * (1 - p); Ci(c, 24 + p * 16, -58 - p * 14, 3 + p * 5, '#aaa'); c.globalAlpha = 1; }
+  },
+  zmeu(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -10, -20, -30, -18, -34, -4, '#5b3f8a', 5); P(c, [-34, -4, -40, -2, -32, 2], '#d62828');
+    L(c, [-6, -22, -7 + s, -2], '#4a2f6e', 7); L(c, [6, -22, 7 - s, -2], '#4a2f6e', 7);
+    E(c, -7 + s, -1, 5, 3, '#2b1d40'); E(c, 7 - s, -1, 5, 3, '#2b1d40');
+    E(c, 0, -40, 17, 22, '#6b4fa0');
+    for (let i = 0; i < 4; i++) for (let k = -1; k <= 1; k++) E(c, k * 8, -52 + i * 8, 4, 3, '#7e62b5');
+    R(c, -16, -30, 32, 5, 2, '#e0a91b');
+    L(c, [-16, -52, -24, -32 - s], '#6b4fa0', 7); L(c, [16, -52, 24, -32 + s], '#6b4fa0', 7);
+    E(c, 2, -70, 12, 12, '#7e62b5');
+    P(c, [-6, -78, -12, -92, -1, -80], '#e8d29a'); P(c, [8, -80, 14, -94, 12, -78], '#e8d29a');
+    furBall(c, 2, -60, 9, 4, '#2b1d40', 10, 3);
+    Ci(c, -2, -72, 2.6, '#ffd23f'); Ci(c, 7, -72, 2.6, '#ffd23f'); Ci(c, -1.5, -72, 1.1, '#111'); Ci(c, 7.5, -72, 1.1, '#111');
+    grin(c, 3, -65, 4, '#2b1d40', 1.8);
+  },
+  rakshasa(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-6, -22, -7 + s, -2], '#2f6f8a', 7); L(c, [6, -22, 7 - s, -2], '#2f6f8a', 7);
+    P(c, [-14, -30, 14, -30, 16, -16, -16, -16], '#f4a261'); R(c, -15, -32, 30, 4, 2, '#e0a91b');
+    E(c, 0, -46, 17, 18, '#3b86a8');
+    L(c, [-16, -54, -26, -34 + s], '#3b86a8', 7); L(c, [16, -54, 26, -34 - s], '#3b86a8', 7);
+    Ci(c, -26, -33 + s, 3.5, '#e0a91b'); Ci(c, 26, -33 - s, 3.5, '#e0a91b');
+    c.strokeStyle = '#e0a91b'; c.lineWidth = 2.5; c.beginPath(); c.arc(0, -58, 9, 0.3, Math.PI - 0.3); c.stroke();
+    furBall(c, 0, -76, 16, 12, '#1d1d24', 14, 6);
+    E(c, 0, -70, 12, 12, '#3b86a8');
+    R(c, -5, -84, 10, 6, 2, '#e0a91b'); Ci(c, 0, -81, 2, '#d62828');
+    Ci(c, -4, -72, 2.8, '#fff'); Ci(c, 5, -72, 2.8, '#fff'); Ci(c, -3.5, -72, 1.4, '#c0392b'); Ci(c, 5.5, -72, 1.4, '#c0392b');
+    L(c, [-8, -77, -1, -75], '#111', 2); L(c, [2, -75, 9, -77], '#111', 2);
+    R(c, -5, -65, 10, 3, 1, '#5a1010'); P(c, [-5, -65, -4, -60, -2, -65], '#fff'); P(c, [2, -65, 4, -60, 5, -65], '#fff');
+  },
+  tikbalang(c, t, w) {
+    const s = Math.sin(w) * 4;
+    L(c, [-5, -36, -8 + s, -14, -6 + s, 0], '#3a2a20', 4); L(c, [5, -36, 8 - s, -14, 6 - s, 0], '#3a2a20', 4);
+    E(c, -6 + s, 0, 4, 2.5, '#111'); E(c, 6 - s, 0, 4, 2.5, '#111');
+    E(c, 0, -48, 10, 16, '#4a3628');
+    L(c, [-8, -58, -14, -36, -12 + s, -20], '#4a3628', 3.5); L(c, [8, -58, 16, -38, 14 - s, -22], '#4a3628', 3.5);
+    L(c, [0, -62, 4, -72], '#4a3628', 7);
+    c.save(); c.translate(8, -80); c.rotate(0.5); E(c, 0, 0, 7, 15, '#5a4232'); E(c, 0, 10, 5, 6, '#6b5242'); Ci(c, -2, 13, 1.2, '#111'); Ci(c, 2, 13, 1.2, '#111'); c.restore();
+    P(c, [2, -90, 0, -98, 6, -91], '#5a4232');
+    eye(c, 6, -84, 2.6, '#c0392b');
+    for (let i = 0; i < 6; i++) Q(c, -2, -94 + i * 6, -10 - Math.sin(t * 4 + i) * 2, -90 + i * 6, -8, -84 + i * 6, '#1d1410', 3);
+    for (let i = 0; i < 3; i++) Q(c, 0, -92 + i * 7, -8, -90 + i * 7, -10, -82 + i * 7, '#f4c430', 1.5);
+  },
+  orangpendek(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-5, -16, -6 + s, -2], '#7a4a24', 5); L(c, [5, -16, 6 - s, -2], '#7a4a24', 5);
+    E(c, -7 + s, 0, 5, 2.5, '#4a2c10'); E(c, 7 - s, 0, 5, 2.5, '#4a2c10');
+    furBall(c, 0, -26, 13, 15, '#a0602d', 14, 3);
+    L(c, [-11, -30, -16, -14 + s], '#a0602d', 5); L(c, [11, -30, 16, -14 - s], '#a0602d', 5);
+    furBall(c, 0, -46, 11, 10, '#a0602d', 12, 4);
+    E(c, 2, -44, 8, 7, '#d9a07a');
+    Ci(c, -1, -46, 1.8, '#111'); Ci(c, 5, -46, 1.8, '#111'); E(c, 2, -42, 2, 1.4, '#6b3e1f'); grin(c, 2, -39, 3, '#4a2c10', 1.3);
+  },
+  deathworm(c, t, w) {
+    E(c, 0, -2, 26, 7, '#e9cf8f'); E(c, 0, -3, 20, 5, '#f2dca6');
+    const sw = Math.sin(t * 3) * 4;
+    for (let i = 0; i < 6; i++) { const y = -6 - i * 7, x = Math.sin(i * 0.5 + t * 3) * (i * 0.8); E(c, x, y, 11 - i * 0.4, 5, i % 2 ? '#c0392b' : '#d64541'); }
+    const hx = Math.sin(3 + t * 3) * 5;
+    E(c, hx, -48, 9, 8, '#d64541');
+    Ci(c, hx + 2, -50, 4.5, '#5a1010');
+    for (let i = 0; i < 8; i++) { const a = i / 8 * TAU; P(c, [hx + 2 + Math.cos(a) * 4.5, -50 + Math.sin(a) * 4.5, hx + 2 + Math.cos(a) * 1.5, -50 + Math.sin(a) * 1.5, hx + 2 + Math.cos(a + 0.4) * 4.5, -50 + Math.sin(a + 0.4) * 4.5], '#fff'); }
+    for (let i = 0; i < 4; i++) Ci(c, -18 + i * 12 + sw, -4, 1.6, '#c9a85f');
+  },
+  simurgh(c, t) {
+    const f = Math.sin(t * 7) * 0.4;
+    for (let i = 0; i < 5; i++) { c.save(); c.translate(-14, -30); c.rotate(-2.6 + i * 0.22); E(c, 20, 0, 22, 5, ['#2a9d8f', '#2f6db3', '#8e44ad', '#2a9d48', '#e9c46a'][i]); Ci(c, 38, 0, 3.5, '#f4c430'); Ci(c, 38, 0, 1.6, '#1d3557'); c.restore(); }
+    for (const sg of [-1, 1]) { c.save(); c.translate(0, -40); c.scale(sg, 1); c.rotate(-0.5 + f); for (let i = 0; i < 4; i++) E(c, 14 + i * 5, -6 + i * 3, 16 - i * 2, 6, ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f'][i], 0.3); c.restore(); }
+    E(c, 2, -34, 13, 16, '#e76f51'); E(c, 4, -30, 7, 10, '#f4c430');
+    E(c, 10, -54, 9, 8, '#e76f51');
+    for (let i = 0; i < 3; i++) Q(c, 8, -60, 4 + i * 4, -72, 2 + i * 5, -76, ['#2a9d8f', '#8e44ad', '#f4c430'][i], 2);
+    P(c, [16, -56, 26, -52, 16, -50], '#e0a91b');
+    eye(c, 12, -56, 2.6, '#1d3557');
+  },
+  lamassu(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -26, -24, -36, -18, -34, -6, '#c9a46b', 4); furBall(c, -34, -6, 3, 3, '#5a3a1a', 6, 2);
+    for (const [x, d] of [[-20, 1], [-10, -1], [8, 1], [18, -1]]) { R(c, x - 4 + s * d * 0.3, -16, 8, 16, 2, '#c9a46b'); E(c, x + s * d * 0.3, 0, 5, 2.5, '#8b6b3a'); }
+    E(c, -2, -26, 26, 13, '#d4b27a');
+    c.save(); c.translate(-6, -32); c.rotate(-0.5 + Math.sin(t * 2) * 0.05); for (let i = 0; i < 5; i++) R(c, -2 - i * 4, -24 + i * 2, 8 + i * 4, 4, 2, i % 2 ? '#b8894a' : '#e0c08a'); c.restore();
+    for (let i = 0; i < 4; i++) for (let k = 0; k < 4; k++) Ci(c, 15 + k * 4, -36 + i * 3.5, 2.2, '#3a2a1a');
+    E(c, 20, -46, 9, 9, '#e0c08a');
+    R(c, 11, -64, 18, 12, 2, '#3a2a6a'); for (let i = 0; i < 3; i++) L(c, [11, -61 + i * 3, 29, -61 + i * 3], '#e0a91b', 1);
+    furBall(c, 12, -50, 3, 5, '#3a2a1a', 6, 2);
+    Ci(c, 20, -48, 1.8, '#111'); Ci(c, 26, -48, 1.8, '#111'); L(c, [18, -51, 22, -51], '#3a2a1a', 1.5); L(c, [24, -51, 28, -51], '#3a2a1a', 1.5);
+    E(c, 25, -44, 2, 2.5, '#c9a46b'); grin(c, 23, -40, 3, '#5a3a1a', 1.3);
+  },
+  sahmaran(c, t, w) {
+    const s = Math.sin(w) * 3;
+    c.strokeStyle = '#2a9d48'; c.lineWidth = 12; c.lineCap = 'round'; c.beginPath(); c.moveTo(-26, -4); c.bezierCurveTo(-14, -12 + s, -4, 4 - s, 6, -6); c.quadraticCurveTo(12, -14, 6, -24); c.stroke();
+    for (let i = 0; i < 5; i++) Ci(c, -20 + i * 6, -6 + Math.sin(i + s) * 2, 1.8, '#f4c430');
+    E(c, 4, -34, 10, 13, '#2a9d48'); E(c, 4, -36, 7, 8, '#f2e3b3');
+    L(c, [-4, -40, -12, -30], '#e8b88a', 3); L(c, [12, -40, 18, -32], '#e8b88a', 3);
+    furBall(c, 4, -50, 11, 12, '#1d1d24', 12, 3);
+    Ci(c, 4, -50, 8, '#e8b88a');
+    P(c, [-4, -58, -2, -66, 2, -60, 4, -68, 6, -60, 10, -66, 12, -58], '#f4c430'); Ci(c, 4, -61, 1.6, '#d62828');
+    Ci(c, 1, -51, 1.6, '#111'); Ci(c, 7, -51, 1.6, '#111'); grin(c, 4, -46, 3, '#8b3a1a', 1.3);
+    Q(c, -6, -44, -14, -46, -12, -54, '#2a9d48', 3); Ci(c, -12, -55, 2.2, '#2a9d48');
+  },
+  vishap(c, t, w) {
+    const s = Math.sin(w) * 3;
+    P(c, [-42, -10, -30, -16, -30, -4], '#1d6fa5');
+    E(c, -4, -14, 28, 12, '#2f8fd0');
+    for (let i = 0; i < 6; i++) for (let k = 0; k < 2; k++) E(c, -24 + i * 8, -18 + k * 7, 4, 3, '#56a8e0');
+    E(c, 0, -8, 20, 4, '#bfe1ff');
+    P(c, [-16, -26, -10, -38, -2, -26], '#1d6fa5'); P(c, [-2, -26, 4, -36, 10, -25], '#1d6fa5');
+    P(c, [0, -6, -6, 4 + s, 6, -4], '#1d6fa5'); P(c, [-18, -6, -24, 4 - s, -12, -4], '#1d6fa5');
+    E(c, 26, -20, 12, 10, '#2f8fd0'); E(c, 34, -18, 6, 6, '#56a8e0');
+    P(c, [20, -28, 18, -40, 26, -30], '#f4c430');
+    eye(c, 26, -23, 3.2); grin(c, 32, -14, 4, '#0b3d5b', 1.6);
+    Q(c, 36, -18, 44, -22, 46, -16, '#bfe1ff', 1.5);
+  },
+  devi(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-8, -22, -9 + s, -2], '#6b5a3a', 8); L(c, [8, -22, 9 - s, -2], '#6b5a3a', 8);
+    E(c, -9 + s, 0, 6, 3, '#3a2a1a'); E(c, 9 - s, 0, 6, 3, '#3a2a1a');
+    E(c, 0, -40, 24, 22, '#8a7a5a'); P(c, [-22, -30, 22, -30, 18, -18, -18, -18], '#6b3e1f');
+    L(c, [-22, -50, -32, -28 + s], '#8a7a5a', 8); L(c, [22, -50, 32, -28 - s], '#8a7a5a', 8);
+    for (const [x, y, r, k] of [[-16, -66, 9, 0], [16, -66, 9, 1], [0, -72, 11, 2]]) {
+      E(c, x, y, r, r, '#9c8b6a'); furBall(c, x, y - r * 0.8, r * 0.7, r * 0.35, '#3a2a1a', 8, 2);
+      Ci(c, x - r * 0.35, y - 1, r * 0.25, '#fff'); Ci(c, x + r * 0.35, y - 1, r * 0.25, '#fff'); Ci(c, x - r * 0.3, y - 1, r * 0.12, '#111'); Ci(c, x + r * 0.4, y - 1, r * 0.12, '#111');
+      if (k === 2) teeth(c, x, y + r * 0.45, r * 0.5, 3); else grin(c, x, y + r * 0.4, r * 0.4, '#3a2a1a', 1.5);
+    }
+  },
+  dodo(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-6, -14, -7 + s, -2], '#2b2b2b', 6); L(c, [6, -14, 7 - s, -2], '#2b2b2b', 6);
+    furBall(c, 0, -34, 22, 26, '#3b3a36', 18, 6);
+    for (let i = 0; i < 8; i++) L(c, [-18 + i * 5, -20, -18 + i * 5 + Math.sin(t * 5 + i) * 2, -6], '#c9a46b', 2);
+    E(c, 0, -52, 13, 15, '#e8dcc0');
+    L(c, [-10, -56, -2, -54], '#d62828', 2.5); L(c, [2, -54, 10, -56], '#d62828', 2.5);
+    Ci(c, -5, -51, 3, '#111'); Ci(c, 5, -51, 3, '#111');
+    R(c, -5, -44, 10, 5, 2, '#111'); for (let i = 0; i < 3; i++) L(c, [-3 + i * 3, -44, -3 + i * 3, -39], '#e8dcc0', 1.2);
+    for (let i = 0; i < 3; i++) L(c, [-8 + i * 8, -66, -9 + i * 8, -74], '#c9a46b', 3);
+  },
+  sasabonsam(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-5, -36, -10 + s, -16, -8 + s, -2], '#4a3b3b', 3.5); L(c, [5, -36, 10 - s, -16, 8 - s, -2], '#4a3b3b', 3.5);
+    Q(c, -8 + s, -2, -14 + s, 0, -14 + s, -6, '#888', 2.5); Q(c, 8 - s, -2, 14 - s, 0, 14 - s, -6, '#888', 2.5);
+    for (const sg of [-1, 1]) { c.save(); c.translate(0, -50); c.scale(sg, 1); c.rotate(Math.sin(t * 5) * 0.15); P(c, [6, 0, 30, -16, 28, 2, 22, 0, 18, 10], '#3a2a2a'); c.restore(); }
+    E(c, 0, -46, 11, 15, '#5a4646');
+    L(c, [-9, -54, -20, -40 + s], '#5a4646', 3); L(c, [9, -54, 20, -40 - s], '#5a4646', 3);
+    E(c, 0, -68, 11, 10, '#5a4646');
+    furBall(c, 0, -76, 9, 4, '#e8e1d6', 10, 3);
+    Ci(c, -4, -69, 2.6, '#ff3b3b'); Ci(c, 4, -69, 2.6, '#ff3b3b');
+    R(c, -5, -63, 10, 4, 1, '#222'); for (let i = 0; i < 4; i++) P(c, [-5 + i * 2.5, -63, -3.8 + i * 2.5, -60, -2.5 + i * 2.5, -63], '#c0c6cc');
+  },
+  nandibear(c, t, w) {
+    const s = Math.sin(w) * 3;
+    for (const [x, d, h] of [[-18, 1, 12], [-8, -1, 12], [10, 1, 18], [20, -1, 18]]) R(c, x - 4 + s * d * 0.3, -h, 8, h, 3, '#4a3a2a');
+    c.fillStyle = '#6b5440'; c.beginPath(); c.moveTo(-26, -10); c.quadraticCurveTo(-24, -26, 0, -32); c.quadraticCurveTo(22, -38, 26, -20); c.lineTo(24, -10); c.closePath(); c.fill();
+    for (let i = 0; i < 7; i++) P(c, [-14 + i * 5, -30 - i * 0.8, -12 + i * 5, -38 - i * 0.8, -10 + i * 5, -30 - i * 0.8], '#3a2a1a');
+    E(c, 30, -28, 11, 9, '#6b5440'); E(c, 39, -26, 5, 4, '#8a6f55');
+    P(c, [24, -36, 26, -42, 30, -36], '#6b5440');
+    Ci(c, 31, -31, 2.2, '#ffd23f'); Ci(c, 31.5, -31, 1, '#111'); Ci(c, 43, -27, 1.3, '#111');
+    P(c, [36, -22, 37, -18, 38, -22], '#fff');
+  },
+  kongamato(c, t) {
+    const f = Math.sin(t * 8) * 0.45;
+    for (const sg of [-1, 1]) { c.save(); c.translate(0, -36); c.scale(sg, 1); c.rotate(-0.2 + f); P(c, [2, 0, 40, -10, 44, 4, 30, 2, 22, 10, 6, 6], '#a14b3a'); L(c, [2, 0, 40, -10], '#6a2a1f', 2); c.restore(); }
+    E(c, 0, -34, 9, 12, '#b5594a');
+    L(c, [-4, -24, -6, -14], '#6a2a1f', 2.5); L(c, [4, -24, 6, -14], '#6a2a1f', 2.5);
+    Q(c, 0, -24, -6, -10, -14, -8, '#b5594a', 2.5);
+    E(c, 8, -48, 7, 6, '#b5594a'); P(c, [12, -50, 32, -46, 12, -44], '#c9a46b'); P(c, [2, -50, -12, -58, 4, -46], '#b5594a');
+    for (let i = 0; i < 4; i++) P(c, [15 + i * 4, -45, 16 + i * 4, -42, 17 + i * 4, -45], '#fff');
+    eye(c, 8, -49, 2.4, '#d62828');
+  },
+  kalanoro(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-4, -12, -5 + s, -2], '#4a3626', 3.5); L(c, [4, -12, 5 - s, -2], '#4a3626', 3.5);
+    E(c, -1 + s, 0, 5, 2, '#3a2a1a'); E(c, 9 - s, 0, 5, 2, '#3a2a1a');
+    furBall(c, 0, -22, 11, 12, '#6b4a2f', 12, 3);
+    L(c, [-9, -26, -16, -16 + s], '#6b4a2f', 3); L(c, [9, -26, 16, -16 - s], '#6b4a2f', 3);
+    for (const x of [-16, 16]) for (let i = -1; i <= 1; i++) L(c, [x, -16, x + i * 3, -9], '#e8e1d6', 1.5);
+    furBall(c, 0, -40, 11, 10, '#6b4a2f', 14, 5);
+    E(c, 1, -38, 7, 7, '#a07a5a');
+    Ci(c, -2, -40, 3, '#ffe14d'); Ci(c, 5, -40, 3, '#ffe14d'); Ci(c, -1.5, -40, 1.3, '#111'); Ci(c, 5.5, -40, 1.3, '#111');
+    grin(c, 2, -35, 3, '#3a2a1a', 1.3);
+  },
+  arwe(c, t, w) {
+    const s = Math.sin(w) * 3;
+    for (let i = 0; i < 3; i++) E(c, -8 + i * 2, -6 - i * 9, 26 - i * 5, 7, i % 2 ? '#3d6b4a' : '#4a7d57');
+    for (let i = 0; i < 3; i++) for (let k = -2; k <= 2; k++) Ci(c, -8 + i * 2 + k * 7, -6 - i * 9, 1.8, '#c9a46b');
+    Q(c, 4, -26, 10, -40 + s, 8, -52, '#4a7d57', 10);
+    E(c, 12, -58, 13, 9, '#4a7d57', 0.15);
+    P(c, [2, -64, 4, -74, 8, -66, 12, -76, 15, -66, 20, -74, 20, -63], '#f4c430'); Ci(c, 12, -68, 1.6, '#d62828');
+    eye(c, 14, -60, 3, '#7a1010'); grin(c, 20, -54, 4, '#1d3a1a', 1.5);
+    L(c, [24, -55, 30, -56, 33, -53], '#d62828', 1.5); L(c, [30, -56, 33, -59], '#d62828', 1.5);
+  },
+  boujloud(c, t, w) {
+    const s = Math.sin(w) * 3, sw = Math.sin(t * 7) * 2;
+    L(c, [-5, -16, -6 + s, -2], '#d9c9a3', 5); L(c, [5, -16, 6 - s, -2], '#d9c9a3', 5);
+    furBall(c, sw * 0.5, -40, 19, 28, '#e8dcc0', 18, 5);
+    furBall(c, sw * 0.5, -34, 15, 18, '#c9b48a', 14, 4);
+    L(c, [16, -46, 24, -34 + sw], '#e8dcc0', 6); E(c, 25, -32 + sw, 3, 4, '#2b2b2b'); E(c, 27, -30 + sw, 3, 4, '#2b2b2b');
+    E(c, 2, -70, 11, 13, '#d9c9a3');
+    Q(c, -4, -80, -16, -86, -18, -98, '#5a4632', 4.5); Q(c, 8, -80, 18, -88, 20, -100, '#5a4632', 4.5);
+    E(c, -12, -74, 5, 2.5, '#d9c9a3', 0.5); E(c, 16, -74, 5, 2.5, '#d9c9a3', -0.5);
+    Ci(c, -2, -71, 2, '#111'); Ci(c, 6, -71, 2, '#111'); E(c, 2, -62, 4, 3, '#8b6b4a');
+    furBall(c, 2, -56, 4, 4, '#e8dcc0', 6, 3);
+  },
+  bida(c, t, w) {
+    const s = Math.sin(w) * 3;
+    for (let i = 0; i < 3; i++) E(c, -6 + i * 2, -6 - i * 9, 24 - i * 5, 7, i % 2 ? '#1d1d24' : '#2b2b33');
+    Q(c, 6, -26, 10, -40 + s, 6, -52, '#2b2b33', 10);
+    E(c, 10, -56, 12, 9, '#2b2b33', 0.15);
+    eye(c, 12, -58, 3, '#e0a91b'); grin(c, 18, -52, 4, '#555', 1.5);
+    L(c, [21, -53, 27, -54, 30, -51], '#d62828', 1.5);
+    for (let i = 0; i < 6; i++) { const p = (t * 0.6 + i / 6) % 1; Ci(c, -24 + i * 10, -70 + p * 70, 2.2, `rgba(244,196,48,${1 - p})`); }
+  },
+  dhegdheer(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-6, -20, -7 + s, -2], '#6b4423', 6); L(c, [6, -20, 7 - s, -2], '#6b4423', 6);
+    P(c, [-14, -54, 14, -54, 20, -12, -20, -12], '#2a7ab8'); for (let i = 0; i < 4; i++) L(c, [-16 + i * 2, -40 + i * 7, 16 - i * 2, -40 + i * 7], '#f4c430', 2);
+    L(c, [-13, -50, -22, -30 + s], '#7a4a24', 6); L(c, [13, -50, 22, -30 - s], '#7a4a24', 6);
+    E(c, 0, -64, 12, 13, '#7a4a24');
+    c.save(); c.translate(-10, -66); c.rotate(-0.5 + Math.sin(t * 2) * 0.1); E(c, -4, -14, 6, 20, '#7a4a24'); E(c, -4, -14, 3, 16, '#a0603d'); c.restore();
+    E(c, 11, -64, 3, 5, '#7a4a24');
+    P(c, [-12, -70, 0, -84, 12, -70], '#d62828');
+    Ci(c, -3, -65, 2, '#111'); Ci(c, 5, -65, 2, '#111'); grin(c, 1, -58, 4, '#3a1a0a', 1.6); P(c, [-1, -57, 0, -54, 1, -57], '#fff');
+  },
+  rollingcalf(c, t, w) {
+    const s = Math.sin(w) * 3;
+    for (const [x, d] of [[-16, 1], [-6, -1], [8, 1], [16, -1]]) R(c, x - 3.5 + s * d * 0.3, -14, 7, 14, 2, '#2b2b2b');
+    E(c, 0, -24, 22, 12, '#3a3a3a');
+    Q(c, -20, -26, -30, -24, -30, -12, '#3a3a3a', 3);
+    E(c, 22, -32, 11, 9, '#3a3a3a'); E(c, 30, -29, 5, 5, '#555');
+    P(c, [16, -40, 12, -46, 20, -40], '#e8d29a'); P(c, [24, -40, 26, -47, 28, -39], '#e8d29a');
+    Ci(c, 22, -34, 3.2, '#ff3b1f'); Ci(c, 22, -34, 1.5, '#ffd23f');
+    c.save(); c.globalAlpha = 0.35 + 0.25 * Math.sin(t * 8); Ci(c, 22, -34, 7, '#ff6b3b'); c.restore();
+    for (let i = 0; i < 7; i++) { c.strokeStyle = '#9aa3ab'; c.lineWidth = 2; c.beginPath(); c.ellipse(14 - i * 7, -18 + Math.sin(i + t * 4) * 2 + i * 2.5, 3.5, 2.2, 0.3, 0, TAU); c.stroke(); }
+  },
+  papabois(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-5, -22, -6 + s, -4], '#6b4423', 5); L(c, [5, -22, 6 - s, -4], '#6b4423', 5);
+    P(c, [-9 + s, -4, -3 + s, -4, -6 + s, 1], '#2b2b2b'); P(c, [3 - s, -4, 9 - s, -4, 6 - s, 1], '#2b2b2b');
+    furBall(c, -6 + s, -10, 4, 4, '#6b4423', 6, 2); furBall(c, 6 - s, -10, 4, 4, '#6b4423', 6, 2);
+    P(c, [-12, -52, 12, -52, 14, -20, -14, -20], '#4f8f3a'); for (let i = 0; i < 5; i++) E(c, -10 + i * 5, -22, 4, 7, '#6aa84f', (i - 2) * 0.3);
+    L(c, [-11, -48, -18, -30 + s], '#a0703f', 4); L(c, [11, -48, 20, -42], '#a0703f', 4);
+    c.save(); c.translate(22, -44); c.rotate(-0.3); c.fillStyle = '#e8d29a'; c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(10, -10, 18, -4); c.lineTo(16, 2); c.quadraticCurveTo(8, -4, 2, 4); c.closePath(); c.fill(); c.restore();
+    E(c, 0, -62, 10, 11, '#a0703f');
+    furBall(c, 0, -50, 9, 10, '#e8e1d6', 10, 3);
+    Q(c, -6, -70, -14, -78, -10, -86, '#5a4632', 3.5); Q(c, 6, -70, 14, -78, 10, -86, '#5a4632', 3.5);
+    for (let i = 0; i < 3; i++) E(c, -8 + i * 8, -72, 4, 2.5, '#2a9d48', i * 0.5);
+    Ci(c, -3, -63, 1.8, '#111'); Ci(c, 4, -63, 1.8, '#111');
+  },
+  sombreron(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    L(c, [-3, -10, -4 + s, -2], '#1d1d24', 3.5); L(c, [3, -10, 4 - s, -2], '#1d1d24', 3.5);
+    E(c, -5 + s, -1, 4, 2, '#2b2b2b'); E(c, 5 - s, -1, 4, 2, '#2b2b2b');
+    P(c, [-8, -26, 8, -26, 9, -10, -9, -10], '#1d1d24'); R(c, -9, -16, 18, 3, 1, '#c0c6cc');
+    c.save(); c.translate(6, -18); c.rotate(-0.6); E(c, 0, 6, 6, 7, '#c9822b'); E(c, 0, -2, 4.5, 4.5, '#c9822b'); Ci(c, 0, 2, 1.8, '#4a2c10'); R(c, -1, -16, 2, 14, 1, '#6b3e1f'); c.restore();
+    L(c, [-7, -24, -2, -16], '#1d1d24', 3);
+    Ci(c, 0, -32, 7, '#c49a6c');
+    Ci(c, -2, -32, 1.4, '#111'); Ci(c, 3, -32, 1.4, '#111'); grin(c, 1, -29, 2.5, '#5a2a0c', 1.2);
+    E(c, 0, -38, 28, 6, '#111'); E(c, 0, -46, 13, 12, '#111'); R(c, -13, -42, 26, 3, 1, '#c0c6cc');
+    E(c, -8, -40, 12, 2, '#2b2b2b');
+  },
+  tataduende(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    L(c, [-3, -12, -4 + s, -3], '#8b5a2b', 3.5); L(c, [3, -12, 4 - s, -3], '#8b5a2b', 3.5);
+    E(c, -8 + s, -1, 5, 2.5, '#8b5a2b'); E(c, 0 - s, -1, 5, 2.5, '#8b5a2b');
+    P(c, [-10, -30, 10, -30, 12, -11, -12, -11], '#8d6e3f');
+    L(c, [-9, -28, -14, -18 + s], '#a0703f', 3); L(c, [9, -28, 14, -18 - s], '#a0703f', 3);
+    Ci(c, -14, -17 + s, 2.5, '#a0703f'); Ci(c, 14, -17 - s, 2.5, '#a0703f');
+    Ci(c, 0, -38, 9, '#a0703f');
+    furBall(c, 0, -30, 9, 7, '#e8e1d6', 10, 3);
+    Ci(c, -3, -40, 1.6, '#111'); Ci(c, 4, -40, 1.6, '#111'); E(c, 1, -36, 2.5, 2, '#8b5a2b');
+    E(c, 0, -46, 16, 4, '#d9b45c'); P(c, [-8, -47, 0, -60, 8, -47], '#d9b45c'); L(c, [-8, -48, 8, -48], '#8b5a2b', 1.5);
+  },
+  guije(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 4;
+    c.save(); c.translate(0, -s);
+    E(c, -8, -2, 6, 3, '#2f4a3a'); E(c, 8, -2, 6, 3, '#2f4a3a');
+    E(c, 0, -16, 13, 13, '#3a5a46'); E(c, 0, -12, 8, 8, '#6b8f6a');
+    L(c, [-11, -18, -16, -8], '#3a5a46', 3); L(c, [11, -18, 16, -8], '#3a5a46', 3);
+    E(c, 0, -34, 13, 10, '#3a5a46');
+    for (const x of [-6, 6]) { Ci(c, x, -42, 5.5, '#3a5a46'); Ci(c, x, -42, 4, '#fff'); Ci(c, x + 1, -42, 2, '#111'); }
+    grin(c, 0, -30, 7, '#1d2d23', 1.8);
+    for (let i = 0; i < 5; i++) Q(c, -8 + i * 4, -42, -10 + i * 4, -50, -6 + i * 4, -52, '#1d2d23', 1.5);
+    c.restore();
+  },
+  lobizon(c, t, w) {
+    const s = Math.sin(w) * 3;
+    Q(c, -22, -24, -36, -28, -38, -14, '#4a4038', 6);
+    for (const [x, d] of [[-14, 1], [-4, -1], [8, 1], [16, -1]]) L(c, [x, -16, x + s * d, 0], '#3a322c', 5);
+    furBall(c, 0, -24, 22, 12, '#5a4e44', 18, 4);
+    furBall(c, 20, -36, 11, 11, '#5a4e44', 12, 4);
+    E(c, 30, -32, 8, 5, '#6b5e52');
+    P(c, [14, -44, 14, -56, 20, -46], '#4a4038'); P(c, [22, -46, 26, -56, 27, -44], '#4a4038');
+    Ci(c, 21, -38, 2.4, '#ffd23f'); Ci(c, 21.5, -38, 1.1, '#111'); Ci(c, 37, -33, 1.6, '#111');
+    P(c, [28, -28, 29, -24, 30, -28], '#fff'); P(c, [32, -28, 33, -24, 34, -28], '#fff');
+  },
+  mohan(c, t, w) {
+    const s = Math.sin(w) * 3;
+    L(c, [-5, -18, -6 + s, -2], '#6b4423', 5); L(c, [5, -18, 6 - s, -2], '#6b4423', 5);
+    furBall(c, 0, -38, 18, 24, '#5a6b3a', 18, 5);
+    L(c, [-16, -46, -24, -30 + s], '#8b5a2b', 4); L(c, [16, -46, 24, -32 - s], '#8b5a2b', 4);
+    E(c, 2, -58, 10, 10, '#b07a4a');
+    c.fillStyle = '#e8e1d6'; c.beginPath(); c.moveTo(-8, -56); c.quadraticCurveTo(2, -20 + Math.sin(t * 3) * 2, 12, -56); c.quadraticCurveTo(2, -48, -8, -56); c.fill();
+    furBall(c, 2, -66, 12, 6, '#3a3a2a', 12, 4);
+    Ci(c, -1, -60, 1.8, '#111'); Ci(c, 6, -60, 1.8, '#111'); E(c, 3, -55, 2.5, 2, '#8b5a2b');
+    for (let i = 0; i < 3; i++) Ci(c, -12 + i * 12, -30 + Math.sin(t * 3 + i) * 2, 1.8, '#7cc7f2');
+  },
+  bacoo(c, t, w) {
+    const s = Math.abs(Math.sin(w)) * 6;
+    c.save(); c.translate(0, -s);
+    L(c, [-3, -8, -4, -1], '#5a3a1a', 2.5); L(c, [3, -8, 4, -1], '#5a3a1a', 2.5);
+    E(c, 0, -14, 8, 8, '#7a4a24');
+    L(c, [-7, -16, -12, -24], '#7a4a24', 2.5); L(c, [7, -16, 12, -24], '#7a4a24', 2.5);
+    E(c, 0, -28, 10, 9, '#8b5a2b');
+    E(c, -11, -30, 4, 2.5, '#8b5a2b', -0.4); E(c, 11, -30, 4, 2.5, '#8b5a2b', 0.4);
+    eyes(c, 0, -29, 4, 3);
+    grin(c, 0, -24, 4, '#3a1a0a', 1.6);
+    c.save(); c.translate(12, -26); c.rotate(-0.5); c.fillStyle = '#ffd23f'; c.beginPath(); c.moveTo(0, -8); c.quadraticCurveTo(7, 0, 1, 8); c.quadraticCurveTo(3, 0, -1, -7); c.fill(); c.restore();
+    c.restore();
+    c.save(); c.globalAlpha = 0.5; R(c, 16, -22, 12, 20, 4, '#9fd8c8'); R(c, 19, -27, 6, 6, 1, '#9fd8c8'); c.restore();
+  },
+  mapinguari(c, t, w) {
+    const s = Math.sin(w) * 3;
+    E(c, -10 + s * 0.3, -3, 10, 5, '#3a2a1a'); E(c, 10 - s * 0.3, -3, 10, 5, '#3a2a1a');
+    furBall(c, -26, -40 + s, 7, 20, '#6b4a2f', 10, 3); furBall(c, 26, -40 - s, 7, 20, '#6b4a2f', 10, 3);
+    for (const x of [-26, 26]) for (let i = -1; i <= 1; i++) L(c, [x, -22, x + i * 4, -14], '#e8e1d6', 2);
+    furBall(c, 0, -44, 24, 38, '#7a5636', 22, 6);
+    E(c, 0, -34, 10, 7, '#3a1a0a'); teeth(c, 0, -38, 9, 5);
+    E(c, 0, -76, 11, 10, '#7a5636');
+    Ci(c, 0, -78, 5, '#fff'); Ci(c, 1, -78, 2.6, '#c0392b'); Ci(c, 0.5, -79, 0.9, '#fff');
+  },
+  ropen(c, t) {
+    const f = Math.sin(t * 7) * 0.45, glow = 0.4 + 0.3 * Math.sin(t * 5);
+    Q(c, -6, -34, -30, -32, -44, -22, '#4a4a6a', 3); P(c, [-44, -22, -50, -18, -44, -14, -40, -20], '#5a5a8a');
+    c.save(); c.globalAlpha = glow; Ci(c, 0, -36, 22, '#c8f7c5'); c.restore();
+    for (const sg of [-1, 1]) { c.save(); c.translate(0, -36); c.scale(sg, 1); c.rotate(-0.15 + f); P(c, [2, 0, 36, -12, 42, 2, 30, 0, 22, 8, 6, 6], '#5a5a8a'); L(c, [2, 0, 36, -12], '#3a3a5a', 2); c.restore(); }
+    E(c, 0, -34, 8, 10, '#6a6a9a');
+    E(c, 8, -46, 7, 5, '#6a6a9a'); P(c, [12, -48, 28, -44, 12, -43], '#8a8aba'); P(c, [4, -50, -10, -58, 6, -46], '#6a6a9a');
+    eye(c, 8, -47, 2.2, '#2a9d48');
+  },
+  veli(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    L(c, [-3, -10, -4 + s, -2], '#4a3626', 3); L(c, [3, -10, 4 - s, -2], '#4a3626', 3);
+    furBall(c, 0, -15, 9, 9, '#5a4232', 10, 3);
+    L(c, [-8, -16, -13, -10 + s], '#5a4232', 2.5); L(c, [8, -16, 13, -10 - s], '#5a4232', 2.5);
+    E(c, 0, -34, 14, 13, '#8b6b4a');
+    furBall(c, 0, -44, 13, 5, '#2b1d14', 14, 4);
+    eyes(c, 0, -34, 5, 3.6);
+    E(c, 0, -29, 2.5, 2, '#5a4232'); grin(c, 0, -26, 4, '#2b1d14', 1.4);
+    for (let i = 0; i < 4; i++) E(c, -10 + i * 7, -10, 3, 5, '#3fa34d', (i - 1.5) * 0.4);
+  },
+  menehune(c, t, w) {
+    const s = Math.sin(w) * 2.5;
+    L(c, [-3, -10, -4 + s, -2], '#a0703f', 3); L(c, [3, -10, 4 - s, -2], '#a0703f', 3);
+    P(c, [-8, -14, 8, -14, 10, -6, -10, -6], '#e9c46a'); for (let i = 0; i < 5; i++) L(c, [-8 + i * 4, -8, -8 + i * 4, -4], '#c9a43e', 1.5);
+    E(c, 0, -20, 8, 7, '#a0703f');
+    L(c, [-7, -22, -12, -14 + s], '#a0703f', 2.5); L(c, [7, -22, 14, -26], '#a0703f', 2.5);
+    R(c, 12, -36, 3, 14, 1, '#6b3e1f'); R(c, 8, -38, 11, 5, 1, '#8e9296');
+    Ci(c, 0, -32, 9, '#a0703f');
+    furBall(c, 0, -40, 9, 4, '#1d1410', 10, 3);
+    for (let i = 0; i < 5; i++) Ci(c, -8 + i * 4, -40, 2, ['#e63946', '#ffd23f', '#f7a1c4', '#ffd23f', '#e63946'][i]);
+    eyes(c, 0, -32, 3.5, 2.6); grin(c, 0, -28, 3, '#4a2810', 1.4);
+  },
+});
+
+const MONSTERS2 = [
+  // Europe
+  { id: 'minotaur', cont: 'europe', name: 'Minotaur', place: 'Greece', map: 'Greece', fact: 'Half man, half bull, the Minotaur lived in a maze called the Labyrinth on the island of Crete. Ariadne gave the hero Theseus a ball of thread to find his way out.', tr: 'thread', trName: "Ariadne's thread", box: [60, 96], sp: 55 },
+  { id: 'leprechaun', cont: 'europe', name: 'Leprechaun', place: 'Ireland', map: 'Ireland', fact: 'A tiny fairy shoemaker. If you catch one, he must tell you where his pot of gold is hidden!', tr: 'potgold', trName: 'Pot of gold', box: [38, 66], sp: 95 },
+  { id: 'yulecat', cont: 'europe', name: 'Yule Cat', place: 'Iceland', map: 'Iceland', fact: 'Jólakötturinn is a giant cat that prowls the snow at Christmas. Everyone gets new clothes before Christmas so it leaves them alone!', tr: 'sweater', trName: 'New woolly sweater', box: [84, 64], sp: 70 },
+  { id: 'wolpertinger', cont: 'europe', name: 'Wolpertinger', place: 'Germany (Bavaria)', map: 'Germany', fact: 'A make-believe Bavarian animal: a rabbit with antlers, wings and fangs! Stuffed "wolpertingers" hang on the walls of old inns.', tr: 'gingerbread', trName: 'Gingerbread heart', box: [54, 64], sp: 90 },
+  { id: 'cuelebre', cont: 'europe', name: 'Cuélebre', place: 'Spain (Asturias)', map: 'Spain', fact: 'A huge winged serpent that guards treasure and enchanted water fairies called xanas in the caves of Asturias.', tr: 'key', trName: 'Golden key', box: [84, 62], sp: 55 },
+  { id: 'tarasque', cont: 'europe', name: 'Tarasque', place: 'France', map: 'France', fact: 'A dragon from Tarascon in Provence with a spiky turtle shell, six legs and a lion\'s head. Saint Martha tamed it.', tr: 'lavender', trName: 'Lavender bunch', box: [90, 50], sp: 45 },
+  { id: 'smok', cont: 'europe', name: 'Wawel Dragon', place: 'Poland', map: 'Poland', fact: 'Smok Wawelski lived in a cave under Wawel Hill in Kraków. A clever shoemaker fed it a sheep full of sulphur, and it drank half the Vistula river!', tr: 'crown', trName: "King Krak's crown", box: [80, 82], sp: 45 },
+  { id: 'zmeu', cont: 'europe', name: 'Zmeu', place: 'Romania', map: 'Romania', fact: 'A dragon-like giant from Romanian fairy tales who sneaks into the emperor\'s garden to steal the golden apples.', tr: 'goldapple', trName: 'Golden apple', box: [56, 100], sp: 60 },
+  // Asia
+  { id: 'rakshasa', cont: 'asia', name: 'Rakshasa', place: 'India', map: 'India', fact: 'Shape-shifting giants from ancient Indian epics such as the Ramayana, with fangs, wild hair and great strength.', tr: 'diya', trName: 'Brass oil lamp', box: [60, 92], sp: 55 },
+  { id: 'tikbalang', cont: 'asia', name: 'Tikbalang', place: 'Philippines', map: 'Philippines', fact: 'A tall, horse-headed trickster that makes travellers lose their way in the forest. Pluck one of its golden hairs to tame it!', tr: 'goldhair', trName: 'Golden hair', box: [46, 102], sp: 75 },
+  { id: 'orangpendek', cont: 'asia', name: 'Orang Pendek', place: 'Indonesia (Sumatra)', map: 'Indonesia', fact: 'Its name means "short person". People say this small, hairy ape walks upright in the rainforests of Sumatra.', tr: 'durian', trName: 'Durian fruit', box: [42, 58], sp: 85 },
+  { id: 'deathworm', cont: 'asia', name: 'Mongolian Death Worm', place: 'Mongolia', map: 'Mongolia', fact: 'Nomads tell of a fat red worm, as long as an arm, that hides under the sand of the Gobi Desert.', tr: 'fossil', trName: 'Dinosaur fossil', box: [52, 60], sp: 50 },
+  { id: 'simurgh', cont: 'asia', name: 'Simurgh', place: 'Iran', map: 'Iran', fact: 'A huge, wise bird of Persian legends with peacock-bright feathers. It gave the hero Zal a feather to burn if he ever needed help.', tr: 'rainbowfeather', trName: 'Simurgh feather', box: [80, 80], sp: 70, fly: true },
+  { id: 'lamassu', cont: 'asia', name: 'Lamassu', place: 'Iraq', map: 'Iraq', fact: 'Giant winged bulls with human heads stood guard at the gates of ancient Assyrian cities, carved in stone.', tr: 'tablet', trName: 'Clay tablet', box: [80, 64], sp: 45 },
+  { id: 'sahmaran', cont: 'asia', name: 'Şahmaran', place: 'Turkey', map: 'Turkey', fact: 'The wise Queen of Snakes: half woman, half snake, who knew the secret of every medicine.', tr: 'snakebracelet', trName: 'Snake bracelet', box: [56, 74], sp: 55 },
+  { id: 'vishap', cont: 'asia', name: 'Vishap', place: 'Armenia', map: 'Armenia', fact: 'Dragons of Armenian legends that lived in mountain lakes. Ancient "dragon stones" carved like fish still stand in the mountains.', tr: 'dragonstone', trName: 'Dragon stone', box: [86, 48], sp: 55 },
+  { id: 'devi', cont: 'asia', name: 'Devi', place: 'Georgia', map: 'Georgia', fact: 'Many-headed giants from Georgian fairy tales. The more heads a devi has, the stronger it is!', tr: 'churchkhela', trName: 'Churchkhela sweet', box: [70, 88], sp: 45 },
+  // Africa
+  { id: 'dodo', cont: 'africa', name: 'Dodo', place: 'Nigeria (Hausa stories)', map: 'Nigeria', fact: 'A shaggy monster from Hausa folk tales. Children are told the dodo is out after dark, so they come home on time!', tr: 'calabash', trName: 'Carved calabash', box: [56, 80], sp: 55 },
+  { id: 'sasabonsam', cont: 'africa', name: 'Sasabonsam', place: 'Ghana (Akan stories)', map: 'Ghana', fact: 'A forest creature that dangles from tall trees on its long legs, with hooked feet and iron teeth.', tr: 'kente', trName: 'Kente cloth', box: [56, 84], sp: 70 },
+  { id: 'nandibear', cont: 'africa', name: 'Nandi Bear', place: 'Kenya', map: 'Kenya', fact: 'A big, hunched beast with a sloping back, said to roam the Nandi Hills of Kenya at night.', tr: 'tea', trName: 'Tea leaves', box: [86, 50], sp: 60 },
+  { id: 'kongamato', cont: 'africa', name: 'Kongamato', place: 'Zambia', map: 'Zambia', fact: 'Its name means "boat-breaker". People describe a flying creature like a giant bat or pterodactyl over Zambia\'s swamps.', tr: 'copper', trName: 'Copper beads', box: [90, 56], sp: 75, fly: true },
+  { id: 'kalanoro', cont: 'africa', name: 'Kalanoro', place: 'Madagascar', map: 'Madagascar', fact: 'A small, hairy forest creature with long claws and backwards feet that lives in caves and sneaks food.', tr: 'vanilla', trName: 'Vanilla pods', box: [42, 56], sp: 85 },
+  { id: 'arwe', cont: 'africa', name: 'Arwe', place: 'Ethiopia', map: 'Ethiopia', fact: 'A giant serpent king who ruled Aksum long ago, until the hero Angabo defeated it. Angabo\'s family became the line of the Queen of Sheba.', tr: 'coffee', trName: 'Coffee beans', box: [66, 80], sp: 45 },
+  { id: 'boujloud', cont: 'africa', name: 'Boujloud', place: 'Morocco (Amazigh)', map: 'Morocco', fact: 'A dancer dressed in goat skins who runs through villages after Eid, playfully swatting people with a goat hoof — a cousin of the kukeri!', tr: 'bendir', trName: 'Bendir drum', box: [56, 104], sp: 70 },
+  { id: 'bida', cont: 'africa', name: 'Bida', place: 'Mali (Soninke legend)', map: 'Mali', fact: 'A great black snake that protected the old kingdom of Wagadu. In the legend, it made gold rain down on the land.', tr: 'nugget', trName: 'Gold nugget', box: [60, 70], sp: 45 },
+  { id: 'dhegdheer', cont: 'africa', name: 'Dhegdheer', place: 'Somalia', map: 'Somalia', fact: 'Her name means "long ear". This giant from Somali folk tales could hear people from very far away.', tr: 'frankincense', trName: 'Frankincense', box: [48, 92], sp: 55 },
+  // North America
+  { id: 'rollingcalf', cont: 'namerica', name: 'Rolling Calf', place: 'Jamaica', map: 'Jamaica', fact: 'A ghostly calf with fiery red eyes that rattles a long chain along country roads at night.', tr: 'ackee', trName: 'Ackee fruit', box: [70, 52], sp: 70 },
+  { id: 'papabois', cont: 'namerica', name: 'Papa Bois', place: 'Trinidad and Tobago', map: 'Trinidad and Tobago', fact: 'The old "father of the forest", with goat hooves, horns and a long beard. He blows a cow horn to warn animals when hunters come.', tr: 'horn', trName: 'Cow horn', box: [52, 92], sp: 60 },
+  { id: 'sombreron', cont: 'namerica', name: 'El Sombrerón', place: 'Guatemala', map: 'Guatemala', fact: 'A tiny man in an enormous black hat who braids horses\' manes at night and sings with his little guitar.', tr: 'guitar', trName: 'Little guitar', box: [58, 56], sp: 80 },
+  { id: 'tataduende', cont: 'namerica', name: 'Tata Duende', place: 'Belize', map: 'Belize', fact: 'A little old forest guardian with backwards feet and no thumbs. Hide your thumbs if you meet him!', tr: 'cacao', trName: 'Cacao pod', box: [40, 62], sp: 80 },
+  { id: 'guije', cont: 'namerica', name: 'Güije', place: 'Cuba', map: 'Cuba', fact: 'A small, dark river imp with big frog eyes who lives in the rivers and pools of Cuba.', tr: 'sugarcane', trName: 'Sugar cane', box: [40, 58], sp: 85 },
+  // South America
+  { id: 'lobizon', cont: 'samerica', name: 'Lobizón', place: 'Argentina', map: 'Argentina', fact: 'In old stories, the seventh son of a family turns into this shaggy wolf-dog on Friday nights.', tr: 'mate', trName: 'Mate gourd', box: [76, 54], sp: 80 },
+  { id: 'mohan', cont: 'samerica', name: 'Mohán', place: 'Colombia', map: 'Colombia', fact: 'A shaggy river wizard with a long white beard who lives in caves along the Magdalena River and plays tricks on fishermen.', tr: 'tunjo', trName: 'Golden tunjo figure', box: [54, 76], sp: 60 },
+  { id: 'bacoo', cont: 'samerica', name: 'Bacoo', place: 'Guyana', map: 'Guyana', fact: 'A tiny, mischievous creature kept in a bottle. It loves bananas and milk, and throws stones if you forget to feed it!', tr: 'banana', trName: 'Banana bunch', box: [46, 46], sp: 95 },
+  { id: 'mapinguari', cont: 'samerica', name: 'Mapinguari', place: 'Brazil (Amazon)', map: 'Brazil', fact: 'A giant, shaggy Amazon creature with one eye and a mouth on its belly. It may be a memory of the giant ground sloth.', tr: 'brazilnut', trName: 'Brazil nuts', box: [66, 92], sp: 45 },
+  // Oceania
+  { id: 'ropen', cont: 'oceania', name: 'Ropen', place: 'Papua New Guinea', map: 'Papua New Guinea', fact: 'A glowing flying creature with a long tail, said to cross the night sky over the islands of Papua New Guinea.', tr: 'paradise', trName: 'Bird-of-paradise feather', box: [90, 56], sp: 75, fly: true },
+  { id: 'veli', cont: 'oceania', name: 'Veli', place: 'Fiji', map: 'Fiji', fact: 'Little forest people with big heads and hairy bodies who live deep in the jungles of Fiji.', tr: 'coconut', trName: 'Coconut', box: [40, 52], sp: 85 },
+  { id: 'menehune', cont: 'oceania', name: 'Menehune', place: 'Hawaii (USA)', map: 'United States of America', fact: 'Tiny master builders who work only at night. Legends say they built whole fishponds and stone walls in a single night.', tr: 'poi', trName: 'Poi bowl', box: [40, 50], sp: 85 },
+].map(m => Object.assign(m, { round: 2 }));
+
+MONSTERS.push(...MONSTERS2);
+// six rounds: rounds 3-6 are planned (see ROUNDS.md) and open once their monsters are drawn
+const ROUND_COUNT = 6;
+const roundReady = r => MONSTERS.some(m => m.round === r);
+const COUNTRIES = {"europe":["Albania","Andorra","Austria","Belarus","Belgium","Bosnia and Herz.","Bulgaria","Croatia","Czechia","Denmark","Estonia","Finland","France","Germany","Greece","Hungary","Iceland","Ireland","Italy","Latvia","Liechtenstein","Lithuania","Luxembourg","Malta","Moldova","Monaco","Montenegro","Netherlands","Macedonia","Norway","Poland","Portugal","Romania","Russia","San Marino","Serbia","Slovakia","Slovenia","Spain","Sweden","Switzerland","Ukraine","United Kingdom","Vatican"],"asia":["Afghanistan","Armenia","Azerbaijan","Bahrain","Bangladesh","Bhutan","Brunei","Cambodia","China","Cyprus","Georgia","India","Indonesia","Iran","Iraq","Israel","Japan","Jordan","Kazakhstan","Kuwait","Kyrgyzstan","Laos","Lebanon","Malaysia","Maldives","Mongolia","Myanmar","Nepal","North Korea","Oman","Pakistan","Palestine","Philippines","Qatar","Saudi Arabia","Singapore","South Korea","Sri Lanka","Syria","Tajikistan","Thailand","Timor-Leste","Turkey","Turkmenistan","United Arab Emirates","Uzbekistan","Vietnam","Yemen"],"africa":["Algeria","Angola","Benin","Botswana","Burkina Faso","Burundi","Cabo Verde","Cameroon","Central African Rep.","Chad","Comoros","Congo","Dem. Rep. Congo","Côte d'Ivoire","Djibouti","Egypt","Eq. Guinea","Eritrea","eSwatini","Ethiopia","Gabon","Gambia","Ghana","Guinea","Guinea-Bissau","Kenya","Lesotho","Liberia","Libya","Madagascar","Malawi","Mali","Mauritania","Mauritius","Morocco","Mozambique","Namibia","Niger","Nigeria","Rwanda","São Tomé and Principe","Senegal","Seychelles","Sierra Leone","Somalia","South Africa","S. Sudan","Sudan","Tanzania","Togo","Tunisia","Uganda","Zambia","Zimbabwe"],"namerica":["Antigua and Barb.","Bahamas","Barbados","Belize","Canada","Costa Rica","Cuba","Dominica","Dominican Rep.","El Salvador","Grenada","Guatemala","Haiti","Honduras","Jamaica","Mexico","Nicaragua","Panama","St. Kitts and Nevis","Saint Lucia","St. Vin. and Gren.","Trinidad and Tobago","United States of America"],"samerica":["Argentina","Bolivia","Brazil","Chile","Colombia","Ecuador","Guyana","Paraguay","Peru","Suriname","Uruguay","Venezuela"],"oceania":["Australia","Fiji","Kiribati","Marshall Is.","Micronesia","Nauru","New Zealand","Palau","Papua New Guinea","Samoa","Solomon Is.","Tonga","Tuvalu","Vanuatu"]};
+const WORLD = [["Fiji",994.5,282.6,0,"M995,282L995,281L996,282L996,284L994,284L993,284L992,283L994,282L995,282Z"],["Tanzania",595.4,251.4,0,"M594,236L595,236L605,242L605,244L609,246L608,250L608,251L610,252L610,253L609,255L609,256L609,257L610,259L611,261L612,262L610,264L607,265L605,265L604,265L602,266L601,266L598,265L596,265L595,262L594,260L594,259L591,259L589,258L588,258L587,257L585,257L584,253L582,251L582,250L582,248L581,246L583,246L584,245L585,243L585,243L585,242L585,241L585,240L585,240L586,238L584,236L585,236L589,236L594,236Z"],["W. Sahara",466.6,164.5,0,"M476,157L476,157L476,157L476,161L467,161L467,168L464,169L464,170L464,174L453,174L453,175L453,174L453,174L459,174L459,173L460,171L461,168L465,165L467,161L467,161L468,159L471,158L472,159L473,159L474,158L476,158L476,157L476,157Z"],["Canada",247.9,76.7,0,"M159,97L158,97L153,94L151,93L146,92L144,90L145,88L141,87L141,85L137,83L137,81L139,80L139,78L134,76L131,73L130,71L127,70L125,69L124,67L121,68L118,70L116,68L114,67L111,66L108,66L108,50L108,40L114,40L118,42L121,42L123,41L127,40L131,40L135,39L139,38L141,40L143,39L144,38L146,38L151,40L154,38L155,41L158,40L159,39L163,39L167,41L173,42L177,42L180,42L184,43L180,45L185,45L192,45L195,44L198,46L201,45L198,44L200,43L203,43L205,42L207,43L210,44L213,44L218,45L222,45L227,45L226,43L229,43L233,44L233,46L235,44L237,44L238,41L235,40L232,39L232,36L236,34L239,34L242,35L246,38L243,40L248,40L248,43L252,41L256,43L255,45L257,47L260,45L262,42L262,39L266,39L270,40L274,41L274,43L272,44L274,46L274,47L268,49L265,49L262,48L261,50L258,52L257,53L254,55L250,55L248,57L248,58L245,59L241,61L238,64L237,66L237,70L241,70L242,73L244,75L248,74L253,75L255,76L257,78L261,79L264,80L268,80L271,80L271,83L272,85L274,88L278,91L280,90L282,87L280,83L278,81L283,80L286,78L287,76L287,74L285,72L282,70L285,67L284,65L283,60L285,60L290,60L293,61L295,60L297,61L301,62L302,64L307,64L307,66L308,70L310,70L312,72L316,70L319,67L321,66L323,68L326,72L329,75L328,77L332,78L335,80L339,81L341,82L342,84L344,84L345,85L345,88L343,90L341,90L337,91L333,94L329,94L323,94L318,94L316,94L313,96L310,97L306,101L302,103L305,103L309,99L315,97L319,97L322,98L319,100L320,103L321,105L325,106L329,106L332,103L332,105L334,106L330,108L324,109L322,110L318,112L316,112L316,110L321,108L317,108L314,108L312,106L312,103L310,102L309,102L308,102L306,104L305,106L304,107L303,107L302,108L301,108L296,108L292,108L291,109L288,111L288,111L287,112L284,112L281,112L280,113L281,113L281,114L281,114L277,116L274,116L271,118L270,118L269,117L269,117L269,116L270,115L271,114L272,112L271,110L271,107L268,106L268,106L268,105L267,105L266,105L266,104L266,104L265,104L265,104L265,104L264,103L262,102L260,101L257,100L255,99L252,100L251,100L248,99L245,100L243,99L240,98L238,98L237,98L237,96L236,96L236,97L230,97L220,97L211,97L203,97L194,97L186,97L178,97L175,97L167,97L159,97Z"],["United States of America",249,127,0,"M159,97L167,97L175,97L178,97L186,97L194,97L203,97L211,97L220,97L230,97L236,97L236,96L237,96L237,98L238,98L240,98L243,99L245,100L248,99L251,100L252,100L255,99L257,100L260,101L262,102L264,103L265,104L265,104L265,104L266,104L266,104L266,105L267,105L268,105L268,106L268,106L271,107L271,110L272,112L271,114L270,115L269,116L269,117L269,117L270,118L271,118L274,116L277,116L281,114L281,114L281,113L280,113L281,112L284,112L287,112L288,111L288,111L291,109L292,108L296,108L301,108L302,108L303,107L304,107L305,106L306,104L308,102L309,102L310,102L312,103L312,106L314,108L314,109L311,110L308,111L305,112L304,114L303,114L303,116L304,117L305,117L305,116L306,117L306,118L304,118L302,118L300,119L299,119L298,119L295,120L299,119L300,120L296,120L294,120L295,120L294,121L295,121L294,123L292,125L292,124L291,124L290,124L291,125L291,126L292,127L291,128L289,130L289,130L290,128L288,127L288,125L287,126L288,128L286,127L288,128L288,131L289,131L289,132L290,135L288,137L285,137L283,139L282,139L280,140L280,141L277,143L275,144L274,146L274,148L274,150L275,152L276,154L276,155L278,159L278,161L277,162L277,163L276,164L275,163L274,162L273,161L272,159L270,157L270,156L270,154L270,152L267,150L266,150L264,151L263,151L262,150L260,149L257,149L254,149L252,149L251,150L252,150L252,151L252,152L252,152L251,152L250,152L248,152L245,151L243,151L241,151L239,151L237,151L234,154L232,155L230,156L230,157L230,159L230,161L230,161L229,162L227,161L225,160L224,159L224,157L222,155L221,154L220,152L218,151L215,151L214,153L211,152L210,151L209,150L208,148L207,147L205,146L204,145L199,145L199,146L197,146L192,146L185,144L181,143L181,142L178,143L175,143L174,142L172,140L171,140L171,139L169,139L168,138L166,138L165,137L165,136L162,133L160,129L160,128L158,127L156,125L156,123L154,121L155,119L155,117L154,115L155,112L156,109L156,107L155,103L154,101L154,99L154,99L158,100L159,103L160,102L160,100L159,97Z"],["Kazakhstan",681.3,102,0,"M743,97L741,98L738,99L738,102L737,103L731,102L729,107L728,107L722,109L725,113L723,114L723,116L721,115L720,114L716,114L711,114L710,114L706,113L705,114L704,115L700,114L698,115L697,116L696,116L692,118L691,120L690,120L689,119L685,119L685,117L683,117L684,114L680,112L676,112L672,112L670,110L667,109L663,107L663,107L655,108L655,119L654,119L652,117L650,116L647,116L646,117L646,117L646,115L646,114L643,114L641,111L640,110L640,109L642,110L643,108L645,107L647,108L648,105L647,103L645,103L642,103L639,104L636,104L635,104L635,103L633,101L631,101L629,99L631,97L630,96L632,93L635,95L635,93L641,90L645,90L651,92L655,93L658,92L662,91L666,93L666,92L670,92L671,91L667,89L669,88L669,87L671,86L669,84L671,83L681,82L682,82L689,81L692,79L697,80L698,83L701,82L704,83L704,85L707,85L714,82L713,83L716,85L722,92L724,91L728,92L732,91L733,92L734,94L736,94L738,95L741,95L743,97Z"],["Uzbekistan",681.4,119,0,"M655,119L655,108L663,107L663,107L667,109L670,110L672,112L676,112L680,112L684,114L683,117L685,117L685,119L689,119L690,120L691,120L692,118L696,116L697,116L698,116L696,118L698,119L700,118L703,120L699,122L697,122L696,122L696,121L696,120L693,120L692,122L690,124L688,123L687,125L689,125L690,127L688,130L686,130L685,130L685,128L681,127L678,125L676,124L673,122L672,119L671,119L668,119L667,118L667,116L663,115L661,116L658,117L659,119L655,119Z"],["Papua New Guinea",906.1,254.9,0,"M892,241L896,242L902,244L904,245L905,247L906,249L910,250L911,252L908,252L909,254L911,256L913,259L915,259L915,260L917,260L916,261L919,262L919,263L917,263L916,262L914,262L911,261L909,260L907,258L906,256L902,255L900,255L898,256L898,258L896,259L895,259L892,259L892,250L892,241Z"],["Indonesia",816.5,233.1,0,"M827,222L826,224L828,227L827,228L831,231L827,231L826,233L826,236L824,237L824,240L823,244L822,243L819,245L818,243L816,243L815,242L811,243L810,242L808,242L806,241L806,238L804,237L803,235L803,232L803,230L805,228L805,230L807,231L809,231L811,231L812,229L813,229L816,230L818,229L820,225L821,225L822,221L825,221L827,222Z"],["Argentina",319.2,336.2,0,"M340,317L339,319L338,322L339,325L338,326L338,328L338,329L341,331L341,333L342,334L342,336L340,339L335,341L330,341L327,341L327,343L327,345L327,346L326,347L323,348L320,347L319,347L320,350L321,351L323,350L324,352L321,352L319,354L319,357L318,358L315,358L313,360L312,362L315,364L318,365L317,367L313,369L312,372L309,373L308,374L309,377L311,379L310,379L307,378L300,378L299,376L299,374L297,374L296,373L296,370L298,369L299,367L299,366L300,364L301,360L301,358L302,358L302,357L301,356L301,355L300,354L300,351L301,350L300,347L301,344L302,341L303,340L302,338L302,335L305,333L304,331L306,328L306,326L305,325L304,320L306,318L306,315L307,312L308,310L310,308L309,307L310,306L310,301L313,300L314,297L314,296L316,294L320,295L321,297L322,294L325,295L326,295L331,300L333,300L337,302L340,303L340,304L337,309L340,309L343,310L345,309L348,307L348,305L350,304L351,306L351,308L349,310L347,311L344,313L340,317Z"],["Chile",301.6,338.8,0,"M307,282L308,284L308,286L310,287L309,290L311,293L312,297L314,296L314,297L313,300L310,301L310,306L309,307L310,308L308,310L307,312L306,315L306,318L304,320L305,325L306,326L306,328L304,331L305,333L302,335L302,338L303,340L302,341L301,344L300,347L301,350L300,351L300,354L301,355L301,356L302,357L302,358L301,358L301,360L300,364L299,366L299,367L298,369L296,370L296,373L297,374L299,374L299,376L300,378L307,378L310,379L307,379L306,379L303,380L303,383L302,383L298,382L295,380L292,379L291,377L292,375L290,373L290,369L291,366L294,364L290,363L293,360L293,356L297,357L298,351L296,350L295,354L294,353L294,349L295,344L297,342L296,340L296,337L297,336L298,332L300,328L302,323L301,319L302,317L301,314L303,310L304,305L304,299L305,293L305,288L305,284L306,284L307,282Z"],["Dem. Rep. Congo",563.9,244,0,"M581,246L582,248L582,250L582,251L584,253L585,257L584,256L581,257L580,257L579,259L580,260L579,263L579,266L580,267L582,268L582,267L582,270L580,270L579,269L578,267L576,267L575,266L574,266L572,266L571,265L569,265L568,265L567,264L566,264L565,264L563,264L562,264L562,264L562,261L561,260L561,258L561,256L560,255L560,254L557,254L557,253L556,253L556,253L554,253L553,255L553,256L551,255L550,256L549,256L547,254L547,253L546,252L545,250L537,250L536,250L535,250L534,250L534,249L535,249L535,248L535,247L536,247L537,247L538,246L539,246L539,247L541,247L542,245L544,244L544,243L544,241L546,238L547,237L549,235L549,235L549,233L550,233L549,231L550,228L550,227L551,225L551,224L552,222L553,220L554,219L556,220L558,221L560,222L562,222L563,220L563,220L565,221L568,219L569,220L570,220L570,219L571,219L573,219L575,219L576,219L578,221L579,221L580,221L581,221L583,221L583,222L586,224L585,227L587,227L586,228L585,229L584,230L583,232L583,234L582,235L582,237L581,238L581,239L581,240L581,241L581,242L581,246Z"],["Somalia",630.1,215.5,0,"M616,238L614,236L614,226L616,222L617,222L619,222L621,220L625,219L633,211L635,209L636,207L636,206L636,203L636,202L636,202L637,202L638,201L640,201L641,200L642,200L642,201L642,202L642,204L641,205L640,208L639,211L637,214L635,219L633,222L629,225L627,228L622,230L620,233L617,236L616,237L616,238Z"],["Kenya",605.1,230.2,0,"M609,246L605,244L605,242L595,236L594,236L594,233L595,232L596,230L597,228L596,225L596,223L594,222L596,220L598,218L599,219L599,220L600,221L602,221L606,223L607,223L607,223L608,224L610,224L611,223L613,222L614,222L616,222L614,226L614,236L616,238L614,239L613,240L612,240L611,242L611,244L610,245L609,246Z"],["Sudan",581.5,197.8,0,"M568,210L566,209L565,208L565,208L565,206L565,205L564,204L564,202L564,202L563,201L562,199L562,198L561,198L561,197L562,196L562,195L563,194L562,194L563,192L564,190L566,190L566,179L566,178L569,178L569,172L581,172L591,172L602,172L603,175L603,175L603,178L604,182L605,182L607,183L605,185L603,185L602,186L602,188L601,192L601,193L601,196L600,198L598,200L597,202L596,203L595,204L594,207L594,209L594,207L594,207L594,206L594,205L592,204L592,202L592,200L591,199L591,200L589,200L590,201L590,203L588,204L587,206L586,206L583,205L582,205L582,206L581,207L580,207L578,207L577,207L575,207L574,207L574,207L572,205L572,204L570,205L569,206L568,209L567,209L566,209L568,210Z"],["Chad",550,197.2,0,"M566,179L566,190L564,190L563,192L562,194L563,194L562,195L562,196L561,197L561,198L562,198L562,199L563,201L564,202L564,202L562,203L560,204L558,207L556,208L553,208L552,208L553,209L551,210L550,211L546,212L546,212L545,212L545,213L542,213L543,212L542,210L542,209L540,208L539,207L539,205L541,206L541,206L543,206L541,203L542,201L541,199L540,198L541,196L539,196L539,194L538,193L539,190L542,187L543,184L544,178L544,177L543,176L543,175L542,174L541,170L544,168L555,174L566,179Z"],["Haiti",298,181,0,"M301,179L301,180L301,181L300,182L301,182L301,183L299,183L298,183L296,183L295,183L293,182L293,181L296,182L298,182L299,181L298,180L298,179L296,179L297,178L298,178L301,179Z"],["Dominican Rep.",304.2,181.3,0,"M301,183L301,182L300,182L301,181L301,180L301,179L301,178L303,178L305,179L306,179L306,180L308,180L308,181L309,181L310,182L309,183L308,182L307,182L306,182L305,183L304,183L304,182L303,183L302,184L301,184L301,183Z"],["Russia",765.3,67.9,0,"M863,116L863,116L863,114L864,114L865,111L864,108L866,107L870,108L872,105L873,102L874,101L875,99L870,99L868,101L864,101L863,98L859,96L855,95L854,92L853,91L852,89L850,87L847,86L843,85L840,85L836,85L834,87L835,87L835,89L834,90L831,93L831,94L827,96L824,95L821,95L819,94L818,94L814,96L810,96L807,97L804,96L801,96L800,95L797,94L794,93L791,94L788,94L784,93L784,91L780,90L778,90L775,89L772,92L773,93L770,95L766,95L763,94L762,93L759,93L756,92L752,94L747,96L744,96L743,97L741,95L738,95L736,94L734,94L733,92L732,91L728,92L724,91L722,92L716,85L713,83L714,82L707,85L704,85L704,83L701,82L698,83L697,80L692,79L689,81L682,82L681,82L671,83L669,84L671,86L669,87L669,88L667,89L671,91L670,92L666,92L666,93L662,91L658,92L655,93L651,92L645,90L641,90L635,93L635,95L632,93L630,96L631,97L629,99L631,101L633,101L635,103L635,104L636,104L635,106L632,107L630,109L632,112L632,114L635,117L633,118L633,119L632,119L630,117L629,117L627,116L626,115L624,115L622,115L622,115L618,113L614,113L611,112L611,113L607,110L604,109L602,108L604,107L606,105L605,104L609,103L609,102L606,102L606,101L608,100L610,100L611,99L610,98L611,96L611,96L607,95L606,95L604,93L602,94L598,93L598,92L597,91L595,91L595,90L596,90L594,88L591,88L590,88L589,89L588,89L588,87L587,86L587,86L590,86L591,85L590,84L588,84L588,83L587,83L585,81L586,80L586,79L583,78L582,79L581,78L578,77L577,76L577,74L576,74L577,73L576,70L578,69L578,68L581,67L578,65L584,62L586,60L588,59L583,57L585,55L582,53L584,51L581,47L583,45L579,43L579,41L582,41L586,40L589,39L594,41L601,41L612,45L614,46L614,48L611,49L607,50L594,48L592,48L597,50L597,52L597,54L601,55L603,56L603,55L601,53L603,52L610,54L612,53L610,51L617,49L619,49L622,50L624,48L621,46L623,45L621,43L628,44L630,45L627,46L627,47L629,48L633,48L634,46L640,44L649,42L651,42L649,44L652,44L654,43L659,43L663,42L667,44L670,42L667,40L668,39L676,40L680,41L690,44L692,43L689,41L689,41L686,40L687,39L685,37L685,36L690,34L692,31L694,30L702,31L702,33L700,35L701,36L702,38L702,42L705,43L703,45L698,49L701,50L702,49L705,48L706,46L708,45L707,44L708,42L705,41L704,40L707,37L703,35L708,33L707,31L709,31L710,33L709,35L712,36L711,34L715,33L721,32L726,34L724,32L724,29L728,28L735,28L741,28L739,27L742,25L745,25L751,23L758,23L759,22L766,22L769,22L775,21L780,21L781,20L783,19L790,18L795,18L791,19L797,20L798,21L800,20L809,20L815,22L817,23L816,24L813,25L806,26L804,27L807,28L811,28L814,28L815,30L817,29L821,28L830,29L831,30L842,31L842,29L848,29L853,29L857,30L858,32L857,33L860,36L865,37L867,34L872,35L877,34L882,35L884,34L889,35L887,32L890,31L915,33L918,34L925,37L936,36L942,36L944,38L944,40L947,40L951,40L956,40L961,40L966,40L971,43L974,42L972,40L973,39L982,39L988,39L996,41L1000,42L1007,44L1014,47L1014,48L1016,49L1015,47L1023,47L1028,50L1025,51L1021,52L1021,54L1020,55L1017,55L1015,54L1011,53L1011,52L1008,51L1005,52L1003,51L1004,50L1000,50L1002,52L1000,53L1000,53L996,54L993,54L995,55L997,58L998,58L999,60L998,60L993,60L985,62L982,62L978,64L974,66L973,67L969,65L962,67L961,66L958,67L954,67L953,69L950,72L950,73L953,73L953,77L950,77L949,80L950,81L945,82L945,86L940,86L940,89L936,92L934,90L933,86L932,79L933,76L935,74L936,73L940,72L945,69L950,66L955,63L957,60L953,60L952,62L945,65L943,62L935,63L928,67L931,69L924,70L920,70L920,68L916,68L913,69L904,69L895,69L886,75L875,81L880,82L881,83L884,84L886,83L889,83L893,86L893,88L891,91L890,94L889,99L885,103L884,105L880,108L876,111L875,113L871,114L869,114L867,113L864,115L863,116Z"],["Bahamas",283.5,165.2,0,"M283,163L284,163L285,166L285,167L284,167L283,166L282,165L283,163Z"],["Falkland Is.",334.5,377,0,"M330,377L333,376L336,376L337,375L340,377L339,378L335,378L334,377L331,379L330,377Z"],["Norway",550.2,49.4,0,"M586,40L582,41L579,41L581,40L577,38L573,39L571,41L569,43L566,42L562,42L559,41L557,41L556,41L555,43L550,43L549,44L547,44L545,46L542,49L538,53L539,54L538,55L535,55L533,58L533,62L535,63L534,66L532,68L531,70L529,68L523,71L520,72L516,71L515,68L514,61L516,59L524,57L529,54L534,50L541,45L546,43L553,39L559,38L564,38L568,36L573,36L578,36L587,38L583,38L586,40Z"],["Greenland",386,27.4,0,"M370,4L379,2L389,2L393,1L403,1L425,1L442,4L437,5L426,5L411,5L413,5L423,5L431,6L436,5L439,6L436,8L443,7L456,6L465,6L466,8L455,10L453,10L444,11L451,11L448,13L445,15L445,18L449,19L444,20L440,20L445,22L446,24L443,25L446,27L440,27L443,28L442,29L438,30L435,30L438,32L438,33L433,32L431,32L435,33L439,35L440,37L435,38L432,37L429,35L430,37L427,38L434,38L438,39L430,41L423,43L415,44L412,44L409,45L405,48L399,50L397,50L393,51L389,52L387,53L387,55L386,57L381,59L382,61L381,64L380,66L376,67L371,64L366,64L363,63L361,60L357,57L355,55L355,52L351,50L352,48L350,47L353,43L357,42L358,41L359,39L356,40L354,40L352,41L348,40L348,38L349,37L352,37L357,37L352,36L350,35L347,35L345,34L348,32L346,31L344,29L341,26L337,25L337,24L330,22L324,22L316,22L310,22L306,21L302,19L309,19L315,18L303,18L296,17L297,15L307,14L317,13L319,12L311,11L313,10L323,8L327,7L326,6L333,5L341,5L350,5L353,6L360,4L367,5L371,6L376,6L370,5L370,4Z"],["Fr. S. Antarctic Lands",692.9,369.8,0,"M691,368L693,369L696,370L696,370L695,371L691,372L691,370L691,369L691,368Z"],["Timor-Leste",849.7,257.6,0,"M847,258L847,257L850,257L852,257L853,256L854,257L853,257L850,259L847,259L847,259L847,258Z"],["South Africa",568.7,312.8,0,"M545,313L547,311L548,312L548,313L550,313L551,314L553,314L555,312L555,302L556,303L558,305L557,307L558,308L560,308L561,306L563,306L563,304L565,304L566,304L567,305L570,305L571,304L572,303L572,302L574,302L574,301L575,299L578,297L582,295L583,295L584,295L585,295L587,295L588,299L589,301L588,304L588,305L587,305L586,305L586,306L585,307L585,308L587,309L589,309L589,308L591,308L590,310L590,312L589,313L588,315L587,315L586,316L585,318L583,320L580,323L578,324L576,326L573,327L572,327L572,328L570,327L569,328L566,327L564,328L563,327L560,328L557,329L556,330L554,330L553,329L552,329L551,328L551,328L551,327L551,326L550,324L551,323L551,321L549,319L547,316L547,316L545,313Z"],["Lesotho",578.8,315.5,0,"M580,314L581,315L581,316L580,317L579,317L578,318L577,318L575,316L576,315L578,313L579,313L580,314Z"],["Mexico",213.5,167,0,"M175,143L178,143L181,142L181,143L185,144L192,146L197,146L199,146L199,145L204,145L205,146L207,147L208,148L209,150L210,151L211,152L214,153L215,151L218,151L220,152L221,154L222,155L224,157L224,159L225,160L227,161L229,162L230,161L229,164L229,166L228,170L228,171L229,173L229,174L230,176L232,178L233,180L234,181L237,182L238,183L240,182L242,182L244,181L246,181L248,180L249,178L249,176L249,175L251,174L254,174L257,174L258,173L259,174L259,175L257,177L257,179L257,179L257,180L256,183L255,182L255,182L254,182L253,184L253,183L252,183L252,184L250,184L247,184L247,185L246,185L247,186L248,187L248,188L249,188L249,189L245,189L244,191L244,191L244,192L244,193L241,190L239,189L237,188L235,189L233,190L232,190L230,189L228,189L225,187L223,187L220,186L218,184L217,184L215,183L213,183L211,181L208,180L207,178L206,177L207,176L207,176L208,175L208,174L207,173L206,171L205,170L203,167L200,165L199,163L197,162L196,162L196,160L195,159L193,158L193,156L191,156L190,154L188,153L188,152L187,150L186,148L186,147L184,146L183,146L181,145L181,146L181,147L181,150L182,151L184,153L185,153L185,153L186,154L186,154L187,156L188,157L188,158L190,159L191,162L192,163L192,164L193,166L194,166L195,167L196,168L196,169L195,170L194,170L194,168L192,167L190,165L188,165L188,163L188,161L187,160L185,159L184,159L184,159L182,158L180,156L181,156L182,156L183,155L183,154L181,152L179,151L178,149L177,148L176,145L175,143Z"],["Uruguay",344.1,324.2,0,"M340,317L342,317L345,319L346,319L348,321L351,322L352,324L351,326L352,327L351,329L347,330L345,330L344,330L341,329L339,329L338,328L338,326L339,325L338,322L339,319L340,317Z"],["Brazil",341.9,260.2,0,"M352,327L351,326L352,324L351,322L348,321L346,319L345,319L342,317L340,317L344,313L347,311L349,310L351,308L351,306L350,304L348,305L349,303L349,302L349,300L348,300L347,300L346,300L346,299L346,296L345,295L343,295L342,295L339,295L339,291L338,289L339,289L339,287L340,286L340,284L340,282L338,281L338,280L338,279L333,278L332,275L333,275L333,274L332,273L332,272L330,271L329,271L327,270L326,269L324,268L321,268L318,265L319,264L318,263L319,260L315,261L313,262L311,263L310,264L309,264L307,264L305,264L304,264L304,260L302,261L299,261L298,260L297,260L297,258L296,257L294,254L295,254L295,253L297,252L297,250L297,249L298,248L301,246L303,246L303,245L306,245L307,238L307,236L307,235L306,234L306,232L307,231L308,232L308,231L306,230L306,229L311,229L312,228L313,229L314,230L314,230L316,231L318,231L318,230L321,230L322,229L322,228L324,227L324,227L321,226L321,225L321,223L320,222L320,222L323,222L325,223L326,222L328,222L331,221L332,220L331,219L333,219L333,219L333,221L334,221L335,222L334,223L333,226L334,227L334,228L336,230L337,230L338,229L339,229L340,229L341,228L342,228L343,228L344,228L345,228L344,227L345,226L346,227L347,226L349,227L350,227L351,227L351,227L352,228L353,227L354,226L355,224L357,222L357,222L358,223L360,228L361,229L361,230L359,233L360,234L365,234L365,237L367,235L371,236L375,238L377,239L376,241L379,240L385,241L389,241L393,244L397,247L399,248L401,248L402,249L403,252L404,254L402,258L401,260L397,264L395,267L393,270L393,270L392,272L392,277L391,281L391,283L390,284L390,288L387,291L386,294L384,295L383,297L380,297L376,298L374,299L371,300L368,302L365,305L365,307L365,309L365,312L364,313L362,315L359,319L357,322L355,323L354,326L352,327Z"],["Bolivia",321.9,278.7,0,"M307,264L309,264L310,264L311,263L313,262L315,261L319,260L318,263L319,264L318,265L321,268L324,268L326,269L327,270L329,271L330,271L332,272L332,273L333,274L333,275L332,275L333,278L338,279L338,280L338,281L340,282L340,284L340,286L339,287L339,289L338,289L338,289L336,287L333,287L328,288L327,290L327,292L326,295L325,295L322,294L321,297L320,295L316,294L314,296L312,297L311,293L309,290L310,287L308,286L308,284L307,282L308,279L307,277L308,276L307,275L308,273L309,271L309,269L309,268L307,264Z"],["Peru",294.2,254.9,0,"M306,245L303,245L303,246L301,246L298,248L297,249L297,250L297,252L295,253L295,254L294,254L296,257L297,258L297,260L298,260L299,261L302,261L304,260L304,264L305,264L307,264L309,268L309,269L309,271L308,273L307,275L308,276L307,277L308,279L307,282L306,284L305,284L302,283L301,282L296,279L291,276L289,274L288,272L288,271L286,267L283,262L280,257L279,255L278,253L276,252L274,250L275,249L274,246L275,245L277,243L277,244L276,245L277,246L278,245L279,246L280,247L282,246L282,244L284,242L287,241L290,238L291,236L291,234L291,233L293,235L294,236L295,237L297,240L299,240L301,239L302,240L303,240L305,241L304,244L304,244L306,245Z"],["Colombia",298.2,220.9,0,"M314,230L314,230L313,229L312,228L311,229L306,229L306,230L308,231L308,232L307,231L306,232L306,234L307,235L307,236L307,238L306,245L304,244L304,244L305,241L303,240L302,240L301,239L299,240L297,240L295,237L294,236L293,235L291,233L291,234L289,233L288,232L287,233L285,232L284,231L284,231L281,229L281,229L282,228L281,227L282,226L284,226L285,224L286,223L285,222L285,220L285,218L285,217L285,215L284,213L284,212L285,212L285,211L285,210L285,209L287,209L289,207L290,207L290,206L290,204L292,203L294,202L294,202L296,202L298,201L299,200L301,199L302,199L302,200L302,201L300,201L299,202L298,203L297,204L297,206L296,208L298,208L298,209L299,210L299,211L299,212L299,213L299,213L300,214L304,214L305,214L307,216L308,216L310,216L312,216L313,216L312,218L312,219L312,221L312,223L313,223L313,224L312,225L313,226L313,227L314,230Z"],["Panama",276.9,209.7,0,"M285,209L285,210L285,211L285,212L284,212L284,213L283,212L282,211L283,210L282,210L282,209L280,208L279,209L278,209L277,210L277,210L276,211L278,212L277,213L277,213L275,213L275,212L274,212L274,212L273,211L272,211L271,210L270,210L270,211L270,210L270,210L270,209L270,209L270,209L270,208L270,207L271,207L272,208L272,208L273,208L273,208L274,209L275,209L276,208L278,207L279,207L280,207L280,207L282,207L283,208L284,208L285,209Z"],["Costa Rica",266.2,206,0,"M271,207L270,207L270,208L270,209L270,209L270,209L270,210L270,210L268,210L267,209L268,209L268,208L267,208L266,207L265,207L265,206L264,205L264,206L264,207L263,206L262,206L262,205L262,204L262,203L261,203L262,203L262,202L264,203L265,203L266,203L266,203L267,204L268,203L268,204L269,206L271,207Z"],["Nicaragua",264,197,0,"M268,203L267,204L266,203L266,203L265,203L264,203L262,202L262,203L261,202L260,201L259,200L258,199L256,197L257,197L257,197L257,197L258,197L259,197L259,196L259,195L260,195L260,195L261,194L262,195L262,195L262,194L263,193L263,193L264,193L264,192L264,192L265,193L265,193L266,192L267,192L268,192L268,192L269,192L269,192L269,193L269,194L268,195L268,196L268,197L268,198L268,199L268,199L267,200L268,201L267,202L267,202L268,203Z"],["Honduras",260.3,192.4,0,"M269,192L268,192L268,192L267,192L266,192L265,193L265,193L264,192L264,192L264,193L263,193L263,193L262,194L262,195L262,195L261,194L260,195L260,195L259,195L259,196L259,197L258,197L257,197L257,196L256,196L256,195L256,195L255,195L254,195L254,195L253,194L253,194L252,193L252,193L252,192L252,191L254,191L255,190L255,190L256,189L257,189L257,189L257,189L259,190L260,189L261,189L261,189L262,189L263,189L263,189L264,189L265,189L266,189L266,190L267,190L268,191L269,192Z"],["El Salvador",253,194.8,0,"M252,193L253,194L253,194L254,195L254,195L255,195L256,195L256,195L256,196L256,197L254,197L253,196L252,196L251,196L250,195L250,195L251,194L251,194L251,193L252,193Z"],["Guatemala",249.3,190.2,0,"M244,193L244,192L244,191L244,191L245,189L249,189L249,188L248,188L248,187L247,186L246,185L247,185L247,184L250,184L252,184L252,186L252,189L253,189L254,190L254,189L255,190L254,191L252,191L252,192L252,193L252,193L251,193L251,194L251,194L250,195L250,195L248,195L247,195L245,194L244,193Z"],["Belize",253.8,185,0,"M252,184L252,183L253,183L253,184L254,182L255,182L255,182L255,182L255,183L255,184L255,185L255,186L255,186L255,187L254,188L254,188L253,189L252,189L252,186L252,184Z"],["Venezuela",314.3,213.3,0,"M331,219L332,220L331,221L328,222L326,222L325,223L323,222L320,222L320,222L321,223L321,225L321,226L324,227L324,227L322,228L322,229L321,230L318,230L318,231L316,231L314,230L313,227L313,226L312,225L313,224L313,223L312,223L312,221L312,219L312,218L313,216L312,216L310,216L308,216L307,216L305,214L304,214L300,214L299,213L299,213L299,212L299,211L299,210L298,209L298,208L296,208L297,206L297,204L298,203L299,202L300,201L302,201L302,201L300,202L301,203L301,204L300,206L301,208L302,208L303,206L302,205L302,203L305,202L305,200L306,200L307,202L309,202L310,203L311,204L313,204L316,204L318,205L320,205L321,204L321,204L325,204L328,204L326,204L327,206L329,206L331,207L331,209L333,209L334,210L332,212L332,213L333,214L332,214L330,215L330,216L329,217L331,219Z"],["Guyana",336.4,220.9,0,"M343,228L342,228L341,228L340,229L339,229L338,229L337,230L336,230L334,228L334,227L333,226L334,223L335,222L334,221L333,221L333,219L333,219L331,219L329,217L330,216L330,215L332,214L333,214L332,213L332,212L334,210L336,211L338,213L338,214L339,214L340,216L341,217L341,219L339,220L339,221L339,222L340,224L341,224L341,226L343,228Z"],["Suriname",344.8,223.1,0,"M349,227L347,226L346,227L345,226L344,227L345,228L344,228L343,228L341,226L341,224L340,224L339,222L339,221L339,220L341,219L341,217L345,217L345,217L347,217L350,217L349,220L349,222L350,223L349,224L349,226L349,227Z"],["France",509.2,102.8,0,"M517,96L518,97L522,97L521,99L521,101L520,102L519,101L519,102L517,104L517,105L518,104L519,106L519,106L520,107L519,108L519,110L521,111L521,112L518,114L513,113L509,114L508,115L505,116L502,114L501,115L496,114L495,113L496,111L497,106L494,103L492,101L488,100L487,98L491,97L496,98L495,95L497,96L504,94L505,92L507,91L507,92L509,92L510,93L512,95L513,94L516,96L516,96L517,96Z"],["Ecuador",281.4,237.9,0,"M291,234L291,236L290,238L287,241L284,242L282,244L282,246L280,247L279,246L278,245L277,246L276,245L277,244L277,243L278,241L278,240L277,241L275,240L276,239L275,236L276,236L277,234L278,232L278,231L279,231L281,229L284,231L284,231L285,232L287,233L288,232L289,233L291,234Z"],["Puerto Rico",315.5,182.6,0,"M316,182L317,182L318,183L317,183L315,183L313,183L313,182L314,182L316,182Z"],["Jamaica",285.1,182.8,0,"M285,182L286,182L288,183L288,184L286,184L286,184L284,184L282,183L283,182L284,182L285,182Z"],["Cuba",278.5,173,0,"M271,169L274,169L276,169L279,170L280,171L282,171L283,171L286,173L287,174L288,174L290,175L290,176L292,176L294,177L294,178L292,178L290,178L288,178L284,178L286,177L285,176L283,176L282,175L281,173L280,173L277,173L276,172L273,172L272,171L273,170L270,170L268,172L267,172L267,172L265,173L264,173L265,172L266,171L267,170L269,169L271,169L271,169Z"],["Zimbabwe",582.4,285.8,0,"M587,295L585,295L584,295L583,295L582,295L580,293L578,293L577,291L577,290L576,290L573,287L572,285L571,285L570,283L573,283L574,283L575,283L577,281L579,279L580,279L580,278L582,277L584,276L584,277L587,277L588,278L588,279L590,279L591,280L591,283L591,285L591,287L591,288L591,290L590,290L590,292L587,295Z"],["Botswana",568,295.8,0,"M582,295L578,297L575,299L574,301L574,302L572,302L572,303L571,304L570,305L567,305L566,304L565,304L563,304L563,306L561,306L560,308L558,308L557,307L558,305L556,303L555,302L555,294L558,294L558,284L560,284L564,283L565,284L567,283L568,283L570,282L570,283L571,285L572,285L573,287L576,290L577,290L577,291L578,293L580,293L582,295Z"],["Namibia",549.8,293.2,0,"M555,302L555,312L553,314L551,314L550,313L548,313L548,312L547,311L545,313L543,311L542,309L542,306L541,304L540,300L540,296L540,295L539,294L537,291L536,288L535,286L533,284L533,281L534,281L536,280L537,280L539,282L539,282L551,281L553,283L559,283L564,282L567,281L569,282L570,282L570,282L568,283L567,283L565,284L564,283L560,284L558,284L558,294L555,294L555,302Z"],["Senegal",459.5,194.8,0,"M454,196L452,193L451,192L452,192L454,190L454,189L455,188L457,188L458,187L460,187L461,188L463,189L464,191L466,193L466,194L467,196L468,197L468,198L468,199L468,199L466,199L466,199L465,199L463,198L462,198L457,198L456,199L455,198L454,199L453,197L456,197L456,196L457,196L458,196L459,196L460,196L462,196L461,195L460,195L459,195L458,195L457,195L457,195L454,196Z"],["Mali",483.9,194.2,0,"M468,199L468,198L468,197L467,196L466,194L466,193L467,192L468,191L468,191L470,191L472,191L473,191L473,190L485,190L485,188L485,188L483,176L482,164L486,164L496,170L505,176L506,177L507,178L509,179L509,180L512,180L512,187L510,188L510,190L508,191L504,191L503,192L501,192L499,192L499,191L497,192L494,193L494,194L492,195L491,196L490,196L489,196L488,197L488,198L485,201L486,202L485,203L485,205L484,205L483,205L483,204L482,204L481,204L481,205L479,205L478,205L478,205L477,204L477,203L477,203L476,203L476,202L477,202L476,201L475,200L475,199L474,199L473,199L473,200L472,200L471,200L470,200L469,199L469,200L468,200L468,199Z"],["Mauritania",465.5,181,0,"M453,175L453,174L464,174L464,170L464,169L467,168L467,161L476,161L476,157L486,164L482,164L483,176L485,188L485,188L485,190L473,190L473,191L472,191L470,191L468,191L468,191L467,192L466,193L464,191L463,189L461,188L460,187L458,187L457,188L455,188L454,189L454,187L455,186L455,183L455,180L455,179L455,178L454,176L453,175Z"],["Benin",506.5,206.1,0,"M507,216L505,216L504,214L505,208L504,207L504,206L503,205L502,204L502,203L503,202L504,201L505,201L506,200L507,199L508,199L510,201L510,202L511,204L510,205L510,205L509,207L508,208L508,210L508,211L507,216Z"],["Niger",524.3,190.3,0,"M541,170L542,174L543,175L543,176L544,177L544,178L543,184L542,187L539,190L538,193L539,194L539,196L541,196L540,198L539,198L539,199L539,199L537,196L536,196L534,197L532,196L531,196L530,197L528,196L526,198L525,198L522,196L520,197L519,197L518,196L515,195L512,195L511,196L511,197L510,198L510,201L508,199L507,199L506,200L506,198L503,198L503,196L501,194L501,193L501,192L503,192L504,191L508,191L510,190L510,188L512,187L512,180L516,179L524,173L533,168L538,169L539,171L541,170Z"],["Nigeria",523.2,206.3,0,"M507,216L508,211L508,210L508,208L509,207L510,205L510,205L511,204L510,202L510,201L510,198L511,197L511,196L512,195L515,195L518,196L519,197L520,197L522,196L525,198L526,198L528,196L530,197L531,196L532,196L534,197L536,196L537,196L539,199L539,199L540,200L540,200L540,201L538,203L537,205L537,207L536,207L535,209L534,210L534,212L533,213L533,214L531,215L529,214L528,214L526,215L526,215L524,218L524,220L521,221L520,221L519,222L516,221L515,220L514,218L512,216L510,216L507,216Z"],["Cameroon",536.6,214.1,0,"M540,198L541,199L542,201L541,203L543,206L541,206L541,206L539,205L539,207L540,208L542,209L542,210L543,212L542,213L541,216L540,216L540,218L540,219L540,220L542,222L542,223L543,224L544,225L544,226L544,227L544,229L542,228L540,227L536,227L536,227L534,227L533,227L531,227L527,227L527,225L526,223L525,222L524,221L524,221L524,220L524,218L526,215L526,215L528,214L529,214L531,215L533,214L533,213L534,212L534,210L535,209L536,207L537,207L537,205L538,203L540,201L540,200L540,200L539,199L539,198L540,198Z"],["Togo",502.4,208.7,0,"M502,203L502,204L503,205L504,206L504,207L505,208L504,214L505,216L503,217L502,216L502,214L501,213L502,210L501,209L501,207L501,205L500,204L500,203L502,203Z"],["Ghana",497.3,210.3,0,"M500,203L500,204L501,205L501,207L501,209L502,210L501,213L502,214L502,216L503,217L499,218L497,219L495,220L492,219L492,218L491,216L492,213L493,211L492,207L492,204L492,203L497,203L498,203L499,203L500,203Z"],["Côte d'Ivoire",482.4,211.3,0,"M478,205L478,205L479,205L481,205L481,204L482,204L483,204L483,205L484,205L485,205L486,205L487,206L488,207L489,206L490,206L492,207L493,211L492,213L491,216L492,218L492,219L491,219L489,219L487,219L484,219L482,220L479,221L479,221L479,219L479,219L479,217L478,216L477,216L476,215L477,214L476,213L477,212L477,212L477,211L477,210L477,210L478,210L478,207L477,206L477,205L478,205Z"],["Guinea",469.5,204.4,0,"M462,198L463,198L465,199L466,199L466,199L468,199L468,199L468,200L469,200L469,199L470,200L471,200L472,200L473,200L473,199L474,199L475,199L475,200L476,201L477,202L476,202L476,203L477,203L477,203L477,204L478,205L477,205L477,206L478,207L478,210L477,210L477,210L477,211L477,212L477,212L476,212L475,213L474,213L474,212L474,211L473,210L472,210L472,210L471,210L471,209L470,208L470,208L470,206L469,205L467,205L466,206L465,206L465,207L465,207L463,209L462,207L461,206L460,206L460,205L459,204L459,203L458,203L459,201L460,201L461,201L461,201L462,201L462,200L462,199L462,198Z"],["Guinea-Bissau",457.7,200.1,0,"M454,199L455,198L456,199L457,198L462,198L462,199L462,200L462,201L461,201L461,201L460,201L459,201L458,203L456,202L455,201L455,201L455,200L454,200L454,199Z"],["Liberia",474.6,214.6,0,"M477,212L476,213L477,214L476,215L477,216L478,216L479,217L479,219L479,219L479,221L478,221L475,220L472,218L470,216L468,214L469,214L469,213L470,211L472,210L472,210L473,210L474,211L474,212L474,213L475,213L476,212L477,212Z"],["Sierra Leone",467.5,209.4,0,"M463,209L465,207L465,207L465,206L466,206L467,205L469,205L470,206L470,208L470,208L471,209L471,210L472,210L470,211L469,213L469,214L468,214L467,214L465,213L464,212L464,211L463,209Z"],["Burkina Faso",494.7,199.7,0,"M485,205L485,203L486,202L485,201L488,198L488,197L489,196L490,196L491,196L492,195L494,194L494,193L497,192L499,191L499,192L501,192L501,193L501,194L503,196L503,198L506,198L506,200L505,201L504,201L503,202L502,203L500,203L499,203L498,203L497,203L492,203L492,204L492,207L490,206L489,206L488,207L487,206L486,205L485,205Z"],["Central African Rep.",557.5,215.8,0,"M576,219L575,219L573,219L571,219L570,219L570,220L569,220L568,219L565,221L563,220L563,220L562,222L560,222L558,221L556,220L554,219L553,220L552,222L551,224L549,223L548,223L546,224L544,227L544,226L544,225L543,224L542,223L542,222L540,220L540,219L540,218L540,216L541,216L542,213L545,213L545,212L546,212L546,212L550,211L551,210L553,209L552,208L553,208L556,208L558,207L560,204L562,203L564,202L564,204L565,205L565,206L565,208L565,208L566,209L568,210L570,212L570,212L572,214L573,215L574,217L576,218L576,219Z"],["Congo",541.5,235.9,0,"M551,224L551,225L550,227L550,228L549,231L550,233L549,233L549,235L549,235L547,237L546,238L544,241L544,243L544,244L542,245L541,247L539,247L539,246L538,246L537,247L536,247L535,246L534,246L533,247L531,244L533,243L532,241L533,240L535,240L535,239L536,240L539,240L540,239L540,237L540,235L538,233L540,230L539,229L537,230L536,228L536,227L540,227L542,228L544,229L544,227L546,224L548,223L549,223L551,224Z"],["Gabon",533,234.3,0,"M531,227L533,227L534,227L536,227L536,227L536,228L537,230L539,229L540,230L538,233L540,235L540,237L540,239L539,240L536,240L535,239L535,240L533,240L532,241L533,243L531,244L528,242L526,239L524,236L525,235L525,235L526,233L526,231L527,230L531,230L531,227Z"],["Eq. Guinea",528,228.9,0,"M527,227L531,227L531,230L527,230L526,231L526,230L527,227Z"],["Zambia",577.7,269,0,"M585,257L587,257L588,258L589,258L591,259L592,260L593,263L593,263L592,266L593,268L592,269L591,271L592,272L584,274L584,276L582,277L580,278L580,279L579,279L577,281L575,283L574,283L573,283L570,283L570,282L570,282L569,282L567,281L564,282L563,280L561,278L561,269L567,269L566,268L567,267L566,266L567,265L566,264L567,264L568,265L569,265L571,265L572,266L574,266L575,266L576,267L578,267L579,269L580,270L582,270L582,267L582,268L580,267L579,266L579,263L580,260L579,259L580,257L581,257L584,256L585,257Z"],["Malawi",594.6,269.2,0,"M591,259L594,259L594,260L595,262L596,265L595,267L596,271L597,271L598,272L599,274L599,277L598,278L597,280L596,278L595,276L596,275L596,274L595,273L594,273L592,272L591,271L592,269L593,268L592,266L593,263L593,263L592,260L591,259Z"],["Mozambique",596.8,283.1,0,"M596,265L598,265L601,266L602,266L604,265L605,265L607,265L610,264L612,262L612,263L612,266L613,268L613,273L613,274L612,276L611,278L610,280L607,281L604,282L601,285L600,286L598,288L597,288L596,290L598,292L598,294L598,295L599,295L599,297L598,299L599,299L598,300L597,301L595,302L592,304L590,305L591,306L591,306L591,308L589,308L589,306L588,305L588,304L589,301L588,299L587,295L590,292L590,290L591,290L591,288L591,287L591,285L591,283L591,280L590,279L588,279L588,278L587,277L584,277L584,276L584,274L592,272L594,273L595,273L596,274L596,275L595,276L596,278L597,280L598,278L599,277L599,274L598,272L597,271L596,271L595,267L596,265Z"],["eSwatini",587.3,306.7,0,"M589,308L589,309L587,309L585,308L585,307L586,306L586,305L587,305L588,305L589,306L589,308Z"],["Angola",548.3,263.7,0,"M534,250L535,250L536,250L537,250L545,250L546,252L547,253L547,254L549,256L550,256L551,255L553,256L553,255L554,253L556,253L556,253L557,253L557,254L560,254L560,255L561,256L561,258L561,260L562,261L562,264L562,264L563,264L565,264L566,264L567,265L566,266L567,267L566,268L567,269L561,269L561,278L563,280L564,282L559,283L553,283L551,281L539,282L539,282L537,280L536,280L534,281L533,281L532,280L533,277L534,275L534,273L535,271L535,270L537,268L538,267L538,265L538,263L537,262L536,260L536,259L536,258L537,257L536,254L535,253L534,251L534,250Z"],["Burundi",583.5,242.3,0,"M585,240L585,241L585,242L585,243L585,243L584,245L583,246L581,246L581,242L581,241L582,241L583,240L585,240Z"],["Israel",597.7,144.3,0,"M599,142L599,143L598,143L597,145L598,145L597,146L597,146L598,146L598,147L597,151L597,151L595,147L596,146L596,146L597,144L597,142L597,141L598,141L599,141L599,141L600,141L600,142L599,142L599,142Z"],["Lebanon",599.6,139.4,0,"M600,141L599,141L599,141L598,141L599,139L600,137L600,137L601,137L602,138L600,139L600,141Z"],["Madagascar",630.5,283.3,0,"M638,268L638,269L639,271L639,274L640,276L640,277L639,278L639,276L638,277L639,279L638,280L637,281L637,283L636,286L635,290L633,296L632,299L631,303L629,303L626,304L625,304L622,303L622,301L621,299L620,297L620,295L621,293L622,292L622,291L623,289L624,287L623,286L622,284L622,282L623,280L623,278L625,278L626,278L627,277L629,277L630,276L633,274L633,272L633,271L634,272L636,270L636,268L637,267L638,268Z"],["Palestine",597.9,145,1,"M598,146L597,146L597,146L598,145L597,145L598,143L599,143L599,145L598,146Z"],["Gambia",457.5,195.8,0,"M454,196L457,195L457,195L458,195L459,195L460,195L461,195L462,196L460,196L459,196L458,196L457,196L456,196L456,197L453,197L454,196Z"],["Tunisia",527.3,138.8,0,"M526,149L525,144L523,143L523,142L521,141L521,139L523,137L523,135L523,132L523,131L526,130L528,130L528,131L531,130L531,131L529,132L529,133L530,134L530,137L528,138L529,139L530,140L531,141L532,141L532,143L530,144L530,145L528,146L528,147L528,149L526,149Z"],["Algeria",508.4,150.9,0,"M476,157L476,157L476,157L476,153L480,151L483,151L485,150L487,149L490,148L490,145L491,145L493,144L496,144L497,143L496,142L495,139L495,137L494,136L497,134L500,134L501,132L504,132L509,131L513,131L515,131L517,130L520,130L521,131L523,131L523,132L523,135L523,137L521,139L521,141L523,142L523,143L525,144L526,149L527,152L527,153L527,155L527,156L527,158L527,160L526,161L528,163L528,164L529,166L530,165L532,166L533,168L524,173L516,179L512,180L509,180L509,179L507,178L506,177L505,176L496,170L486,164L476,157Z"],["Jordan",601.8,146.9,0,"M599,143L599,142L602,144L608,141L609,144L608,144L603,146L606,149L605,149L604,150L602,150L601,151L600,152L597,152L597,151L598,147L598,146L599,145L599,143Z"],["United Arab Emirates",650.7,166.1,0,"M643,166L644,166L644,167L646,166L648,166L650,166L652,164L654,163L656,161L656,162L657,164L655,164L655,166L656,166L654,167L654,168L653,169L653,170L653,171L644,169L643,167L643,166Z"],["Qatar",642.1,163.2,0,"M641,165L641,163L642,161L642,161L643,162L643,163L643,165L642,165L641,165Z"],["Kuwait",632.6,151.8,0,"M633,150L634,151L634,152L634,154L633,154L632,153L629,153L631,150L633,150Z"],["Iraq",623.3,140.4,0,"M609,144L608,141L614,138L615,134L615,132L616,132L618,130L619,129L622,130L623,131L624,130L626,133L628,134L628,136L627,137L626,139L628,142L631,143L633,145L632,147L633,147L633,149L635,150L633,150L631,150L629,153L624,152L616,147L612,145L609,144Z"],["Oman",657.1,175.4,0,"M653,170L653,169L654,168L654,167L656,166L655,166L655,164L657,164L658,166L659,167L661,167L663,168L664,169L665,170L666,171L666,171L665,173L665,174L664,175L662,177L661,176L661,177L660,179L661,180L660,181L659,181L657,182L657,183L656,184L655,184L654,184L654,185L652,186L651,186L649,187L648,187L647,185L644,181L653,178L655,172L653,170Z"],["Vanuatu",963.6,276.1,1,"M963,277L963,276L963,274L964,275L965,277L964,277L963,277Z"],["Cambodia",791.4,198.2,0,"M785,199L784,196L786,194L790,193L792,194L795,195L796,193L798,194L799,196L799,199L794,201L795,203L792,203L790,204L787,204L786,202L785,199Z"],["Thailand",779.6,196.7,0,"M792,194L790,193L786,194L784,196L785,199L782,198L780,198L780,196L778,196L778,199L776,203L775,206L776,208L777,208L779,210L779,213L781,214L782,215L784,216L783,217L781,218L781,216L778,215L778,215L777,214L776,213L775,211L774,210L773,212L773,210L773,208L774,206L775,203L777,200L776,198L776,196L775,195L773,193L773,191L774,191L775,188L774,187L772,185L770,182L772,182L773,179L775,178L777,177L778,177L779,177L779,179L781,179L781,182L781,185L784,183L784,184L786,183L787,182L789,183L791,185L791,188L793,190L793,192L792,194Z"],["Laos",788,182.5,0,"M798,194L796,193L795,195L792,194L793,192L793,190L791,188L791,185L789,183L787,182L786,183L784,184L784,183L781,185L781,182L781,179L779,179L779,177L778,177L779,176L781,174L781,174L783,175L782,171L784,171L785,173L787,176L790,176L791,178L789,179L789,180L792,181L794,185L796,187L798,189L799,191L798,194Z"],["Myanmar",769.9,177.8,0,"M778,177L777,177L775,178L773,179L772,182L770,182L772,185L774,187L775,188L774,191L773,191L773,193L775,195L776,196L776,198L777,200L775,203L774,206L773,204L774,202L773,200L774,197L773,195L772,192L771,189L770,186L768,188L765,190L763,189L762,189L763,185L762,183L760,180L760,179L759,178L757,176L756,174L757,174L757,172L759,171L758,170L759,169L759,166L761,167L763,165L763,163L764,161L764,160L768,158L770,158L770,156L771,156L770,155L772,155L773,156L774,157L774,159L774,161L771,164L771,167L774,166L775,169L776,170L776,172L778,173L779,173L781,173L781,174L779,176L778,177Z"],["Vietnam",794.3,186.9,0,"M790,204L792,203L795,203L794,201L799,199L799,196L798,194L799,191L798,189L796,187L794,185L792,181L789,180L789,179L791,178L790,176L787,176L785,173L784,171L785,170L788,170L790,170L793,168L794,170L796,170L796,172L797,173L800,173L796,176L794,178L794,180L796,183L798,187L801,189L802,191L804,196L803,201L801,203L798,205L796,207L792,209L791,208L792,206L790,204Z"],["North Korea",853.7,122.5,0,"M863,116L863,116L862,116L861,117L860,118L860,120L859,120L858,121L857,122L855,122L854,123L854,124L854,124L855,125L857,126L856,127L855,127L853,127L852,128L851,128L850,128L849,128L849,128L848,129L848,128L847,128L846,127L847,126L848,126L848,125L848,124L848,123L846,123L845,122L847,121L851,119L852,117L854,118L856,118L856,117L860,115L861,114L863,116Z"],["South Korea",854.1,131.3,0,"M850,128L851,128L852,128L853,127L855,127L856,127L857,126L859,129L860,131L860,134L859,136L856,136L854,138L851,138L851,136L852,134L850,131L852,131L850,128Z"],["Mongolia",790.5,102.2,0,"M744,96L747,96L752,94L756,92L759,93L762,93L763,94L766,95L770,95L773,93L772,92L775,89L778,90L780,90L784,91L784,93L788,94L791,94L794,93L797,94L800,95L801,96L804,96L807,97L810,96L814,96L818,94L819,94L821,95L824,95L823,97L821,100L822,101L823,100L826,101L828,100L830,101L833,103L832,104L830,103L826,104L824,104L822,106L818,107L815,109L812,108L811,108L809,110L810,111L811,112L809,113L807,114L803,115L799,115L795,116L792,118L790,117L787,117L783,115L780,115L776,115L771,115L768,115L766,113L765,110L763,110L760,108L756,108L753,108L752,106L753,103L751,101L747,100L744,98L744,96Z"],["India",732.2,166.8,0,"M770,155L771,156L770,156L770,158L768,158L764,160L764,161L763,163L763,165L761,167L759,166L759,169L758,170L759,171L757,172L756,168L755,168L755,169L753,168L754,166L755,166L757,164L755,163L752,164L750,163L750,161L748,161L746,160L745,162L747,163L745,164L745,165L746,166L746,168L747,170L747,172L747,173L745,173L742,174L742,176L740,177L736,179L733,182L731,184L728,186L728,187L727,188L724,189L723,189L722,191L723,195L723,197L722,200L722,205L720,205L719,207L720,208L717,209L717,210L715,211L713,209L711,205L710,202L709,201L708,198L707,194L707,193L704,189L703,184L702,180L702,177L702,174L698,176L696,175L692,172L693,171L693,170L689,168L691,166L697,166L697,163L695,162L695,160L693,158L696,156L699,156L702,153L704,150L707,147L707,145L709,144L707,142L706,140L705,138L706,137L710,137L714,137L716,135L719,138L719,140L720,142L720,143L718,143L719,146L721,148L725,149L724,151L722,153L725,154L728,156L731,157L735,158L737,159L739,159L742,160L745,160L745,159L745,157L745,156L746,155L747,158L747,158L749,159L751,159L753,159L756,159L756,157L755,156L757,156L759,154L763,152L765,153L767,152L768,153L767,154L770,155Z"],["Bangladesh",751.7,168.3,0,"M757,172L757,174L756,174L757,176L756,174L756,173L755,172L754,170L751,170L752,171L751,173L750,172L749,173L748,172L747,172L747,170L746,168L746,166L745,165L745,164L747,163L745,162L746,160L748,161L750,161L750,163L752,164L755,163L757,164L755,166L754,166L753,168L755,169L755,168L756,168L757,172Z"],["Bhutan",751.7,157,0,"M755,156L756,157L756,159L753,159L751,159L749,159L747,158L747,158L749,155L750,155L752,155L753,155L755,156Z"],["Nepal",734.9,155,0,"M745,156L745,157L745,159L745,160L742,160L739,159L737,159L735,158L731,157L728,156L725,154L722,153L724,151L725,149L726,149L729,150L731,151L733,152L734,153L736,154L738,155L742,156L745,156Z"],["Pakistan",692.9,147.8,0,"M716,135L714,137L710,137L706,137L705,138L706,140L707,142L709,144L707,145L707,147L704,150L702,153L699,156L696,156L693,158L695,160L695,162L697,163L697,166L691,166L689,168L687,167L687,165L684,163L679,163L675,163L671,164L672,160L676,159L676,158L674,157L674,155L672,154L670,152L669,150L674,152L677,151L678,152L679,151L681,151L684,150L684,148L686,146L688,146L688,146L690,145L691,145L693,145L692,143L694,141L695,141L694,139L697,139L698,138L698,137L699,136L699,134L698,133L700,132L703,131L706,131L707,130L709,130L711,131L712,134L716,135Z"],["Afghanistan",688.2,136.6,0,"M685,130L686,130L688,130L689,130L691,130L692,130L693,129L695,129L695,129L695,127L697,126L698,127L698,128L699,128L698,130L700,131L701,131L702,130L703,129L705,129L708,129L709,130L707,130L706,131L703,131L700,132L698,133L699,134L699,136L698,137L698,138L697,139L694,139L695,141L694,141L692,143L693,145L691,145L690,145L688,146L688,146L686,146L684,148L684,150L681,151L679,151L678,152L677,151L674,152L669,150L672,148L671,146L669,146L669,144L668,142L669,140L668,140L669,138L670,134L673,135L675,135L676,134L678,133L679,132L680,130L682,130L683,129L684,129L685,130Z"],["Tajikistan",696.6,126.4,0,"M688,130L690,127L689,125L687,125L688,123L690,124L692,122L693,120L696,120L696,121L696,122L697,122L696,122L693,122L693,124L696,123L699,124L705,124L705,126L706,126L708,127L708,128L708,129L705,129L703,129L702,130L701,131L700,131L698,130L699,128L698,128L698,127L697,126L695,127L695,129L695,129L693,129L692,130L691,130L689,130L688,130Z"],["Kyrgyzstan",705.5,118.4,0,"M697,116L698,115L700,114L704,115L705,114L706,113L710,114L711,114L716,114L720,114L721,115L723,116L723,116L718,118L717,119L714,119L713,121L710,121L708,121L705,123L705,123L705,124L699,124L696,123L693,124L693,122L696,122L697,122L699,122L703,120L700,118L698,119L696,118L698,116L697,116Z"],["Turkmenistan",662.4,124.1,0,"M646,117L647,116L650,116L652,117L654,119L655,119L659,119L658,117L661,116L663,115L667,116L667,118L668,119L671,119L672,119L673,122L676,124L678,125L681,127L685,128L685,130L684,129L683,129L682,130L680,130L679,132L678,133L676,134L675,135L673,135L670,134L670,132L668,132L665,129L662,129L659,128L657,127L656,128L654,128L652,129L650,130L649,128L650,125L648,124L648,122L646,122L647,120L650,120L652,120L650,118L649,116L647,117L647,119L646,117Z"],["Iran",648.2,140.8,0,"M635,150L633,149L633,147L632,147L633,145L631,143L628,142L626,139L627,137L628,136L628,134L626,133L624,130L623,128L623,127L623,124L624,123L625,124L626,125L628,126L629,126L632,124L633,123L634,124L633,126L635,127L636,127L637,129L639,130L641,131L645,131L650,131L650,130L652,129L654,128L656,128L657,127L659,128L662,129L665,129L668,132L670,132L670,134L669,138L668,140L669,140L668,142L669,144L669,146L671,146L672,148L669,150L670,152L672,154L674,155L674,157L676,158L676,159L672,160L671,164L666,163L663,162L659,162L658,158L657,158L655,158L652,160L649,159L646,157L643,156L641,153L639,150L638,150L636,149L635,150Z"],["Syria",605.4,135.7,0,"M599,142L599,142L600,142L600,141L600,139L602,138L601,137L600,137L600,135L600,134L601,133L602,133L602,131L603,132L606,131L607,131L610,131L613,130L614,130L618,130L616,132L615,132L615,134L614,138L608,141L602,144L599,142Z"],["Armenia",625.9,122.4,0,"M629,126L628,126L627,124L627,124L626,124L625,123L624,123L623,122L621,122L622,120L621,119L625,119L625,119L627,120L626,121L627,122L627,123L628,123L629,124L629,126Z"],["Sweden",546,59.1,0,"M531,70L532,68L534,66L535,63L533,62L533,58L535,55L538,55L539,54L538,53L542,49L545,46L547,44L549,44L550,43L555,43L556,41L557,41L561,43L565,45L565,49L566,50L562,51L559,53L559,54L555,57L550,59L548,63L550,65L552,66L550,70L547,70L546,75L544,77L541,77L539,79L536,80L535,77L533,74L531,70Z"],["Belarus",578.4,85.1,0,"M578,77L581,78L582,79L583,78L586,79L586,80L585,81L587,83L588,83L588,84L590,84L591,85L590,86L587,86L587,86L588,87L588,89L586,89L585,89L585,91L584,91L581,91L581,90L579,90L578,90L576,90L573,89L570,89L568,89L567,90L565,90L565,89L564,88L566,87L566,86L565,85L565,84L568,84L571,83L572,81L574,80L574,79L575,78L578,77Z"],["Ukraine",584.6,98.1,0,"M588,89L589,89L590,88L591,88L594,88L596,90L595,90L595,91L597,91L598,92L598,93L602,94L604,93L606,95L607,95L611,96L611,96L610,98L611,99L610,100L608,100L606,101L606,102L604,103L602,104L600,104L597,105L597,106L597,106L596,106L596,106L594,105L593,106L592,105L588,105L588,104L585,104L584,105L582,108L581,107L580,107L578,107L579,107L580,106L580,105L580,104L581,104L581,104L583,105L583,104L583,104L583,104L582,103L582,102L581,101L581,100L580,100L578,100L576,99L575,99L574,99L573,99L572,100L570,100L569,101L568,100L566,100L564,100L563,100L563,100L561,99L562,98L563,97L563,97L563,96L565,94L566,93L567,92L565,90L567,90L568,89L570,89L573,89L576,90L578,90L579,90L581,90L581,91L584,91L585,91L585,89L586,89L588,89Z"],["Poland",554.1,89.6,0,"M565,84L565,85L566,86L566,87L564,88L565,89L565,90L567,92L566,93L565,94L563,96L563,97L563,97L560,96L558,96L557,96L555,97L554,96L553,96L552,96L551,94L549,94L549,93L547,93L546,94L545,93L545,93L543,92L542,91L541,90L541,89L540,87L539,86L540,85L539,84L541,83L545,82L549,81L552,81L552,82L555,82L558,82L563,82L565,83L565,84Z"],["Austria",537.5,101,0,"M547,100L547,101L545,101L546,101L545,103L544,104L542,104L541,104L538,104L534,103L534,102L531,103L531,103L529,103L528,103L526,102L527,102L527,101L527,101L529,102L529,101L532,101L534,101L535,101L536,101L536,101L536,99L537,99L538,98L540,98L541,97L542,97L545,98L546,98L547,98L547,99L547,100Z"],["Hungary",553.5,101.5,0,"M561,99L563,100L563,100L561,101L560,103L558,105L556,105L554,105L552,106L551,106L549,106L547,104L546,104L545,103L545,103L546,101L545,101L547,101L547,100L549,100L550,101L552,100L552,100L553,100L555,99L555,99L556,99L557,98L558,98L561,99L561,99Z"],["Moldova",579.1,102.6,0,"M574,99L575,99L576,99L578,100L580,100L581,100L581,101L582,102L582,103L583,104L583,104L583,104L583,105L581,104L581,104L580,104L580,105L580,106L579,107L578,107L578,106L578,105L578,103L577,102L576,100L575,100L574,99Z"],["Romania",570,106,0,"M578,107L580,107L581,107L582,108L582,108L581,109L580,109L579,112L578,112L576,111L572,111L571,112L567,112L565,111L564,112L563,110L562,110L563,110L562,109L562,110L560,109L560,108L558,107L558,106L556,105L558,105L560,103L561,101L563,100L564,100L566,100L568,100L569,101L570,100L572,100L573,99L574,99L575,100L576,100L577,102L578,103L578,105L578,106L578,107Z"],["Lithuania",566.7,80,0,"M574,79L574,80L572,81L571,83L568,84L565,84L565,83L563,82L563,82L563,81L562,81L559,80L558,78L562,77L566,77L569,77L569,77L571,77L574,79Z"],["Latvia",569.3,75.4,0,"M576,74L577,74L577,76L578,77L575,78L574,79L571,77L569,77L569,77L566,77L562,77L558,78L559,76L560,74L563,73L565,75L567,75L568,73L570,72L571,73L574,74L576,74Z"],["Estonia",572,70.5,0,"M578,68L578,69L576,70L577,73L576,74L574,74L571,73L570,72L568,73L568,71L567,72L565,71L565,69L568,68L572,68L575,68L578,68Z"],["Germany",529.7,91.5,0,"M539,84L540,85L539,86L540,87L541,89L541,90L542,91L540,92L540,91L539,92L537,92L536,93L534,94L534,95L535,96L536,96L538,98L537,99L536,99L536,101L536,101L535,101L534,101L532,101L529,101L529,102L527,101L527,101L524,100L523,101L521,101L521,99L522,97L518,97L517,96L517,95L517,94L517,92L517,89L518,89L519,88L520,86L519,85L520,84L522,84L523,85L524,83L524,82L524,81L526,81L528,81L528,82L530,82L530,83L533,83L535,82L538,83L539,84Z"],["Bulgaria",568.6,114.2,0,"M563,110L564,112L565,111L567,112L571,112L572,111L576,111L578,112L579,112L578,113L577,115L578,117L575,116L573,117L573,119L570,119L568,118L566,119L564,119L564,117L562,116L563,115L562,115L563,114L564,113L562,112L562,111L563,110Z"],["Greece",564.3,122.8,0,"M564,119L566,119L568,118L570,119L573,119L573,117L574,118L573,120L572,120L571,120L569,120L566,120L568,122L566,122L565,122L563,121L563,122L563,123L565,124L564,125L565,126L567,127L567,129L564,128L565,129L563,130L564,132L562,132L560,131L559,129L559,127L558,126L556,124L556,123L557,122L557,121L558,121L558,120L560,120L561,119L563,119L563,119L564,119Z"],["Turkey",602.1,126.7,0,"M624,130L623,131L622,130L619,129L618,130L614,130L613,130L610,131L607,131L606,131L603,132L602,131L602,133L601,133L600,134L599,133L600,132L599,132L596,131L595,133L590,133L588,132L585,131L584,133L582,133L580,131L577,132L575,129L573,127L574,125L573,124L576,121L580,121L581,119L587,119L590,117L593,117L598,117L603,119L607,120L610,119L612,119L615,118L618,118L621,119L622,120L621,122L623,122L624,123L623,124L623,127L623,128L624,130Z"],["Albania",555.9,118.8,0,"M558,120L558,121L557,121L557,122L556,123L555,123L555,122L554,122L554,120L554,118L554,117L554,117L554,116L555,115L555,115L556,115L556,116L557,116L557,117L557,118L557,119L558,120Z"],["Croatia",545.5,108.6,0,"M546,104L547,104L549,106L551,106L552,106L553,107L554,108L553,109L552,108L550,108L547,108L546,108L545,108L544,108L544,109L545,110L546,111L547,112L548,113L549,114L552,115L551,115L549,114L547,113L544,112L542,110L543,110L541,109L541,108L540,108L539,109L538,108L538,107L538,107L540,107L541,107L541,107L543,107L543,106L544,106L544,105L546,104Z"],["Switzerland",523.1,103.3,0,"M527,101L527,102L526,102L528,103L529,103L529,104L528,105L526,104L525,105L524,106L523,105L522,106L520,106L519,106L518,104L517,105L517,104L519,102L519,101L520,102L521,101L523,101L524,100L527,101Z"],["Luxembourg",516.6,95,1,"M517,94L517,95L517,96L516,96L516,96L516,94L517,94Z"],["Belgium",512.7,92.7,0,"M517,92L517,94L516,94L516,96L513,94L512,95L510,93L509,92L507,92L507,91L509,91L511,91L514,90L516,92L517,92Z"],["Netherlands",515.7,88.5,0,"M519,85L520,86L519,88L518,89L517,89L517,92L516,92L514,90L511,91L509,91L511,90L513,86L517,85L519,85Z"],["Portugal",477.7,122.9,0,"M475,117L476,116L477,116L478,117L479,117L480,117L481,117L482,118L481,119L481,121L480,122L480,123L479,123L480,125L480,127L480,128L480,128L479,129L479,130L478,131L477,131L475,131L476,129L475,127L474,127L474,126L474,124L475,123L475,122L476,120L476,119L475,118L475,117Z"],["Spain",487.6,121.7,0,"M479,130L479,129L480,128L480,128L480,127L480,125L479,123L480,123L480,122L481,121L481,119L482,118L481,117L480,117L479,117L478,117L477,116L476,116L475,117L475,115L474,114L478,112L481,112L485,112L488,113L490,113L495,113L496,114L501,115L502,114L505,116L508,115L508,117L506,119L502,119L502,120L500,122L499,124L500,126L499,127L498,129L496,129L494,131L491,132L488,131L486,132L485,133L484,133L483,132L482,131L479,130Z"],["Ireland",478.5,84.6,0,"M483,84L483,86L481,88L476,90L472,89L475,86L473,84L477,81L479,80L480,82L479,83L481,83L483,84Z"],["New Caledonia",959.8,292.2,0,"M960,292L963,294L964,295L963,296L962,295L960,294L958,292L956,290L956,289L957,289L958,290L960,291L960,292Z"],["Solomon Is.",942,255.3,0,"M943,256L944,256L944,257L942,256L941,255L939,254L940,254L941,254L943,256Z"],["New Zealand",974.9,354.3,0,"M971,354L974,353L975,351L977,349L978,349L978,347L980,346L981,347L981,348L983,347L984,348L984,349L983,351L981,353L980,354L981,355L979,355L976,356L976,358L974,361L972,362L970,363L968,363L966,362L963,362L963,361L964,359L968,356L969,355L971,354Z"],["Australia",870.1,299.5,0,"M850,323L847,324L845,325L845,326L843,327L841,328L839,328L837,327L835,328L833,328L831,329L831,329L829,330L828,331L826,331L824,331L821,329L820,328L820,327L821,326L821,326L821,325L822,323L821,321L820,318L819,317L820,315L818,313L818,313L817,311L817,309L815,307L815,306L816,307L815,305L816,305L817,306L817,305L816,303L816,302L815,301L815,299L816,299L816,297L816,296L817,294L817,296L818,294L821,293L822,292L824,291L825,291L826,291L828,290L830,290L831,289L831,289L833,289L836,288L837,287L838,285L840,284L840,283L840,281L842,279L843,281L844,281L843,279L844,278L845,279L845,277L847,275L848,274L849,274L849,273L850,273L850,272L852,272L853,272L855,273L857,275L858,275L860,275L859,273L861,271L862,270L862,270L863,268L865,267L866,268L868,267L868,266L866,265L868,264L869,265L871,266L873,267L874,267L876,267L877,267L878,267L879,266L880,268L880,269L879,270L878,270L878,271L877,273L876,274L876,275L879,277L881,277L882,278L884,280L885,280L886,281L887,282L889,283L891,282L892,280L892,279L893,277L894,275L893,274L893,273L893,271L893,269L894,269L894,268L894,266L895,265L895,264L896,263L897,264L897,266L898,266L898,268L899,269L899,271L899,272L900,274L902,273L902,274L904,275L904,276L904,279L905,280L905,280L906,283L906,284L907,286L910,287L912,289L913,290L913,291L915,292L916,295L917,295L918,296L919,296L919,299L921,300L922,301L925,304L925,306L925,307L925,309L927,311L926,314L926,315L925,318L925,319L925,321L923,324L921,325L920,327L919,329L919,331L918,332L917,334L917,336L917,337L915,338L912,338L909,339L908,341L906,342L904,341L902,340L903,339L901,339L899,341L897,340L895,340L893,340L891,339L889,337L888,335L888,334L886,333L884,332L885,331L884,329L883,331L880,331L882,330L882,328L883,327L883,325L881,327L879,328L878,330L876,329L876,328L874,326L872,325L873,324L869,322L867,322L865,321L860,321L856,322L853,323L850,323Z"],["Sri Lanka",724.6,212.1,0,"M727,212L727,215L726,216L723,217L722,215L721,211L723,206L725,208L726,210L727,212Z"],["China",793.5,129.7,0,"M723,116L723,114L725,113L722,109L728,107L729,107L731,102L737,103L738,102L738,99L741,98L743,97L744,96L744,98L747,100L751,101L753,103L752,106L753,108L756,108L760,108L763,110L765,110L766,113L768,115L771,115L776,115L780,115L783,115L787,117L790,117L792,118L795,116L799,115L803,115L807,114L809,113L811,112L810,111L809,110L811,108L812,108L815,109L818,107L822,106L824,104L826,104L830,103L832,104L833,103L830,101L828,100L826,101L823,100L822,101L821,100L823,97L824,95L827,96L831,94L831,93L834,90L835,89L835,87L834,87L836,85L840,85L843,85L847,86L850,87L852,89L853,91L854,92L855,95L859,96L863,98L864,101L868,101L870,99L875,99L874,101L873,102L872,105L870,108L866,107L864,108L865,111L864,114L863,114L863,116L861,114L860,115L856,117L856,118L854,118L852,117L851,119L847,121L845,122L841,123L839,125L836,125L838,124L837,123L839,121L838,120L835,121L832,123L831,124L828,124L826,126L828,128L830,128L830,129L833,130L836,128L838,129L840,129L840,131L836,132L835,133L832,134L831,136L834,138L835,141L837,143L839,145L839,147L837,148L838,150L839,150L839,153L838,155L836,155L834,158L832,162L830,165L826,168L822,170L819,170L817,172L816,171L815,172L811,173L808,174L807,177L805,177L805,175L805,174L801,173L800,173L797,173L796,172L796,170L794,170L793,168L790,170L788,170L785,170L784,171L782,171L783,175L781,174L781,174L781,173L779,173L778,173L776,172L776,170L775,169L774,166L771,167L771,164L774,161L774,159L774,157L773,156L772,155L770,155L767,154L768,153L767,152L765,153L763,152L759,154L757,156L755,156L753,155L752,155L750,155L749,155L747,158L746,155L745,156L742,156L738,155L736,154L734,153L733,152L731,151L729,150L726,149L725,149L721,148L719,146L718,143L720,143L720,142L719,140L719,138L716,135L712,134L711,131L709,130L708,129L708,128L708,127L706,126L705,126L705,124L705,123L705,123L708,121L710,121L713,121L714,119L717,119L718,118L723,116L723,116Z"],["Taiwan",836.4,167.1,0,"M838,166L837,170L835,172L834,170L834,168L835,165L837,163L839,164L838,166Z"],["Italy",535.1,113.6,0,"M529,103L531,103L531,103L534,102L534,103L538,104L538,106L539,107L537,106L534,107L534,109L534,109L535,111L538,112L539,115L542,117L544,117L545,117L544,118L547,119L549,120L551,121L551,122L551,123L549,121L547,121L546,123L548,124L547,125L546,125L545,128L544,128L544,127L544,126L545,125L544,123L543,122L542,122L541,121L539,120L538,119L536,119L534,117L531,116L529,114L528,111L527,111L525,110L523,110L522,112L521,112L521,111L519,110L519,108L520,107L519,106L519,106L520,106L522,106L523,105L524,106L525,105L526,104L528,105L529,104L529,103Z"],["Denmark",526.7,77,0,"M528,81L526,81L524,81L523,79L522,76L523,76L524,75L526,75L527,74L529,73L529,74L528,75L529,76L530,77L530,78L529,77L527,79L528,81Z"],["United Kingdom",491.4,83.6,0,"M491,85L491,85L492,83L490,82L490,82L487,81L486,80L487,79L486,78L484,80L484,77L483,76L484,73L486,70L488,71L492,70L489,73L492,73L495,73L494,75L491,78L494,78L494,78L497,82L499,82L501,85L501,86L505,87L504,89L503,89L504,91L502,92L498,92L493,93L492,93L490,94L487,93L485,95L484,94L488,91L491,90L490,90L486,90L485,89L488,88L487,87L487,85L491,85Z"],["Iceland",446.5,52,0,"M460,49L459,51L462,52L459,55L451,56L448,57L445,57L437,56L440,54L433,53L438,53L438,52L432,51L434,49L439,49L443,51L447,49L451,50L455,49L460,49Z"],["Azerbaijan",631.7,121.2,0,"M629,117L630,117L632,119L633,119L633,118L635,117L636,119L638,121L639,121L640,122L638,122L637,124L637,125L636,126L636,127L635,127L633,126L634,124L633,123L632,124L629,126L629,124L628,123L627,123L627,122L626,121L627,120L625,119L625,119L626,118L628,119L629,119L630,119L628,117L629,117Z"],["Georgia",620.5,115.9,0,"M611,113L611,112L614,113L618,113L622,115L622,115L624,115L626,115L627,116L629,117L628,117L630,119L629,119L628,119L626,118L625,119L621,119L618,118L615,118L616,117L615,115L614,114L612,114L611,113Z"],["Philippines",838.4,190.6,0,"M840,183L839,184L840,186L840,188L838,189L838,191L838,194L840,194L841,194L844,195L844,197L845,197L845,199L842,197L841,196L841,197L839,195L836,195L835,195L835,194L836,193L835,192L835,193L834,192L833,191L833,188L834,189L834,184L835,182L837,182L839,183L840,182L840,183Z"],["Malaysia",818.8,223.1,0,"M827,222L825,221L822,221L821,225L820,225L818,229L816,230L813,229L812,229L811,231L809,231L807,231L805,230L805,228L807,229L809,228L809,226L811,225L814,225L816,223L817,221L818,222L819,221L820,221L821,220L821,218L823,216L824,214L825,214L827,215L827,217L829,217L831,218L831,219L829,220L829,221L827,222Z"],["Brunei",819.4,220.2,0,"M821,218L821,220L820,221L819,221L818,222L817,221L818,220L821,218Z"],["Slovenia",541.7,105.3,0,"M538,104L541,104L542,104L544,104L545,103L545,103L546,104L544,105L544,106L543,106L543,107L541,107L541,107L540,107L538,107L539,107L538,106L538,104Z"],["Finland",571.6,51.5,0,"M579,41L579,43L583,45L581,47L584,51L582,53L585,55L583,57L588,59L586,60L584,62L578,65L573,65L568,67L564,67L562,66L559,65L560,62L558,59L560,58L562,56L569,53L571,52L570,51L566,50L565,49L565,45L561,43L557,41L559,41L562,42L566,42L569,43L571,41L573,39L577,38L581,40L579,41Z"],["Slovakia",553.8,97.9,0,"M563,97L562,98L561,99L561,99L558,98L557,98L556,99L555,99L555,99L553,100L552,100L552,100L550,101L549,100L547,100L547,99L547,98L548,98L549,98L550,97L550,97L550,97L550,96L551,96L552,96L552,96L553,96L554,96L555,97L557,96L558,96L560,96L563,97Z"],["Czechia",544,95.1,0,"M542,91L543,92L545,93L545,93L546,94L547,93L549,93L549,94L551,94L552,96L552,96L551,96L550,96L550,97L550,97L550,97L549,98L548,98L547,98L546,98L545,98L542,97L541,97L540,98L538,98L536,96L535,96L534,95L534,94L536,93L537,92L539,92L540,91L540,92L542,91Z"],["Eritrea",610,192.5,0,"M601,193L601,192L602,188L602,186L603,185L605,185L607,183L608,187L609,189L611,190L614,193L616,195L617,196L618,197L620,198L619,199L618,198L617,198L616,196L614,195L614,194L611,193L609,193L609,192L607,193L605,192L604,194L601,193Z"],["Japan",877.8,134.1,0,"M894,124L892,127L892,130L891,132L891,134L890,136L886,137L881,137L877,140L875,139L875,137L870,138L867,139L864,139L867,141L865,146L863,147L862,146L862,144L861,143L859,141L862,140L864,138L866,137L868,135L874,134L877,135L880,130L882,131L886,128L887,127L889,124L889,121L890,119L893,118L894,122L894,124Z"],["Paraguay",340.1,298.1,0,"M338,289L339,291L339,295L342,295L343,295L345,295L346,296L346,299L346,300L347,300L348,300L349,300L349,302L349,303L348,305L348,307L345,309L343,310L340,309L337,309L340,304L340,303L337,302L333,300L331,300L326,295L327,292L327,290L328,288L333,287L336,287L338,289L338,289Z"],["Yemen",629.1,190.2,0,"M644,181L647,185L648,187L646,188L645,189L645,190L642,191L638,192L635,194L634,195L633,194L632,196L630,196L627,196L627,196L626,197L625,197L625,198L624,198L623,198L621,198L620,197L620,195L620,194L619,192L618,191L619,191L619,190L619,189L619,188L620,187L620,186L621,185L622,185L622,185L626,185L626,185L629,185L630,185L631,186L632,186L634,183L636,182L644,181Z"],["Saudi Arabia",621.1,166.6,0,"M597,152L600,152L601,151L602,150L604,150L605,149L606,149L603,146L608,144L609,144L612,145L616,147L624,152L629,153L632,153L633,154L634,154L636,156L637,157L637,158L639,159L639,160L639,161L640,162L640,163L641,164L641,165L642,165L643,165L643,166L643,167L644,169L653,171L653,170L655,172L653,178L644,181L636,182L634,183L632,186L631,186L630,185L629,185L626,185L626,185L622,185L622,185L621,185L620,186L620,187L619,188L618,187L618,186L617,185L616,184L615,181L614,179L612,177L611,177L609,174L608,172L609,171L607,168L606,166L604,166L603,164L603,164L603,162L602,162L601,160L599,157L598,155L596,155L597,154L597,153L597,152Z"],["N. Cyprus",592.9,135.6,1,"M591,136L591,136L592,135L594,135L596,134L594,135L594,136L594,136L594,136L593,136L593,136L593,136L593,136L592,136L591,136L591,136Z"],["Cyprus",592.3,136,0,"M591,136L591,136L592,136L593,136L593,136L593,136L593,136L594,136L594,136L594,136L594,136L592,137L590,137L590,136L591,136Z"],["Morocco",473.8,153.4,0,"M494,136L495,137L495,139L496,142L497,143L496,144L493,144L491,145L490,145L490,148L487,149L485,150L483,151L480,151L476,153L476,157L476,157L476,158L474,158L473,159L472,159L471,158L468,159L467,161L467,161L465,165L461,168L460,171L459,173L459,174L453,174L453,174L453,173L454,172L455,170L455,169L456,167L457,166L458,165L459,164L459,162L460,160L462,159L464,157L464,157L465,155L468,155L470,153L471,153L473,150L473,147L474,144L474,143L476,141L479,140L481,139L483,136L484,134L486,134L487,135L490,135L493,136L494,136Z"],["Egypt",587.9,155.3,0,"M602,172L591,172L581,172L569,172L569,162L569,152L569,150L569,148L569,147L570,146L574,146L576,146L579,147L580,148L582,147L584,146L586,146L588,146L589,147L589,146L592,147L594,147L595,147L597,151L597,151L596,153L596,155L595,156L594,157L593,156L592,154L590,150L590,151L591,154L593,156L595,161L596,162L597,164L599,167L599,167L599,169L602,172L602,172Z"],["Libya",546.2,154.2,0,"M569,172L569,178L566,178L566,179L555,174L544,168L541,170L539,171L538,169L533,168L532,166L530,165L529,166L528,164L528,163L526,161L527,160L527,158L527,156L527,155L527,153L527,152L526,149L528,149L528,147L528,146L530,145L530,144L532,143L532,141L535,142L536,142L539,142L542,144L544,146L546,147L550,148L553,149L554,149L556,147L555,145L556,144L558,142L560,142L564,143L565,144L566,144L566,144L569,145L570,146L569,147L569,148L569,150L569,152L569,162L569,172Z"],["Ethiopia",608.9,208.4,0,"M633,211L625,219L621,220L619,222L617,222L616,222L614,222L613,222L611,223L610,224L608,224L607,223L607,223L606,223L602,221L600,221L599,220L599,219L598,218L596,215L595,214L595,213L593,212L592,212L592,210L594,210L594,209L594,207L595,204L596,203L597,202L598,200L600,198L601,196L601,193L604,194L605,192L607,193L609,192L609,193L611,193L614,194L614,195L616,196L617,198L618,198L617,200L616,201L616,202L616,203L618,203L618,202L619,203L618,204L619,205L620,207L621,208L630,211L633,211Z"],["Djibouti",618.1,200.6,0,"M618,198L619,199L620,198L620,199L620,200L619,201L620,201L619,203L618,202L618,203L616,203L616,202L616,201L617,200L618,198Z"],["Somaliland",628.2,204.5,0,"M636,202L636,202L636,203L636,206L636,207L635,209L633,211L630,211L621,208L620,207L619,205L618,204L619,203L620,201L621,202L621,203L623,204L624,204L627,204L630,203L632,202L633,202L634,202L636,202Z"],["Uganda",588.9,229.8,0,"M594,236L589,236L585,236L584,236L583,237L582,237L582,235L583,234L583,232L584,230L585,229L586,228L587,227L585,227L586,224L587,223L589,223L591,223L593,223L594,222L596,223L596,225L597,228L596,230L595,232L594,233L594,236Z"],["Rwanda",583,238.8,0,"M584,236L586,238L585,240L585,240L583,240L582,241L581,241L581,240L581,239L581,238L582,237L583,237L584,236Z"],["Bosnia and Herz.",549.6,110.7,0,"M552,115L549,114L548,113L547,112L546,111L545,110L544,109L544,108L545,108L546,108L547,108L550,108L552,108L553,109L554,109L553,110L554,111L554,112L553,112L553,113L552,113L552,115Z"],["Macedonia",560.2,117.6,0,"M562,116L564,117L564,119L563,119L563,119L561,119L560,120L558,120L557,119L557,118L557,117L558,117L558,117L559,116L560,116L561,116L562,116Z"],["Serbia",558.2,111.6,0,"M552,106L554,105L556,105L558,106L558,107L560,108L560,109L562,110L562,109L563,110L562,110L563,110L562,111L562,112L564,113L563,114L562,115L563,115L562,116L561,116L560,116L560,116L560,115L560,115L560,115L560,114L559,114L559,114L558,114L558,113L557,113L557,114L556,114L556,114L555,114L555,113L554,113L553,112L554,112L554,111L553,110L554,109L553,109L554,108L553,107L552,106Z"],["Montenegro",554,114.6,0,"M556,115L555,115L555,115L554,116L554,117L553,117L552,116L551,115L552,115L552,113L553,113L553,112L554,113L555,113L555,114L556,114L556,114L556,115Z"],["Kosovo",558.2,115.1,0,"M557,117L557,116L556,116L556,115L556,114L557,114L557,113L558,113L558,114L559,114L559,114L560,114L560,115L560,115L560,115L560,116L560,116L559,116L558,117L558,117L557,117Z"],["Trinidad and Tobago",329.3,204.2,0,"M329,203L330,203L331,203L331,205L328,206L328,205L329,205L329,203Z"],["S. Sudan",583.6,211.1,0,"M586,224L583,222L583,221L581,221L580,221L579,221L578,221L576,219L576,218L574,217L573,215L572,214L570,212L570,212L568,210L566,209L567,209L568,209L569,206L570,205L572,204L572,205L574,207L574,207L575,207L577,207L578,207L580,207L581,207L582,206L582,205L583,205L586,206L587,206L588,204L590,203L590,201L589,200L591,200L591,199L592,200L592,202L592,204L594,205L594,206L594,207L594,207L594,209L594,210L592,210L592,212L593,212L595,213L595,214L596,215L598,218L596,220L594,222L593,223L591,223L589,223L587,223L586,224Z"],["Vatican",534.5,116.9,1,""],["Micronesia",921.1,212.9,1,""],["Marshall Is.",975.5,213.6,1,""],["Tonga",13.3,292.1,1,""],["Singapore",788.5,229.5,1,""],["Seychelles",654.1,246.3,1,""],["São Tomé and Principe",518.3,232.7,1,""],["San Marino",534.6,111.3,1,""],["Samoa",23,272.1,1,""],["St. Vin. and Gren.",329.9,197.2,1,""],["Saint Lucia",330.6,194.7,1,""],["St. Kitts and Nevis",325.7,185.2,1,""],["Palau",873.9,212.4,1,""],["Nauru",963.7,234.8,1,""],["Monaco",520.6,111.8,1,""],["Mauritius",659.8,289.7,1,""],["Malta",540.2,133.7,1,""],["Maldives",704.2,221.7,1,""],["Liechtenstein",526.5,102.4,1,""],["Kiribati",980.6,229.4,1,""],["Grenada",328.6,199.7,1,""],["Dominica",329.6,190.5,1,""],["Comoros",623.4,267.2,1,""],["Cabo Verde",434.3,191.3,1,""],["Barbados",334.6,196.8,1,""],["Bahrain",640.4,161,1,""],["Antigua and Barb.",328.4,185.9,1,""],["Andorra",504.3,115.2,1,""],["Tuvalu",997.7777777777778,256.94444444444446,1,""]];
+
 const MON = Object.fromEntries(MONSTERS.map(m => [m.id, m]));
 const CONT = Object.fromEntries(CONTINENTS.map(c => [c.id, c]));
 
@@ -633,6 +1199,10 @@ const SAVE_KEY = 'mythMonsterFreeze.v1';
 let save = { counts: {}, seen: {}, cleared: {}, sound: true };
 try { const s = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); if (s) save = Object.assign(save, s); } catch (e) {}
 if (!save.cleared) save.cleared = {};
+for (const k of Object.keys(save.cleared)) if (!k.includes(':')) { save.cleared['1:' + k] = save.cleared[k]; delete save.cleared[k]; }
+if (!save.round || !MONSTERS.some(m => m.round === save.round)) save.round = 1;
+const isCleared = (cont, r = save.round) => !!save.cleared[r + ':' + cont];
+const roundMons = (r = save.round, cont) => MONSTERS.filter(m => m.round === r && (!cont || m.cont === cont));
 // each continent keeps its monsters (and any treasure left lying) while you visit other places
 const areaMemory = {};
 function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} }
@@ -734,18 +1304,18 @@ function enterArea(id, fromCont) {
     decor = placeDecor(r, c.decor, avoid);
     decor.push({ kind: 'signpost', x: home.x - 230, y: home.y + 20, v: 0, s: 1, text: c.name });
     player.x = home.x; player.y = home.y - 190; portalLock = home;
-    const defs = MONSTERS.filter(m => m.cont === id);
-    if (areaMemory[id]) { monsters = areaMemory[id].monsters; drops = areaMemory[id].drops; }
+    const defs = roundMons(save.round, id), mk = save.round + ':' + id;
+    if (areaMemory[mk]) { monsters = areaMemory[mk].monsters; drops = areaMemory[mk].drops; }
     else {
       defs.forEach((d, i) => {
         let x, y, tries = 0;
         do { x = 150 + Math.random() * (world.w - 300); y = 150 + Math.random() * (world.h - 450); tries++; } while (tries < 50 && (Math.hypot(x - player.x, y - player.y) < 500 || monsters.some(m => Math.hypot(m.x - x, m.y - y) < 220)));
-        const m = newMonster(d, x, y); if (save.cleared[id]) m.frozen = 1e9; monsters.push(m);
+        const m = newMonster(d, x, y); if (isCleared(id)) m.frozen = 1e9; monsters.push(m);
       });
-      areaMemory[id] = { monsters, drops };
+      areaMemory[mk] = { monsters, drops };
     }
-    if (save.cleared[id]) showBanner(c.name + ' ⭐', 'Cleared! Every monster here stays frozen');
-    else showBanner(c.name, defs.length + ' myth monsters live here');
+    if (isCleared(id)) showBanner(c.name + ' ⭐', 'Cleared! Every monster here stays frozen');
+    else showBanner(c.name, `Round ${save.round} · ${defs.length} myth monsters live here`);
   }
   updateHud();
 }
@@ -757,7 +1327,7 @@ let joy = null;
 addEventListener('keydown', e => {
   if (e.repeat && (e.code === 'Space')) { e.preventDefault(); return; }
   keys[e.code] = true;
-  if (!startDone) { if (e.code === 'Enter' || e.code === 'Space') { e.preventDefault(); begin(); } return; }
+  if (menuOpen) { if (e.code === 'Enter' || e.code === 'Space') { e.preventDefault(); begin(save.round); } else if (e.code === 'Escape' && startDone) begin(save.round); return; }
   if (bookOpen) { if (e.code === 'Escape' || e.code === 'KeyB') closeBook(); return; }
   if (e.code === 'Space' || e.code === 'KeyJ' || e.code === 'Enter') { e.preventDefault(); swing(); }
   if (e.code === 'KeyB') openBook();
@@ -765,7 +1335,7 @@ addEventListener('keydown', e => {
 });
 addEventListener('keyup', e => { keys[e.code] = false; });
 cv.addEventListener('pointerdown', e => {
-  if (!startDone) return;
+  if (!startDone || menuOpen) return;
   if (e.pointerType === 'touch') {
     if (!isTouch()) { document.body.classList.add('touch'); resize(); }
     if (e.clientX < W * 0.6 && !joy) { joy = { id: e.pointerId, ox: e.clientX, oy: e.clientY, dx: 0, dy: 0 }; return; }
@@ -788,9 +1358,10 @@ function updateHud() {
   $('hearts').innerHTML = h;
   $('where').textContent = area === 'meadow' ? '🌼 Meadow' : '🌍 ' + CONT[area].name;
   const total = Object.values(save.counts).reduce((a, b) => a + b, 0);
-  const seen = MONSTERS.filter(m => save.seen[m.id]).length;
-  if (area === 'meadow') $('count').textContent = `❄ ${seen}/${MONSTERS.length} met · ⭐ ${CONTINENTS.filter(c => save.cleared[c.id]).length}/6`;
+  const rm = roundMons(), seen = rm.filter(m => save.seen[m.id]).length;
+  if (area === 'meadow') $('count').textContent = `❄ ${seen}/${rm.length} met · ⭐ ${CONTINENTS.filter(c => isCleared(c.id)).length}/6`;
   else $('count').textContent = `❄ Frozen ${monsters.filter(m => m.frozen > 0).length}/${monsters.length}`;
+  $('roundBtn').textContent = `🔄 Round ${save.round}`;
   $('bookBtn').textContent = `🎒 Treasures ${total}`;
   $('soundBtn').textContent = save.sound ? '🔊' : '🔇';
   document.documentElement.style.setProperty('--hudH', $('hud').offsetHeight + 'px');
@@ -827,16 +1398,50 @@ function toast(def, text) {
   clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
+// world map
+const ALL_COUNTRIES = Object.values(COUNTRIES).flat();
+const CONT_OF = {}; for (const [k, list] of Object.entries(COUNTRIES)) for (const n of list) CONT_OF[n] = k;
+const NICE = { 'Bosnia and Herz.': 'Bosnia and Herzegovina', 'Macedonia': 'North Macedonia', 'Central African Rep.': 'Central African Republic', 'Congo': 'Republic of the Congo', 'Dem. Rep. Congo': 'DR Congo', 'Eq. Guinea': 'Equatorial Guinea', 'eSwatini': 'Eswatini', 'S. Sudan': 'South Sudan', 'Antigua and Barb.': 'Antigua and Barbuda', 'Dominican Rep.': 'Dominican Republic', 'St. Kitts and Nevis': 'Saint Kitts and Nevis', 'St. Vin. and Gren.': 'Saint Vincent and the Grenadines', 'United States of America': 'USA', 'Marshall Is.': 'Marshall Islands', 'Solomon Is.': 'Solomon Islands', 'São Tomé and Principe': 'São Tomé and Príncipe', 'Vatican': 'Vatican City' };
+const nice = n => NICE[n] || n;
+const mapNames = m => [].concat(m.map || []);
+function litCountries() { const s = new Set(); for (const m of MONSTERS) if (save.seen[m.id]) for (const n of mapNames(m)) s.add(n); return s; }
+function drawWorldMap() {
+  const svg = $('worldMap'), lit = litCountries(), has = new Set(); for (const m of MONSTERS) for (const n of mapNames(m)) has.add(n);
+  const fill = n => lit.has(n) ? CONT[CONT_OF[n] || 'namerica'].portal : has.has(n) ? '#9fbfd6' : '#dfe8ee';
+  let out = '', dots = '';
+  for (const [n, x, y, small, d] of WORLD) {
+    if (d) out += `<path d="${d}" fill="${fill(n)}" data-n="${n}"/>`;
+    if ((small || !d) && (ALL_COUNTRIES.includes(n) || has.has(n))) dots += `<circle cx="${x}" cy="${y}" r="${lit.has(n) ? 6 : 4.5}" fill="${fill(n)}" data-n="${n}"/>`;
+  }
+  svg.innerHTML = out + dots;
+  const litN = ALL_COUNTRIES.filter(n => lit.has(n)).length;
+  return litN;
+}
+$('worldMap').addEventListener('click', e => {
+  const n = e.target.getAttribute && e.target.getAttribute('data-n'); if (!n) return;
+  const ms = MONSTERS.filter(m => mapNames(m).includes(n)), met = ms.filter(m => save.seen[m.id]);
+  let msg = nice(n) + ': ';
+  if (met.length) msg += met.map(m => m.name).join(', ') + ' ❄';
+  if (ms.length > met.length) msg += (met.length ? ' · ' : '') + `${ms.length - met.length} monster${ms.length - met.length > 1 ? 's' : ''} still to find (Round ${[...new Set(ms.filter(m => !save.seen[m.id]).map(m => m.round))].join(', ')})`;
+  if (!ms.length) msg += 'its monster comes in a later round';
+  $('mapInfo').textContent = msg;
+});
+
 // book
-let bookOpen = false;
+let bookOpen = false, bookRound = 1;
 function openBook() {
-  bookOpen = true; const body = $('bookBody'); body.innerHTML = '';
+  bookOpen = true; bookRound = save.round; renderBook(); $('book').classList.remove('hidden');
+}
+function renderBook() {
+  const body = $('bookBody'); body.innerHTML = '';
   const total = Object.values(save.counts).reduce((a, b) => a + b, 0);
-  const seen = MONSTERS.filter(m => save.seen[m.id]).length;
-  $('bookSum').textContent = `You have met ${seen} of ${MONSTERS.length} myth monsters and collected ${total} treasures.`;
+  const litN = drawWorldMap();
+  $('bookSum').textContent = `🗺️ ${litN} of ${ALL_COUNTRIES.length} countries lit · ${MONSTERS.filter(m => save.seen[m.id]).length} monsters met · ${total} treasures`;
+  const tabs = $('bookTabs'); tabs.innerHTML = '';
+  for (let r = 1; r <= ROUND_COUNT; r++) { const b = document.createElement('button'); b.className = 'tab' + (r === bookRound ? ' cur' : ''); b.textContent = 'Round ' + r; b.disabled = !roundReady(r); b.onclick = () => { bookRound = r; renderBook(); }; tabs.appendChild(b); }
   for (const c of CONTINENTS) {
-    const ms = MONSTERS.filter(m => m.cont === c.id);
-    body.insertAdjacentHTML('beforeend', `<h2>${c.name} — ${ms.filter(m => save.seen[m.id]).length}/${ms.length}</h2>`);
+    const ms = roundMons(bookRound, c.id);
+    body.insertAdjacentHTML('beforeend', `<h2>${c.name} — ${ms.filter(m => save.seen[m.id]).length}/${ms.length}${isCleared(c.id, bookRound) ? ' ⭐' : ''}</h2>`);
     const grid = document.createElement('div'); grid.className = 'grid';
     for (const m of ms) {
       const cell = document.createElement('div'); cell.className = 'cell' + (save.seen[m.id] ? ' seen' : '');
@@ -853,20 +1458,45 @@ function openBook() {
     }
     body.appendChild(grid);
   }
-  $('book').classList.remove('hidden');
 }
 function closeBook() { bookOpen = false; $('book').classList.add('hidden'); }
 $('bookBtn').addEventListener('click', openBook);
 $('bookClose').addEventListener('click', closeBook);
 $('soundBtn').addEventListener('click', () => { save.sound = !save.sound; persist(); updateHud(); if (!save.sound && window.speechSynthesis) speechSynthesis.cancel(); });
-let startDone = false;
-function begin() { if (startDone) return; startDone = true; $('start').classList.add('hidden'); audio(); enterArea('meadow'); }
-$('playBtn').addEventListener('click', begin);
+
+// rounds menu (the start screen)
+let startDone = false, menuOpen = true;
+function renderRounds() {
+  const list = $('roundList'); list.innerHTML = '';
+  for (let r = 1; r <= ROUND_COUNT; r++) {
+    const b = document.createElement('button'), ms = roundMons(r), ready = ms.length > 0;
+    const met = ms.filter(m => save.seen[m.id]).length, stars = CONTINENTS.filter(c => isCleared(c.id, r)).length;
+    const countries = new Set(ms.flatMap(mapNames).filter(n => ALL_COUNTRIES.includes(n))).size;
+    b.className = 'rbtn' + (startDone && r === save.round ? ' cur' : '') + (stars === 6 ? ' done' : '');
+    b.disabled = !ready;
+    b.innerHTML = ready ? `<b>Round ${r}${stars === 6 ? ' ⭐' : ''}</b><span>${ms.length} monsters · ${countries} countries<br>❄ ${met}/${ms.length} met · ⭐ ${stars}/6</span>` : `<b>Round ${r}</b><span>Coming soon</span>`;
+    b.onclick = () => begin(r);
+    list.appendChild(b);
+  }
+}
+function openMenu() { if (fade > 0) return; menuOpen = true; renderRounds(); $('start').classList.remove('hidden'); }
+function begin(r) {
+  menuOpen = false; $('start').classList.add('hidden'); audio();
+  const changed = !startDone || r !== save.round; save.round = r; persist(); startDone = true;
+  if (changed) { enterArea('meadow'); if (player.hp < player.max) player.hp = player.max; }
+  updateHud();
+}
+$('roundBtn').addEventListener('click', openMenu);
+renderRounds();
+function celebrate() {
+  for (let i = 0; i < 80; i++) { const a = Math.random() * TAU, sp = 80 + Math.random() * 260; parts.push({ kind: 'spark', x: player.x, y: player.y - 40, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 1.6, max: 1.6, r: 2 + Math.random() * 3 }); }
+  [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.4, 'triangle', 0.08, 0, i * 0.15));
+}
 
 // ---------------------------------------------------------------- gameplay
 function angDiff(a, b) { let d = a - b; while (d > Math.PI) d -= TAU; while (d < -Math.PI) d += TAU; return Math.abs(d); }
 function swing(aim) {
-  if (!startDone || bookOpen || fade > 0 || player.cool > 0) return;
+  if (!startDone || bookOpen || menuOpen || fade > 0 || player.cool > 0) return;
   const px = player.x, py = player.y - 30;
   if (aim === undefined) {
     let best = null, bd = 150;
@@ -892,13 +1522,14 @@ function freeze(m) {
   drops.push({ def: d, x: clamp(m.x + Math.cos(a) * 55, 40, world.w - 40), y: clamp(m.y + 30 + Math.sin(a) * 20, 60, world.h - 40), t: 0 });
   sfx.freeze(); showCard(d, isNew); speak(`${d.name}! From ${d.place.replace(/\(.*\)/, '')}.`);
   updateHud();
-  if (!save.cleared[d.cont] && monsters.every(o => o.frozen > 0)) {
-    save.cleared[d.cont] = true; persist();
+  if (!isCleared(d.cont) && monsters.every(o => o.frozen > 0)) {
+    save.cleared[save.round + ':' + d.cont] = true; persist();
     for (const o of monsters) o.frozen = 1e9;
-    setTimeout(() => { sfx.freeze(); showBanner(CONT[d.cont].name + ' cleared! ⭐', 'These monsters stay frozen for good'); }, isTouch() ? 3600 : 2500);
+    const all = CONTINENTS.every(c => isCleared(c.id));
+    setTimeout(() => { sfx.freeze(); if (all) { showBanner(`Round ${save.round} complete! 🌍`, 'Every continent is frozen. Try another round!'); celebrate(); } else showBanner(CONT[d.cont].name + ' cleared! ⭐', 'These monsters stay frozen for good'); }, isTouch() ? 3600 : 2500);
   }
-  const seen = MONSTERS.filter(x => save.seen[x.id]).length;
-  if (isNew && seen === MONSTERS.length) setTimeout(() => showBanner('World champion!', 'You met every myth monster on Earth'), 4000);
+  if (isNew) { const lit = litCountries(); const c = mapNames(d).filter(n => ALL_COUNTRIES.includes(n));
+    if (c.length && c.every(n => lit.has(n)) && lit.size === ALL_COUNTRIES.length) setTimeout(() => { showBanner('You froze the whole world!', 'Every country on the map is lit'); celebrate(); }, 5000); }
 }
 function collect(dr) {
   save.counts[dr.def.id] = (save.counts[dr.def.id] || 0) + 1; persist();
@@ -923,7 +1554,7 @@ function update(dt) {
     if (fade >= 1 && fadeTo) { const from = area; const to = fadeTo; fadeTo = null; if (to === 'meadow') { player.hp = Math.max(player.hp, 1); } enterArea(to, from !== 'meadow' ? from : null); if (player.hp <= 1 && to === 'meadow') { player.hp = player.max; updateHud(); } }
     if (fade >= 2) fade = 0;
   }
-  if (!startDone || bookOpen) return;
+  if (!startDone || bookOpen || menuOpen) return;
   // player movement
   let mx = 0, my = 0;
   if (keys.ArrowLeft || keys.KeyA) mx -= 1; if (keys.ArrowRight || keys.KeyD) mx += 1;
@@ -946,7 +1577,7 @@ function update(dt) {
   for (const m of monsters) {
     m.hit = Math.max(0, m.hit - dt);
     if (m.frozen > 0) {
-      if (!save.cleared[area]) m.frozen -= dt;
+      if (!isCleared(area)) m.frozen -= dt;
       if (m.frozen <= 0) { m.frozen = 0; m.stun = 1; sfx.thaw(); for (let i = 0; i < 14; i++) { const a = Math.random() * TAU; parts.push({ kind: 'drop', x: m.x, y: m.y - 30, vx: Math.cos(a) * 60, vy: -Math.random() * 80, life: 0.7, max: 0.7, r: 2.5 }); } updateHud(); }
       continue;
     }
@@ -1037,11 +1668,11 @@ function drawPortal(p) {
 function drawPortalLabel(p) {
   const c = ctx; c.save(); c.font = 'bold 17px "Trebuchet MS", sans-serif'; c.textAlign = 'center';
   let text = p.label, sub = '';
-  if (area === 'meadow') { const ms = MONSTERS.filter(m => m.cont === p.to); sub = save.cleared[p.to] ? '⭐ Cleared!' : `❄ ${ms.filter(m => save.seen[m.id]).length}/${ms.length} met`; }
+  if (area === 'meadow') { const ms = roundMons(save.round, p.to); sub = isCleared(p.to) ? '⭐ Cleared!' : `❄ ${ms.filter(m => save.seen[m.id]).length}/${ms.length} met`; }
   const w = Math.max(c.measureText(text).width, 70) + 20;
   R(c, p.x - w / 2, p.y - 140, w, sub ? 40 : 26, 10, 'rgba(255,255,255,.88)');
   c.fillStyle = '#13406b'; c.fillText(text, p.x, p.y - 121);
-  if (sub) { c.font = 'bold 13px "Trebuchet MS", sans-serif'; c.fillStyle = save.cleared[p.to] ? '#c98a00' : '#2f8fd0'; c.fillText(sub, p.x, p.y - 106); }
+  if (sub) { c.font = 'bold 13px "Trebuchet MS", sans-serif'; c.fillStyle = isCleared(p.to) ? '#c98a00' : '#2f8fd0'; c.fillText(sub, p.x, p.y - 106); }
   c.restore();
 }
 function drawPlayer() {
@@ -1151,7 +1782,8 @@ function frame(now) {
 enterArea('meadow'); $('banner').classList.remove('show');
 updateHud();
 requestAnimationFrame(frame);
-window.__game = { enterArea, monsters: () => monsters, player, freeze, swing, openBook, closeBook, begin, MONSTERS };
+window.__DRAW = DRAW; window.__TREASURE = TREASURE;
+window.__game = { enterArea, monsters: () => monsters, player, freeze, swing, openBook, closeBook, begin, MONSTERS, save };
 </script>
 </body>
 </html>
